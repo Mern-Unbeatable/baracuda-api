@@ -1,0 +1,26 @@
+{
+    "name": "my12photos",
+    "version": "1.0.0",
+    "type": "module",
+    "description": "",
+    "main": "src/server.js",
+    "scripts": {
+        "start": "node src/server.js",
+        "dev": "nodemon src/server.js",
+        "prisma:generate": "prisma generate",
+        "prisma:migrate": "prisma migrate dev",
+        "prisma:studio": "prisma studio",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "dotenv": "^17.4.2",
+        "express": "5.2.1"
+    },
+    "devDependencies": {
+        "nodemon": "3.1.14",
+        "prisma": "^7.10.0"
+    }
+}

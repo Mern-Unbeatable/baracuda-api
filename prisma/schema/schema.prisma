@@ -1,0 +1,943 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+
+// ============================================================
+// ENUMS
+// ============================================================
+
+enum SupportedLocale {
+  en
+  cy
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum UserStatus {
+  PENDING
+  ACTIVE
+  SUSPENDED
+  BANNED
+}
+
+enum AlbumKind {
+  SINGLE
+  SIX
+  TWELVE
+}
+
+enum AlbumTheme {
+  RED
+  BLUE
+  FULL
+}
+
+enum ZodiacSign {
+  ARIES
+  TAURUS
+  GEMINI
+  CANCER
+  LEO
+  VIRGO
+  LIBRA
+  SCORPIO
+  SAGITTARIUS
+  CAPRICORN
+  AQUARIUS
+  PISCES
+}
+
+enum SubmissionVisibility {
+  PUBLIC
+  PRIVATE_BUSINESS
+}
+
+enum SubmissionStatus {
+  DRAFT
+  PENDING
+  APPROVED
+  REJECTED
+  DELETED
+}
+
+enum SubmissionCompetitionState {
+  PROFILE_ONLY
+  IN_COMPETITION
+  ENDED
+}
+
+enum MediaKind {
+  IMAGE
+  VIDEO
+}
+
+enum CompetitionStatus {
+  UPCOMING
+  OPEN
+  CLOSED
+  ARCHIVED
+}
+
+enum WinnerPlace {
+  FIRST
+  SECOND
+  THIRD
+  POPULAR_VOTE
+  EDITORS_CHOICE
+}
+
+enum CommentStatus {
+  PENDING
+  APPROVED
+  HIDDEN
+  DELETED
+}
+
+enum AnnouncementType {
+  WINNER
+  COMPETITION
+  PROMOTION
+  GENERAL
+  IMPORTANT
+}
+
+enum AnnouncementPriority {
+  HIGH
+  MEDIUM
+  LOW
+}
+
+enum AnnouncementStatus {
+  DRAFT
+  SCHEDULED
+  ACTIVE
+  INACTIVE
+  EXPIRED
+}
+
+enum SupportStatus {
+  PENDING
+  ANSWERED
+}
+
+enum SupportCategory {
+  TECHNICAL
+  BILLING
+  COMPETITION
+  ACCOUNT
+  OTHER
+}
+
+enum NotificationType {
+  PLATFORM
+  USER
+  SYSTEM
+  COMPETITION
+  SALE
+  FOLLOW
+}
+
+enum PaymentPurpose {
+  ENTRY_FEE
+  DONATION
+  PREMIUM_PHOTO
+  PROMOTION
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+enum PayoutKind {
+  PRIZE
+  DONATION
+  PREMIUM
+}
+
+enum PayoutStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  PAID
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+enum NewsletterTarget {
+  EVERYONE
+  SELECTED
+  NEW_SUBSCRIBERS
+}
+
+enum NewsletterStatus {
+  DRAFT
+  SENT
+  FAILED
+}
+
+
+
+
+// ============================================================
+// AUTH & USERS
+// ============================================================
+
+model User {
+  id         String     @id @default(uuid())
+  email      String     @unique
+  password   String
+  username   String     @unique
+  role       Role       @default(USER)
+  status     UserStatus @default(PENDING)
+  isVerified Boolean    @default(false)
+
+  name        String
+  avatar      String?
+  coverPhoto  String?
+  bio         String?         @db.VarChar(250)
+  phone       String?
+  city        String?
+  country     String?
+  website     String?
+  language    SupportedLocale @default(en)
+  socialLinks Json?
+
+  refreshToken         String?
+  resetPasswordToken   String?
+  resetPasswordExpires DateTime?
+  otpCode              String?
+  otpExpires           DateTime?
+  otpPurpose           String?
+
+  suspendReason String?
+  suspendedAt   DateTime?
+
+  copyrightAcceptedAt DateTime?
+  lastLoginIp         String?
+  lastLoginAt         DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  submissions          Submission[]
+  votes                Vote[]
+  likes                Like[]
+  comments             Comment[]
+  followers            Follow[]              @relation("Following")
+  following            Follow[]              @relation("Follower")
+  donationsGiven       Donation[]            @relation("Donor")
+  donationsReceived    Donation[]            @relation("Artist")
+  orders               Order[]
+  payouts              Payout[]
+  payoutAccounts       PayoutAccount[]
+  supportTickets       SupportTicket[]
+  businessAlbums       BusinessAlbum[]
+  promotedAlbums       PromotedAlbum[]
+  notifications        Notification[]
+  demoProfiles         DemoProfile[]         @relation("CreatedByAdmin")
+  premiumPhotos        PremiumPhoto[]
+  winnerRecords        Winner[]
+  photographerMessages PhotographerMessage[]
+  messageLikes         MessageLike[]
+  chatParticipants     ChatParticipant[]
+  chatMessages         ChatMessage[]
+
+  @@index([role, status])
+  @@index([country])
+  @@map("users")
+}
+
+model Follow {
+  id          String   @id @default(uuid())
+  followerId  String
+  followingId String
+  createdAt   DateTime @default(now())
+
+  follower  User @relation("Follower", fields: [followerId], references: [id], onDelete: Cascade)
+  following User @relation("Following", fields: [followingId], references: [id], onDelete: Cascade)
+
+  @@unique([followerId, followingId])
+  @@index([followingId])
+  @@map("follows")
+}
+
+
+
+
+
+
+// ============================================================
+// TAXONOMY (admin editable)
+// ============================================================
+
+model Category {
+  id          String   @id @default(uuid())
+  name        Json
+  slug        String   @unique
+  description Json?
+  isActive    Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  submissions   Submission[]
+  premiumPhotos PremiumPhoto[]
+
+  @@map("categories")
+}
+
+model AlbumType {
+  id          String    @id @default(uuid())
+  kind        AlbumKind @unique
+  name        Json
+  description Json?
+  features    Json      @default("{\"en\":[],\"cy\":[]}")
+  iconKey     String?
+  entryFee    Decimal   @default(0) @db.Decimal(10, 2)
+  prizeMoney  Decimal   @default(0) @db.Decimal(10, 2)
+  photoCount  Int
+  isActive    Boolean   @default(true)
+  sortOrder   Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  submissions Submission[]
+
+  @@map("album_types")
+}
+
+// ============================================================
+// COMPETITIONS
+// ============================================================
+
+model Competition {
+  id        String            @id @default(uuid())
+  title     Json
+  year      Int
+  month     Int
+  status    CompetitionStatus @default(UPCOMING)
+  startsAt  DateTime
+  endsAt    DateTime
+  timezone  String            @default("Europe/London")
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+
+  submissions Submission[]
+  winners     Winner[]
+
+  @@unique([year, month])
+  @@index([status])
+  @@map("competitions")
+}
+
+model Submission {
+  id               String                      @id @default(uuid())
+  publicId         String                      @unique @default(uuid())
+  userId           String
+  competitionId    String?
+  albumTypeId      String
+  categoryId       String?
+  kind             AlbumKind
+  theme            AlbumTheme?
+  zodiacSign       ZodiacSign?
+  visibility       SubmissionVisibility        @default(PUBLIC)
+  status           SubmissionStatus            @default(PENDING)
+  competitionState SubmissionCompetitionState?
+
+  title Json
+  story Json?
+  tags  String[]
+
+  camera     String?
+  resolution String?
+  format     String?
+
+  copyrightConfirmed Boolean @default(false)
+  viewsCount         Int     @default(0)
+  votesCount         Int     @default(0)
+  likesCount         Int     @default(0)
+  commentsCount      Int     @default(0)
+  points             Int     @default(0)
+  rank               Int?
+
+  featuredImage  String?
+  rejectedReason String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user          User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  competition   Competition?      @relation(fields: [competitionId], references: [id], onDelete: SetNull)
+  albumType     AlbumType         @relation(fields: [albumTypeId], references: [id])
+  category      Category?         @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  media         SubmissionMedia[]
+  votes         Vote[]
+  likes         Like[]
+  comments      Comment[]
+  winners       Winner[]
+  donations     Donation[]
+  promotion     PromotedAlbum?
+  businessAlbum BusinessAlbum?
+  premiumPhoto  PremiumPhoto?
+
+  @@index([kind, status, visibility, createdAt])
+  @@index([competitionId, kind, votesCount])
+  @@index([userId])
+  @@index([categoryId])
+  @@index([competitionState])
+  @@map("submissions")
+}
+
+
+model SubmissionMedia {
+  id           String      @id @default(uuid())
+  submissionId String
+  kind         MediaKind   @default(IMAGE)
+  slotIndex    Int
+  zodiacSign   ZodiacSign?
+  url          String
+  publicId     String?
+  thumbnailUrl String?
+  width        Int?
+  height       Int?
+  format       String?
+  bytes        Int?
+  createdAt    DateTime    @default(now())
+
+  submission Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+
+  @@unique([submissionId, slotIndex])
+  @@index([zodiacSign])
+  @@map("submission_media")
+}
+
+model Vote {
+  id           String    @id @default(uuid())
+  submissionId String
+  userId       String?
+  ipAddress    String
+  kind         AlbumKind
+  year         Int
+  month        Int
+  createdAt    DateTime  @default(now())
+
+  submission Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  user       User?      @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@unique([ipAddress, kind, year, month])
+  @@index([submissionId])
+  @@map("votes")
+}
+
+model Like {
+  id           String   @id @default(uuid())
+  submissionId String
+  userId       String
+  createdAt    DateTime @default(now())
+
+  submission Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([submissionId, userId])
+  @@map("likes")
+}
+
+model Comment {
+  id           String        @id @default(uuid())
+  publicCode   String        @unique
+  submissionId String
+  userId       String
+  body         String        @db.Text
+  kind         AlbumKind?
+  isPinned     Boolean       @default(false)
+  status       CommentStatus @default(PENDING)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  submission Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([status, createdAt])
+  @@index([submissionId])
+  @@index([isPinned])
+  @@map("comments")
+}
+
+model Winner {
+  id            String      @id @default(uuid())
+  competitionId String
+  submissionId  String
+  userId        String
+  kind          AlbumKind
+  place         WinnerPlace
+  votes         Int
+  points        Int
+  createdAt     DateTime    @default(now())
+
+  competition Competition @relation(fields: [competitionId], references: [id], onDelete: Cascade)
+  submission  Submission  @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([competitionId, kind, place])
+  @@index([userId])
+  @@map("winners")
+}
+
+
+// ============================================================
+// PRIVATE 12-PHOTO / BUSINESS LINK
+// ============================================================
+
+model BusinessAlbum {
+  id           String    @id @default(uuid())
+  submissionId String    @unique
+  userId       String
+  email        String
+  phone        String?
+  country      String?
+  businessLink String?   @unique
+  isPublished  Boolean   @default(false)
+  reviewedAt   DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  submission Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([createdAt])
+  @@map("business_albums")
+}
+
+// ============================================================
+// PHOTOGRAPHER NEWS / MESSAGES (feed — not chat)
+// ============================================================
+
+model PhotographerMessage {
+  id         String   @id @default(uuid())
+  userId     String
+  body       String   @db.Text
+  imageUrl   String?
+  likesCount Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  user  User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  likes MessageLike[]
+
+  @@index([userId, createdAt])
+  @@map("photographer_messages")
+}
+
+model MessageLike {
+  id        String   @id @default(uuid())
+  messageId String
+  userId    String
+  createdAt DateTime @default(now())
+
+  message PhotographerMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  user    User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([messageId, userId])
+  @@map("message_likes")
+}
+
+// ============================================================
+// SOCIAL / DEMO
+// ============================================================
+
+model DemoProfile {
+  id           String   @id @default(uuid())
+  createdById  String
+  fullName     String
+  username     String   @unique
+  phone        String
+  email        String
+  bio          Json
+  socialLinks  String[]
+  profilePhoto String?
+  coverPhoto   String?
+  bannerUrl    String?
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  createdBy User @relation("CreatedByAdmin", fields: [createdById], references: [id])
+
+  @@map("demo_profiles")
+}
+
+// ============================================================
+// CMS: ANNOUNCEMENTS, TEXTS, SETTINGS, ADS
+// ============================================================
+
+model Announcement {
+  id             String               @id @default(uuid())
+  publicCode     String               @unique
+  title          Json?
+  message        Json
+  useRainbow     Boolean              @default(true)
+  blackLabel     Json?
+  icon           String?
+  emoji          String?
+  type           AnnouncementType     @default(GENERAL)
+  linkUrl        String?
+  showOnHome     Boolean              @default(true)
+  showOnUpload   Boolean              @default(true)
+  showOnDownload Boolean              @default(true)
+  startAt        DateTime?
+  endAt          DateTime?
+  noEndDate      Boolean              @default(false)
+  status         AnnouncementStatus   @default(DRAFT)
+  priority       AnnouncementPriority @default(MEDIUM)
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
+
+  @@index([status, priority, startAt])
+  @@map("announcements")
+}
+
+model SiteText {
+  id           String   @id @default(uuid())
+  key          String   @unique
+  translations Json
+  updatedAt    DateTime @updatedAt
+
+  @@map("site_texts")
+}
+
+model SiteSetting {
+  id                 String          @id @default(uuid())
+  defaultLanguage    SupportedLocale @default(en)
+  adsensePublisherId String?
+  adsenseEnabled     Boolean         @default(false)
+  votingEnabled      Boolean         @default(true)
+  pointsPerVote      Int             @default(2)
+  supportEmail       String?
+  extra              Json?
+
+  @@map("site_settings")
+}
+
+model AdSlot {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  page      String
+  htmlCode  String?  @db.Text
+  isActive  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("ad_slots")
+}
+
+
+
+
+// ============================================================
+// NEWSLETTER
+// ============================================================
+
+model NewsletterSubscriber {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  userId       String?
+  isManual     Boolean  @default(false)
+  subscribedAt DateTime @default(now())
+
+  @@index([subscribedAt])
+  @@map("newsletter_subscribers")
+}
+
+model NewsletterCampaign {
+  id          String           @id @default(uuid())
+  subject     Json
+  title       Json
+  content     Json
+  bannerUrl   String?
+  ctaText     String?
+  ctaUrl      String?
+  target      NewsletterTarget @default(EVERYONE)
+  selectedIds String[]
+  status      NewsletterStatus @default(DRAFT)
+  sentAt      DateTime?
+  createdAt   DateTime         @default(now())
+
+  @@map("newsletter_campaigns")
+}
+
+// ============================================================
+// SUPPORT
+// ============================================================
+
+model SupportTicket {
+  id          String           @id @default(uuid())
+  userId      String?
+  name        String?
+  email       String
+  category    SupportCategory?
+  title       Json
+  message     Json
+  answer      Json?
+  attachments String[]         @default([])
+  status      SupportStatus    @default(PENDING)
+  answeredAt  DateTime?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([status, createdAt])
+  @@index([category])
+  @@map("support_tickets")
+}
+
+model Notification {
+  id        String           @id @default(uuid())
+  userId    String
+  type      NotificationType @default(PLATFORM)
+  title     Json
+  body      Json
+  icon      String?
+  avatar    String?
+  isRead    Boolean          @default(false)
+  linkUrl   String?
+  createdAt DateTime         @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, isRead])
+  @@index([type])
+  @@map("notifications")
+}
+
+// ============================================================
+// CHAT (member-to-member messaging)
+// ============================================================
+
+model ChatRoom {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  participants ChatParticipant[]
+  messages     ChatMessage[]
+
+  @@map("chat_rooms")
+}
+
+model ChatParticipant {
+  id         String    @id @default(uuid())
+  roomId     String
+  userId     String
+  joinedAt   DateTime  @default(now())
+  lastReadAt DateTime?
+
+  room ChatRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  user User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([roomId, userId])
+  @@index([userId])
+  @@map("chat_participants")
+}
+
+model ChatMessage {
+  id        String   @id @default(uuid())
+  roomId    String
+  senderId  String
+  content   String   @db.Text
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  room   ChatRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  sender User     @relation(fields: [senderId], references: [id], onDelete: Cascade)
+
+  @@index([roomId, createdAt])
+  @@index([senderId])
+  @@map("chat_messages")
+}
+
+// ============================================================
+// MONETIZATION
+// ============================================================
+
+model Payment {
+  id             String         @id @default(uuid())
+  userId         String?
+  purpose        PaymentPurpose
+  amount         Decimal        @db.Decimal(10, 2)
+  currency       String         @default("GBP")
+  status         PaymentStatus  @default(PENDING)
+  provider       String
+  providerRef    String?
+  submissionId   String?
+  premiumPhotoId String?
+  metadata       Json?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  @@index([purpose, status])
+  @@map("payments")
+}
+
+model Donation {
+  id           String   @id @default(uuid())
+  submissionId String
+  artistId     String
+  donorId      String?
+  donorName    String
+  donorEmail   String
+  amount       Decimal  @db.Decimal(10, 2)
+  currency     String   @default("GBP")
+  message      String?
+  paymentId    String?
+  createdAt    DateTime @default(now())
+
+  submission Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  artist     User       @relation("Artist", fields: [artistId], references: [id])
+  donor      User?      @relation("Donor", fields: [donorId], references: [id], onDelete: SetNull)
+
+  @@index([artistId])
+  @@map("donations")
+}
+
+model PremiumPhoto {
+  id           String      @id @default(uuid())
+  userId       String
+  submissionId String?     @unique
+  categoryId   String?
+  kind         AlbumKind?
+  theme        AlbumTheme?
+  zodiacSign   ZodiacSign?
+  title        Json
+  description  Json?
+  story        Json?
+  previewUrl   String
+  fileUrl      String
+  publicId     String?
+  price        Decimal     @db.Decimal(10, 2)
+  camera       String?
+  resolution   String?
+  format       String?
+  license      String?
+  width        Int?
+  height       Int?
+  likesCount   Int         @default(0)
+  viewsCount   Int         @default(0)
+  totalSales   Int         @default(0)
+  expiryDate   DateTime?
+  isActive     Boolean     @default(true)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  submission Submission? @relation(fields: [submissionId], references: [id], onDelete: SetNull)
+  category   Category?   @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  orderItems OrderItem[]
+
+  @@index([isActive, createdAt])
+  @@index([kind])
+  @@map("premium_photos")
+}
+
+model Order {
+  id            String      @id @default(uuid())
+  userId        String
+  email         String
+  fullName      String
+  address       String?
+  total         Decimal     @db.Decimal(10, 2)
+  currency      String      @default("GBP")
+  status        OrderStatus @default(PENDING)
+  paymentMethod String?
+  paymentId     String?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  user  User        @relation(fields: [userId], references: [id])
+  items OrderItem[]
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id             String  @id @default(uuid())
+  orderId        String
+  premiumPhotoId String
+  price          Decimal @db.Decimal(10, 2)
+
+  order        Order        @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  premiumPhoto PremiumPhoto @relation(fields: [premiumPhotoId], references: [id])
+
+  @@map("order_items")
+}
+
+model PromotedAlbum {
+  id           String   @id @default(uuid())
+  submissionId String   @unique
+  userId       String
+  tierId       String?
+  durationDays Int
+  startsAt     DateTime
+  endsAt       DateTime
+  amountPaid   Decimal  @db.Decimal(10, 2)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+
+  submission Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([isActive, endsAt])
+  @@map("promoted_albums")
+}
+
+model PayoutAccount {
+  id            String   @id @default(uuid())
+  userId        String
+  provider      String
+  accountNumber String
+  createdAt     DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("payout_accounts")
+}
+
+model Payout {
+  id            String       @id @default(uuid())
+  userId        String
+  kind          PayoutKind
+  amount        Decimal      @db.Decimal(10, 2)
+  currency      String       @default("GBP")
+  accountType   String
+  accountNumber String
+  status        PayoutStatus @default(PENDING)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([kind, status])
+  @@map("payouts")
+}
