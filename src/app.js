@@ -1,6 +1,7 @@
 import express from 'express';
 import { UserModule } from './modules/user/user.module.js';
 import { AuthModule } from './modules/auth/auth.module.js';
+import { CategoryModule } from './modules/category/category.module.js';
 import config from './config/env.js';
 
 /**
@@ -53,6 +54,8 @@ class App {
 
     const userModule = new UserModule();
     this.app.use('/api/v1/users', userModule.router);
+    
+    this.app.use('/api/v1/categories', CategoryModule.router);
   }
 
   initializeErrorHandling() {
