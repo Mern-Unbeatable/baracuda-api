@@ -2,29 +2,24 @@ import prisma from '../../config/prisma.js';
 
 export class ArtworkService {
   async createArtwork(userId, data, mediaFiles) {
-    const albumType = await prisma.albumType.findUnique({
+    const albumTypePromise = prisma.albumType.findUnique({
       where: { kind: data.kind }
     });
+
+    const activeCompPromise = data.competitionState === 'IN_COMPETITION'
+      ? prisma.competition.findFirst({
+          where: { status: 'OPEN' },
+          orderBy: { startsAt: 'desc' }
+        })
+      : Promise.resolve(null);
+
+    const [albumType, activeComp] = await Promise.all([albumTypePromise, activeCompPromise]);
 
     if (!albumType) {
       throw new Error(`AlbumType configuration for '${data.kind}' not found. Admin needs to create it.`);
     }
 
-    // Determine the active competition if they chose IN_COMPETITION
-    let activeCompetitionId = null;
-    if (data.competitionState === 'IN_COMPETITION') {
-      const activeComp = await prisma.competition.findFirst({
-        where: { status: 'OPEN' },
-        orderBy: { startsAt: 'desc' }
-      });
-      if (activeComp) {
-        activeCompetitionId = activeComp.id;
-      } else {
-        // If there's no active competition right now, we can throw an error or just keep it null.
-        // Let's keep it null or fallback to UPCOMING if you prefer, but usually it should be ACTIVE.
-        // Or you can throw: throw new Error('No active competition available to join right now');
-      }
-    }
+    let activeCompetitionId = activeComp ? activeComp.id : null;
 
     // Create submission and media in a transaction
     const submission = await prisma.submission.create({
@@ -68,9 +63,8 @@ export class ArtworkService {
       where.promotion = { isNot: null };
     }
 
-    const total = await prisma.submission.count({ where });
-
     // Fetch ALL matching submissions for this user to apply complex custom sorting
+    // We omit the separate .count() query to save a full database round trip and speed up response
     const allSubmissions = await prisma.submission.findMany({
       where,
       select: {
@@ -128,7 +122,7 @@ export class ArtworkService {
 
     return {
       data: paginatedSubmissions,
-      total
+      total: allSubmissions.length
     };
   }
 
