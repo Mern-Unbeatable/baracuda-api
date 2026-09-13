@@ -356,7 +356,6 @@ model Competition {
 
 model Submission {
   id               String                      @id @default(uuid())
-  publicId         String                      @unique @default(uuid())
   userId           String
   competitionId    String?
   albumTypeId      String
@@ -420,7 +419,6 @@ model SubmissionMedia {
   slotIndex    Int
   zodiacSign   ZodiacSign?
   url          String
-  publicId     String?
   thumbnailUrl String?
   width        Int?
   height       Int?
@@ -837,7 +835,6 @@ model PremiumPhoto {
   story        Json?
   previewUrl   String
   fileUrl      String
-  publicId     String?
   price        Decimal     @db.Decimal(10, 2)
   camera       String?
   resolution   String?
