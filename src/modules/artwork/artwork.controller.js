@@ -1,0 +1,186 @@
+import { UrlUtil } from '../../utils/urlUtil.js';
+import { PaginationUtil } from '../../utils/pagination.js';
+import { ResponseUtil } from '../../utils/response.js';
+
+export class ArtworkController {
+  constructor(artworkService) {
+    this.artworkService = artworkService;
+  }
+
+  formatMediaUrls(req, artwork) {
+    if (!artwork || !artwork.media) return artwork;
+    const formatted = { ...artwork };
+    formatted.media = formatted.media.map(m => ({
+      ...m,
+      url: UrlUtil.getAbsoluteUrl(req, m.url)
+    }));
+    return formatted;
+  }
+
+  createArtwork = async (req, res) => {
+    try {
+      // For authenticated routes, assume req.user is set by auth middleware
+      const userId = req.user?.id || 'TEST_USER_ID';
+      
+      const {
+        kind,
+        theme,
+        zodiacSign,
+        visibility,
+        competitionState,
+        categoryId,
+        subcategoryId,
+        title,
+        story,
+        tags,
+        camera,
+        resolution,
+        format,
+        isAiGenerated,
+        copyrightConfirmed,
+        quality
+      } = req.validatedBody || req.body;
+
+      // Extract uploaded files from req.files
+      // multer config allows 'images' and 'video'
+      const imageFiles = req.files && req.files['images'] ? req.files['images'] : [];
+      const videoFiles = req.files && req.files['video'] ? req.files['video'] : [];
+      const mediaFiles = [...imageFiles, ...videoFiles];
+
+      const parsedTitle = typeof title === 'string' ? JSON.parse(title) : title;
+      const parsedStory = typeof story === 'string' ? JSON.parse(story) : story;
+
+      const data = {
+        kind,
+        theme: theme || null,
+        zodiacSign: zodiacSign || null,
+        visibility: visibility || 'PUBLIC',
+        competitionState: competitionState || 'PROFILE_ONLY',
+        categoryId: categoryId || null,
+        subcategoryId: subcategoryId || null,
+        title: parsedTitle,
+        story: parsedStory || null,
+        tags: tags ? (Array.isArray(tags) ? tags : JSON.parse(tags)) : [],
+        camera: camera || null,
+        resolution: resolution || null,
+        format: format || null,
+        isAiGenerated: isAiGenerated === 'true' || isAiGenerated === true,
+        copyrightConfirmed: copyrightConfirmed === 'true' || copyrightConfirmed === true,
+        quality: quality || null
+      };
+
+      const result = await this.artworkService.createArtwork(userId, data, mediaFiles);
+      ResponseUtil.actionSuccess(res, 'Artwork created successfully', result.id, 201);
+    } catch (error) {
+      res.status(400).json({ success: false, error: error.message });
+    }
+  }
+
+  getAllArtworks = async (req, res) => {
+    try {
+      const userId = req.user?.id || 'TEST_USER_ID';
+      const { kind, promoted, status, sort } = req.query;
+      
+      const { skip, take, page, limit } = PaginationUtil.getPaginationOptions(req.query);
+      
+      const filters = { kind, promoted, status };
+      const result = await this.artworkService.getAllArtworks(userId, filters, sort, skip, take);
+      
+      // Format URLs and remove unused fields to save bandwidth
+      const formattedData = result.data.map(a => {
+        const formatted = this.formatMediaUrls(req, a);
+        
+        // PROFILE_ONLY artworks don't need competition or vote data
+        if (formatted.competitionState === 'PROFILE_ONLY') {
+          delete formatted.votesCount;
+          delete formatted.rank;
+          delete formatted.competition;
+        } else {
+          // IN_COMPETITION or ENDED don't need likesCount according to user
+          delete formatted.likesCount;
+        }
+        
+        return formatted;
+      });
+      
+      const meta = PaginationUtil.getMetadata(result.total, page, limit);
+      
+      res.status(200).json({ success: true, data: formattedData, meta });
+    } catch (error) {
+      res.status(400).json({ success: false, error: error.message });
+    }
+  }
+
+  getArtworkDetails = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const result = await this.artworkService.getArtworkDetails(id);
+      if (!result) {
+        return res.status(404).json({ success: false, error: 'Artwork not found' });
+      }
+      res.status(200).json({ success: true, data: this.formatMediaUrls(req, result) });
+    } catch (error) {
+      res.status(400).json({ success: false, error: error.message });
+    }
+  }
+
+  deleteArtwork = async (req, res) => {
+    try {
+      const userId = req.user?.id || 'TEST_USER_ID';
+      const { id } = req.params;
+      await this.artworkService.deleteArtwork(id, userId);
+      res.status(200).json({ success: true, message: 'Artwork deleted successfully' });
+    } catch (error) {
+      res.status(400).json({ success: false, error: error.message });
+    }
+  }
+
+  updateArtwork = async (req, res) => {
+    try {
+      const userId = req.user?.id || 'TEST_USER_ID';
+      const { id } = req.params;
+      const data = req.validatedBody || req.body;
+      const result = await this.artworkService.updateArtwork(id, userId, data);
+      res.status(200).json({ success: true, data: result });
+    } catch (error) {
+      res.status(400).json({ success: false, error: error.message });
+    }
+  }
+
+  promoteArtwork = async (req, res) => {
+    try {
+      const userId = req.user?.id || 'TEST_USER_ID';
+      const { id } = req.params;
+      const { durationDays } = req.validatedBody || req.body;
+      
+      const result = await this.artworkService.promoteArtwork(id, userId, Number(durationDays));
+      res.status(200).json({ success: true, data: result });
+    } catch (error) {
+      res.status(400).json({ success: false, error: error.message });
+    }
+  }
+
+  switchToCompetition = async (req, res) => {
+    try {
+      const userId = req.user?.id || 'TEST_USER_ID';
+      const { id } = req.params;
+      
+      const result = await this.artworkService.switchToCompetition(id, userId);
+      ResponseUtil.actionSuccess(res, 'Successfully switched to competition', result.id);
+    } catch (error) {
+      res.status(400).json({ success: false, error: error.message });
+    }
+  }
+
+  resubmitArtwork = async (req, res) => {
+    try {
+      const userId = req.user?.id || 'TEST_USER_ID';
+      const { id } = req.params;
+      
+      const result = await this.artworkService.resubmitArtwork(id, userId);
+      ResponseUtil.actionSuccess(res, 'Successfully resubmitted to active competition', result.id);
+    } catch (error) {
+      res.status(400).json({ success: false, error: error.message });
+    }
+  }
+}

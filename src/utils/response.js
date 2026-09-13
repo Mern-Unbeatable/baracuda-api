@@ -8,6 +8,18 @@ export class ResponseUtil {
     });
   }
 
+  static actionSuccess(res, message, id = null, statusCode = 200) {
+    const response = {
+      success: true,
+      statusCode,
+      message,
+    };
+    if (id) {
+      response.data = { id };
+    }
+    return res.status(statusCode).json(response);
+  }
+
   static error(res, message, statusCode = 400, details = null) {
     const response = {
       success: false,

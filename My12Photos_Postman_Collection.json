@@ -28,23 +28,74 @@
             "body": {
               "mode": "formdata",
               "formdata": [
-                { "key": "name", "value": "John Doe", "type": "text" },
-                { "key": "username", "value": "johndoe", "type": "text" },
-                { "key": "email", "value": "shanjid.maktech@gmail.com", "type": "text" },
-                { "key": "phone", "value": "+1234567890", "type": "text" },
-                { "key": "country", "value": "USA", "type": "text" },
-                { "key": "bio", "value": "Hello, I am a photographer.", "type": "text" },
-                { "key": "socialLinks", "value": "[\"https://facebook.com/me\", \"https://instagram.com/myphotos\", \"https://x.com/mypage\"]", "type": "text" },
-                { "key": "password", "value": "password123", "type": "text" },
-                { "key": "avatar", "type": "file", "src": "" },
-                { "key": "coverPhoto", "type": "file", "src": "" },
-                { "key": "introVideo", "type": "file", "src": "" }
+                {
+                  "key": "name",
+                  "value": "John Doe",
+                  "type": "text"
+                },
+                {
+                  "key": "username",
+                  "value": "johndoe",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "shanjid.maktech@gmail.com",
+                  "type": "text"
+                },
+                {
+                  "key": "phone",
+                  "value": "+1234567890",
+                  "type": "text"
+                },
+                {
+                  "key": "country",
+                  "value": "USA",
+                  "type": "text"
+                },
+                {
+                  "key": "bio",
+                  "value": "Hello, I am a photographer.",
+                  "type": "text"
+                },
+                {
+                  "key": "socialLinks",
+                  "value": "[\"https://facebook.com/me\", \"https://instagram.com/myphotos\", \"https://x.com/mypage\"]",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "password123",
+                  "type": "text"
+                },
+                {
+                  "key": "avatar",
+                  "type": "file",
+                  "src": ""
+                },
+                {
+                  "key": "coverPhoto",
+                  "type": "file",
+                  "src": ""
+                },
+                {
+                  "key": "introVideo",
+                  "type": "file",
+                  "src": ""
+                }
               ]
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/auth/register",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "auth", "register"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "register"
+              ]
             }
           },
           "response": []
@@ -82,8 +133,15 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/auth/login",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "auth", "login"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ]
             }
           },
           "response": []
@@ -104,8 +162,15 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/auth/forgot-password",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "auth", "forgot-password"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "forgot-password"
+              ]
             }
           },
           "response": []
@@ -126,8 +191,15 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/auth/verify-otp",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "auth", "verify-otp"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "verify-otp"
+              ]
             }
           },
           "response": []
@@ -148,8 +220,15 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/auth/reset-password",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "auth", "reset-password"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "reset-password"
+              ]
             }
           },
           "response": []
@@ -244,6 +323,381 @@
                     "api",
                     "v1",
                     "categories"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "User",
+      "item": [
+        {
+          "name": "Artwork Management",
+          "item": [
+            {
+              "name": "Create Artwork",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "kind",
+                      "value": "SINGLE",
+                      "type": "text"
+                    },
+                    {
+                      "key": "zodiacSign",
+                      "value": "ARIES",
+                      "type": "text"
+                    },
+                    {
+                      "key": "title",
+                      "value": "{\"en\": \"My First Artwork\"}",
+                      "type": "text"
+                    },
+                    {
+                      "key": "competitionState",
+                      "value": "all",
+                      "type": "text"
+                    },
+                    {
+                      "key": "isAiGenerated",
+                      "value": "false",
+                      "type": "text"
+                    },
+                    {
+                      "key": "copyrightConfirmed",
+                      "value": "true",
+                      "type": "text"
+                    },
+                    {
+                      "key": "images",
+                      "type": "file",
+                      "src": ""
+                    },
+                    {
+                      "key": "video",
+                      "type": "file",
+                      "src": ""
+                    },
+                    {
+                      "key": "story",
+                      "value": "{\"en\":\"A cool story\"}",
+                      "type": "text"
+                    },
+                    {
+                      "key": "resolution",
+                      "value": "60000x60000",
+                      "type": "text"
+                    },
+                    {
+                      "key": "quality",
+                      "value": "4K",
+                      "type": "text"
+                    },
+                    {
+                      "key": "categoryId",
+                      "value": "INSERT_CATEGORY_UUID",
+                      "type": "text"
+                    },
+                    {
+                      "key": "subcategoryId",
+                      "value": "INSERT_SUBCATEGORY_UUID",
+                      "type": "text"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/artworks",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "artworks"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get All Artworks",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/artworks?kind=SINGLE&status=all&sort=newest",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "artworks"
+                  ],
+                  "query": [
+                    {
+                      "key": "kind",
+                      "value": "SINGLE"
+                    },
+                    {
+                      "key": "status",
+                      "value": "all"
+                    },
+                    {
+                      "key": "sort",
+                      "value": "newest"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get Artwork Details",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/artworks/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "artworks",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "PUBLIC_ID_HERE"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Update Artwork",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"title\": {\"en\": \"Updated Title\"}\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/artworks/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "artworks",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "PUBLIC_ID_HERE"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Delete Artwork",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/artworks/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "artworks",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "PUBLIC_ID_HERE"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Promote Artwork",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"durationDays\": 7\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/artworks/:id/promote",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "artworks",
+                    ":id",
+                    "promote"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "PUBLIC_ID_HERE"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Switch to Competition",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"competitionId\": \"COMPETITION_ID_HERE\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/artworks/:id/switch-to-competition",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "artworks",
+                    ":id",
+                    "switch-to-competition"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "PUBLIC_ID_HERE"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Resubmit Artwork",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"newCompetitionId\": \"NEW_COMPETITION_ID_HERE\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/artworks/:id/resubmit",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "artworks",
+                    ":id",
+                    "resubmit"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "PUBLIC_ID_HERE"
+                    }
                   ]
                 }
               },

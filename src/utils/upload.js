@@ -16,7 +16,7 @@ const storage = multer.diskStorage({
 });
 
 const fileFilter = (req, file, cb) => {
-  if (file.fieldname === 'avatar' || file.fieldname === 'coverPhoto') {
+  if (file.fieldname === 'avatar' || file.fieldname === 'coverPhoto' || file.fieldname === 'images') {
     const allowedImageTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/avif'];
     const allowedExtensions = ['.jpg', '.jpeg', '.png', '.webp', '.avif'];
     const ext = path.extname(file.originalname).toLowerCase();
@@ -26,14 +26,14 @@ const fileFilter = (req, file, cb) => {
     } else {
       cb(new Error('Invalid image file. Supported formats are: jpg, jpeg, png, webp, avif'), false);
     }
-  } else if (file.fieldname === 'introVideo') {
+  } else if (file.fieldname === 'introVideo' || file.fieldname === 'video') {
     if (file.mimetype === 'video/mp4') {
       cb(null, true);
     } else {
-      cb(new Error('Only mp4 videos are allowed for intro video!'), false);
+      cb(new Error('Only mp4 videos are allowed!'), false);
     }
   } else {
-    cb(new Error('Unexpected field'), false);
+    cb(new Error('Unexpected field: ' + file.fieldname), false);
   }
 };
 
