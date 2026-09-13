@@ -16,8 +16,19 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
+        "@prisma/adapter-pg": "^7.10.0",
+        "@prisma/client": "^7.10.0",
+        "bcrypt": "^6.0.0",
         "dotenv": "^17.4.2",
-        "express": "5.2.1"
+        "express": "5.2.1",
+        "ffprobe-static": "^3.1.0",
+        "get-video-duration": "^5.0.0",
+        "image-size": "^2.0.2",
+        "joi": "^18.2.9",
+        "jsonwebtoken": "^9.0.3",
+        "multer": "^2.3.0",
+        "nodemailer": "^10.0.9",
+        "pg": "^8.23.0"
     },
     "devDependencies": {
         "nodemon": "3.1.14",

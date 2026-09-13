@@ -1,5 +1,6 @@
 import express from 'express';
 import { UserModule } from './modules/user/user.module.js';
+import { AuthModule } from './modules/auth/auth.module.js';
 import config from './config/env.js';
 
 /**
@@ -21,6 +22,9 @@ class App {
     
     // Middleware to parse URL-encoded request bodies
     this.app.use(express.urlencoded({ extended: true }));
+
+    // Serve uploaded files statically
+    this.app.use('/uploads', express.static('uploads'));
   }
 
   initializeModules() {
@@ -44,8 +48,11 @@ class App {
     });
 
     // Feature Modules
+    const authModule = new AuthModule();
+    this.app.use('/api/v1/auth', authModule.router);
+
     const userModule = new UserModule();
-    this.app.use('/api/users', userModule.router);
+    this.app.use('/api/v1/users', userModule.router);
   }
 
   initializeErrorHandling() {
@@ -60,6 +67,11 @@ class App {
     // Global error handler
     this.app.use((err, req, res, next) => {
       console.error('Error:', err);
+      
+      // Catch specific Multer format errors
+      if (err.message && (err.message.includes('Supported formats are') || err.message.includes('Only mp4 videos'))) {
+        err.status = 400;
+      }
       
       res.status(err.status || 500).json({
         error: err.message || 'Internal Server Error',

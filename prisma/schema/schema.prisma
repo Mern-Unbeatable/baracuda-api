@@ -4,8 +4,7 @@
 // Get a free hosted Postgres database in seconds: `npx create-db`
 
 generator client {
-  provider = "prisma-client"
-  output   = "../../src/generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -216,6 +215,7 @@ model User {
   name        String
   avatar      String?
   coverPhoto  String?
+  introVideo  String?
   bio         String?         @db.VarChar(250)
   phone       String?
   city        String?
@@ -224,7 +224,6 @@ model User {
   language    SupportedLocale @default(en)
   socialLinks Json?
 
-  refreshToken         String?
   resetPasswordToken   String?
   resetPasswordExpires DateTime?
   otpCode              String?
