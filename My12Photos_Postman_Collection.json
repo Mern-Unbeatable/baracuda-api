@@ -339,7 +339,7 @@
           "name": "Artwork Management",
           "item": [
             {
-              "name": "Create Artwork",
+              "name": "Create Artwork (SINGLE)",
               "request": {
                 "method": "POST",
                 "header": [
@@ -416,6 +416,276 @@
                       "key": "subcategoryId",
                       "value": "INSERT_SUBCATEGORY_UUID",
                       "type": "text"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/artworks",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "artworks"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Create Artwork (SIX - Red Theme)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "kind",
+                      "value": "SIX",
+                      "type": "text"
+                    },
+                    {
+                      "key": "title",
+                      "value": "{\"en\": \"My First Artwork\"}",
+                      "type": "text"
+                    },
+                    {
+                      "key": "competitionState",
+                      "value": "all",
+                      "type": "text"
+                    },
+                    {
+                      "key": "isAiGenerated",
+                      "value": "false",
+                      "type": "text"
+                    },
+                    {
+                      "key": "copyrightConfirmed",
+                      "value": "true",
+                      "type": "text"
+                    },
+                    {
+                      "key": "images",
+                      "type": "file",
+                      "src": ""
+                    },
+                    {
+                      "key": "video",
+                      "type": "file",
+                      "src": ""
+                    },
+                    {
+                      "key": "story",
+                      "value": "{\"en\":\"A cool story\"}",
+                      "type": "text"
+                    },
+                    {
+                      "key": "resolution",
+                      "value": "60000x60000",
+                      "type": "text"
+                    },
+                    {
+                      "key": "quality",
+                      "value": "4K",
+                      "type": "text"
+                    },
+                    {
+                      "key": "categoryId",
+                      "value": "INSERT_CATEGORY_UUID",
+                      "type": "text"
+                    },
+                    {
+                      "key": "subcategoryId",
+                      "value": "INSERT_SUBCATEGORY_UUID",
+                      "type": "text"
+                    },
+                    {
+                      "key": "theme",
+                      "value": "RED",
+                      "type": "text"
+                    },
+                    {
+                      "key": "images",
+                      "type": "file",
+                      "src": ""
+                    },
+                    {
+                      "key": "images",
+                      "type": "file",
+                      "src": ""
+                    },
+                    {
+                      "key": "images",
+                      "type": "file",
+                      "src": ""
+                    },
+                    {
+                      "key": "images",
+                      "type": "file",
+                      "src": ""
+                    },
+                    {
+                      "key": "images",
+                      "type": "file",
+                      "src": ""
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/artworks",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "artworks"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Create Artwork (TWELVE)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "kind",
+                      "value": "TWELVE",
+                      "type": "text"
+                    },
+                    {
+                      "key": "title",
+                      "value": "{\"en\": \"My First Artwork\"}",
+                      "type": "text"
+                    },
+                    {
+                      "key": "competitionState",
+                      "value": "all",
+                      "type": "text"
+                    },
+                    {
+                      "key": "isAiGenerated",
+                      "value": "false",
+                      "type": "text"
+                    },
+                    {
+                      "key": "copyrightConfirmed",
+                      "value": "true",
+                      "type": "text"
+                    },
+                    {
+                      "key": "images",
+                      "type": "file",
+                      "src": ""
+                    },
+                    {
+                      "key": "video",
+                      "type": "file",
+                      "src": ""
+                    },
+                    {
+                      "key": "story",
+                      "value": "{\"en\":\"A cool story\"}",
+                      "type": "text"
+                    },
+                    {
+                      "key": "resolution",
+                      "value": "60000x60000",
+                      "type": "text"
+                    },
+                    {
+                      "key": "quality",
+                      "value": "4K",
+                      "type": "text"
+                    },
+                    {
+                      "key": "categoryId",
+                      "value": "INSERT_CATEGORY_UUID",
+                      "type": "text"
+                    },
+                    {
+                      "key": "subcategoryId",
+                      "value": "INSERT_SUBCATEGORY_UUID",
+                      "type": "text"
+                    },
+                    {
+                      "key": "theme",
+                      "value": "FULL",
+                      "type": "text"
+                    },
+                    {
+                      "key": "images",
+                      "type": "file",
+                      "src": ""
+                    },
+                    {
+                      "key": "images",
+                      "type": "file",
+                      "src": ""
+                    },
+                    {
+                      "key": "images",
+                      "type": "file",
+                      "src": ""
+                    },
+                    {
+                      "key": "images",
+                      "type": "file",
+                      "src": ""
+                    },
+                    {
+                      "key": "images",
+                      "type": "file",
+                      "src": ""
+                    },
+                    {
+                      "key": "images",
+                      "type": "file",
+                      "src": ""
+                    },
+                    {
+                      "key": "images",
+                      "type": "file",
+                      "src": ""
+                    },
+                    {
+                      "key": "images",
+                      "type": "file",
+                      "src": ""
+                    },
+                    {
+                      "key": "images",
+                      "type": "file",
+                      "src": ""
+                    },
+                    {
+                      "key": "images",
+                      "type": "file",
+                      "src": ""
+                    },
+                    {
+                      "key": "images",
+                      "type": "file",
+                      "src": ""
                     }
                   ]
                 },
