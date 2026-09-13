@@ -21,6 +21,28 @@ export class ArtworkService {
 
     let activeCompetitionId = activeComp ? activeComp.id : null;
 
+    const ZODIAC_SIGNS = ['ARIES', 'TAURUS', 'GEMINI', 'CANCER', 'LEO', 'VIRGO', 'LIBRA', 'SCORPIO', 'SAGITTARIUS', 'CAPRICORN', 'AQUARIUS', 'PISCES'];
+
+    const getZodiacMapping = (index) => {
+      if (data.kind === 'SINGLE') {
+        return { zodiacSign: data.zodiacSign || null, slotIndex: 0 };
+      }
+      if (data.kind === 'SIX' && data.theme === 'RED') {
+        return { zodiacSign: ZODIAC_SIGNS[index] || null, slotIndex: index }; // 0 to 5
+      }
+      if (data.kind === 'SIX' && data.theme === 'BLUE') {
+        return { zodiacSign: ZODIAC_SIGNS[index + 6] || null, slotIndex: index + 6 }; // 6 to 11
+      }
+      if (data.kind === 'TWELVE') {
+        return { zodiacSign: ZODIAC_SIGNS[index] || null, slotIndex: index }; // 0 to 11
+      }
+      return { zodiacSign: null, slotIndex: index };
+    };
+
+    // Separate images and videos correctly
+    const images = mediaFiles.filter(f => !f.mimetype.startsWith('video'));
+    const videos = mediaFiles.filter(f => f.mimetype.startsWith('video'));
+
     // Create submission and media in a transaction
     const submission = await prisma.submission.create({
       data: {
@@ -30,14 +52,27 @@ export class ArtworkService {
         userId,
         status: 'APPROVED',
         media: {
-          create: mediaFiles.map((file, index) => ({
-            url: file.filename ? `/uploads/${file.filename}` : '', // normalize path to relative
-            kind: file.mimetype && file.mimetype.startsWith('video') ? 'VIDEO' : 'IMAGE',
-            slotIndex: index,
-            zodiacSign: file.zodiacSign || null,
-            format: file.mimetype,
-            bytes: file.size,
-          }))
+          create: [
+            ...images.map((file, index) => {
+              const mapping = getZodiacMapping(index);
+              return {
+                url: file.filename ? `/uploads/${file.filename}` : '',
+                kind: 'IMAGE',
+                slotIndex: mapping.slotIndex,
+                zodiacSign: mapping.zodiacSign,
+                format: file.mimetype,
+                bytes: file.size,
+              };
+            }),
+            ...videos.map((file, index) => ({
+              url: file.filename ? `/uploads/${file.filename}` : '',
+              kind: 'VIDEO',
+              slotIndex: 99 + index, // Videos go at the end
+              zodiacSign: null,
+              format: file.mimetype,
+              bytes: file.size,
+            }))
+          ]
         }
       },
       include: {
