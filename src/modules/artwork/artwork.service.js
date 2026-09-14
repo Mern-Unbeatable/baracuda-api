@@ -436,28 +436,21 @@ export class ArtworkService {
 
     const existingVote = await prisma.vote.findUnique({
       where: {
-        ipAddress_kind_year_month: {
+        ipAddress_submissionId: {
           ipAddress,
-          kind: submission.kind,
-          year,
-          month
+          submissionId: id
         }
       }
     });
 
     if (existingVote) {
-      if (existingVote.submissionId === id) {
-        // User is trying to unvote
-        await prisma.vote.delete({ where: { id: existingVote.id } });
-        const updated = await prisma.submission.update({
-          where: { id },
-          data: { votesCount: { decrement: 1 } }
-        });
-        return { voted: false, votesCount: updated.votesCount };
-      } else {
-        // User already voted for a different artwork in this category
-        throw new Error('You have already voted for a different artwork in this category this month');
-      }
+      // User is trying to unvote
+      await prisma.vote.delete({ where: { id: existingVote.id } });
+      const updated = await prisma.submission.update({
+        where: { id },
+        data: { votesCount: { decrement: 1 } }
+      });
+      return { voted: false, votesCount: updated.votesCount };
     }
 
     // Create new vote

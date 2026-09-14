@@ -444,7 +444,7 @@ model Vote {
   submission Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
   user       User?      @relation(fields: [userId], references: [id], onDelete: SetNull)
 
-  @@unique([ipAddress, kind, year, month])
+  @@unique([ipAddress, submissionId])
   @@index([submissionId])
   @@map("votes")
 }
