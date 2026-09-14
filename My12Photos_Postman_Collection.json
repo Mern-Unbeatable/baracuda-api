@@ -1066,7 +1066,7 @@
                 "header": [{"key": "Content-Type", "value": "application/json"}],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"body\": \"This is a stunning photo!\"\n}"
+                  "raw": "{\n  \"body\": \"This is a stunning photo!\",\n  \"parentId\": \"\" // Optional: Provide a valid Comment UUID if replying to an existing comment\n}"
                 },
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/artworks/:id/comment",
@@ -1084,7 +1084,7 @@
                 "header": [{"key": "Content-Type", "value": "application/json"}],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"reason\": \"Inappropriate content\",\n  \"details\": \"This does not belong here.\"\n}"
+                  "raw": "{\n  \"reason\": \"Offensive or Abusive Content\",\n  \"details\": \"This does not belong here.\"\n}"
                 },
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/artworks/:id/report",
@@ -1162,7 +1162,7 @@
                 "header": [{"key": "Content-Type", "value": "application/json"}],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"body\": \"Great work!\"\n}"
+                  "raw": "{\n  \"body\": \"Great work!\",\n  \"parentId\": \"\" // Optional: Provide a valid Comment UUID if replying to an existing comment\n}"
                 },
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/artworks/:id/comment",
@@ -1180,7 +1180,7 @@
                 "header": [{"key": "Content-Type", "value": "application/json"}],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"reason\": \"Inappropriate content\",\n  \"details\": \"This does not belong here.\"\n}"
+                  "raw": "{\n  \"reason\": \"Offensive or Abusive Content\",\n  \"details\": \"This does not belong here.\"\n}"
                 },
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/artworks/:id/report",
