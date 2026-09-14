@@ -190,14 +190,14 @@ export class ArtworkController {
 
   getPublicArtworks = async (req, res, next) => {
     try {
-      const { status, sort, page, limit } = req.query;
-      const skip = PaginationUtil.getSkip(page, limit);
-      const take = PaginationUtil.getLimit(limit);
+      const { status, sort } = req.query;
+      const { skip, take, page, limit } = PaginationUtil.getPaginationOptions(req.query);
       const filters = { status };
       const artworks = await this.artworkService.getPublicArtworks(filters, sort || 'newest', skip, take);
       
       const formattedData = artworks.data.map(a => this.formatMediaUrls(req, a));
-      return ResponseUtil.success(res, 'Public artworks retrieved successfully', { ...artworks, data: formattedData });
+      const meta = PaginationUtil.getMetadata(artworks.total, page, limit);
+      return res.status(200).json({ success: true, message: 'Public artworks retrieved successfully', data: formattedData, meta });
     } catch (err) {
       next(err);
     }
