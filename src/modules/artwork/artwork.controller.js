@@ -196,7 +196,15 @@ export class ArtworkController {
       const filters = { status };
       const artworks = await this.artworkService.getPublicArtworks(filters, sort || 'newest', skip, take, viewerId);
       
-      const formattedData = artworks.data.map(a => this.formatMediaUrls(req, a));
+      const formattedData = artworks.data.map(a => {
+        const formatted = this.formatMediaUrls(req, a);
+        if (formatted.competitionState === 'PROFILE_ONLY') {
+          delete formatted.votesCount;
+        } else {
+          delete formatted.likesCount;
+        }
+        return formatted;
+      });
       const meta = PaginationUtil.getMetadata(artworks.total, page, limit);
       return res.status(200).json({ success: true, message: 'Public artworks retrieved successfully', data: formattedData, meta });
     } catch (err) {
@@ -209,7 +217,13 @@ export class ArtworkController {
       const { id } = req.params;
       const viewerId = req.user?.id || req.ip;
       const artwork = await this.artworkService.getPublicArtworkDetails(id, viewerId);
-      return ResponseUtil.success(res, 'Artwork details retrieved successfully', this.formatMediaUrls(req, artwork));
+      const formatted = this.formatMediaUrls(req, artwork);
+      if (formatted.competitionState === 'PROFILE_ONLY') {
+        delete formatted.votesCount;
+      } else {
+        delete formatted.likesCount;
+      }
+      return ResponseUtil.success(res, 'Artwork details retrieved successfully', formatted);
     } catch (err) {
       next(err);
     }
