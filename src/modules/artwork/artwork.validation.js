@@ -78,7 +78,7 @@ export const ArtworkValidation = {
       'Child Privacy / COPPA Violation',
       'Other'
     ).required().messages({
-      'any.only': 'Invalid report reason. Please select a valid reason from the list.'
+      'any.only': 'Invalid report reason. Allowed reasons are: {#valids}'
     }),
     details: Joi.string().optional().allow(null, '').max(500)
   }),
