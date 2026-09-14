@@ -1226,6 +1226,68 @@
                   ]
                 }
               }
+            },
+            {
+              "name": "Donation",
+              "item": [
+                {
+                  "name": "Create Donation",
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"submissionId\": \"REPLACE_WITH_ARTWORK_ID\",\n  \"amount\": 25,\n  \"donorName\": \"Jane Doe\",\n  \"donorEmail\": \"jane@example.com\",\n  \"type\": \"ONE_TIME\",\n  \"message\": \"Keep up the great work!\"\n}"
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/api/v1/payments/donate",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "v1",
+                        "payments",
+                        "donate"
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "Capture One-Time Donation",
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"paymentId\": \"REPLACE_WITH_PAYPAL_ORDER_ID\"\n}"
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/api/v1/payments/donate/capture",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "v1",
+                        "payments",
+                        "donate",
+                        "capture"
+                      ]
+                    }
+                  }
+                }
+              ]
             }
           ]
         },
@@ -1455,70 +1517,70 @@
                   ]
                 }
               }
+            },
+            {
+              "name": "Donation",
+              "item": [
+                {
+                  "name": "Create Donation",
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"submissionId\": \"REPLACE_WITH_ARTWORK_ID\",\n  \"amount\": 25,\n  \"donorName\": \"Jane Doe\",\n  \"donorEmail\": \"jane@example.com\",\n  \"type\": \"ONE_TIME\",\n  \"message\": \"Keep up the great work!\"\n}"
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/api/v1/payments/donate",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "v1",
+                        "payments",
+                        "donate"
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "Capture One-Time Donation",
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"paymentId\": \"REPLACE_WITH_PAYPAL_ORDER_ID\"\n}"
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/api/v1/payments/donate/capture",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "v1",
+                        "payments",
+                        "donate",
+                        "capture"
+                      ]
+                    }
+                  }
+                }
+              ]
             }
           ]
-        }
-      ]
-    },
-    {
-      "name": "Payment",
-      "item": [
-        {
-          "name": "Create Donation",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"submissionId\": \"REPLACE_WITH_ARTWORK_ID\",\n  \"amount\": 25,\n  \"donorName\": \"Jane Doe\",\n  \"donorEmail\": \"jane@example.com\",\n  \"type\": \"ONE_TIME\",\n  \"message\": \"Keep up the great work!\"\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/payments/donate",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "payments",
-                "donate"
-              ]
-            }
-          }
-        },
-        {
-          "name": "Capture One-Time Donation",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"paymentId\": \"REPLACE_WITH_PAYPAL_ORDER_ID\"\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/payments/donate/capture",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "payments",
-                "donate",
-                "capture"
-              ]
-            }
-          }
         }
       ]
     }
