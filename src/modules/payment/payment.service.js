@@ -42,8 +42,8 @@ class PaymentService {
         description: `One-Time Donation for Artwork ${submissionId}`
       }],
       application_context: {
-        return_url: `${process.env.FRONTEND_URL}/payment/success`,
-        cancel_url: `${process.env.FRONTEND_URL}/payment/cancel`
+        return_url: process.env.FRONTEND_URL ? `${process.env.FRONTEND_URL}/payment/success` : `http://localhost:3000/payment/success`,
+        cancel_url: process.env.FRONTEND_URL ? `${process.env.FRONTEND_URL}/payment/cancel` : `http://localhost:3000/payment/cancel`
       }
     };
 
@@ -57,7 +57,10 @@ class PaymentService {
     });
 
     const data = await response.json();
-    if (!response.ok) throw new Error(data.message || 'Failed to create PayPal order');
+    if (!response.ok) {
+      console.error('PayPal Order Error Details:', JSON.stringify(data, null, 2));
+      throw new Error(data.message || 'Failed to create PayPal order');
+    }
 
     // Store in DB as PENDING
     const donation = await prisma.donation.create({
@@ -167,12 +170,16 @@ class PaymentService {
           email_address: email
         },
         application_context: {
-          return_url: `${process.env.FRONTEND_URL}/payment/success`,
-          cancel_url: `${process.env.FRONTEND_URL}/payment/cancel`
+          return_url: process.env.FRONTEND_URL ? `${process.env.FRONTEND_URL}/payment/success` : `http://localhost:3000/payment/success`,
+          cancel_url: process.env.FRONTEND_URL ? `${process.env.FRONTEND_URL}/payment/cancel` : `http://localhost:3000/payment/cancel`
         }
       })
     });
     const subData = await subResponse.json();
+    if (!subResponse.ok) {
+      console.error('PayPal Subscription Error Details:', JSON.stringify(subData, null, 2));
+      throw new Error(subData.message || 'Failed to create PayPal subscription');
+    }
 
     const donation = await prisma.donation.create({
       data: {
