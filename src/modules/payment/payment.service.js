@@ -9,9 +9,18 @@ class PaymentService {
       process.env.NODE_ENV === "production"
         ? "https://api-m.paypal.com"
         : "https://api-m.sandbox.paypal.com";
+        
+    // Token Cache
+    this.cachedToken = null;
+    this.tokenExpiry = null;
   }
 
   async generateAccessToken() {
+    // Return cached token if valid
+    if (this.cachedToken && this.tokenExpiry && Date.now() < this.tokenExpiry) {
+      return this.cachedToken;
+    }
+
     const auth = Buffer.from(`${this.clientId}:${this.clientSecret}`).toString(
       "base64",
     );
@@ -28,6 +37,11 @@ class PaymentService {
       throw new Error(
         data.error_description || "Failed to generate PayPal access token",
       );
+      
+    // Cache the token (subtracting 5 minutes for buffer)
+    this.cachedToken = data.access_token;
+    this.tokenExpiry = Date.now() + (data.expires_in - 300) * 1000;
+    
     return data.access_token;
   }
 
