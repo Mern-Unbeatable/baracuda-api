@@ -1,6 +1,7 @@
 import { UrlUtil } from '../../utils/urlUtil.js';
 import { PaginationUtil } from '../../utils/pagination.js';
 import { ResponseUtil } from '../../utils/response.js';
+import { watermarkService } from './watermark.service.js';
 
 export class ArtworkController {
   constructor(artworkService) {
@@ -71,6 +72,9 @@ export class ArtworkController {
 
       const result = await this.artworkService.createArtwork(userId, data, mediaFiles);
       ResponseUtil.actionSuccess(res, 'Artwork created successfully', result.id, 201);
+      
+      // Run watermark asynchronously so response isn't blocked
+      watermarkService.applyWatermarkInBackground(mediaFiles, isAiGenerated).catch(console.error);
     } catch (error) {
       res.status(400).json({ success: false, error: error.message });
     }
