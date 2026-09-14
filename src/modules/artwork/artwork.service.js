@@ -431,25 +431,53 @@ export class ArtworkService {
     }
 
     const now = new Date();
-    try {
-      await prisma.vote.create({
-        data: {
-          submissionId: id,
-          userId,
+    const year = now.getFullYear();
+    const month = now.getMonth() + 1;
+
+    const existingVote = await prisma.vote.findUnique({
+      where: {
+        ipAddress_kind_year_month: {
           ipAddress,
           kind: submission.kind,
-          year: now.getFullYear(),
-          month: now.getMonth() + 1
+          year,
+          month
         }
-      });
-      const updated = await prisma.submission.update({
-        where: { id },
-        data: { votesCount: { increment: 1 } }
-      });
-      return { voted: true, votesCount: updated.votesCount };
-    } catch (err) {
-      throw new Error('You have already voted for this kind of album this month');
+      }
+    });
+
+    if (existingVote) {
+      if (existingVote.submissionId === id) {
+        // User is trying to unvote
+        await prisma.vote.delete({ where: { id: existingVote.id } });
+        const updated = await prisma.submission.update({
+          where: { id },
+          data: { votesCount: { decrement: 1 } }
+        });
+        return { voted: false, votesCount: updated.votesCount };
+      } else {
+        // User already voted for a different artwork in this category
+        throw new Error('You have already voted for a different artwork in this category this month');
+      }
     }
+
+    // Create new vote
+    await prisma.vote.create({
+      data: {
+        submissionId: id,
+        userId,
+        ipAddress,
+        kind: submission.kind,
+        year,
+        month
+      }
+    });
+    
+    const updated = await prisma.submission.update({
+      where: { id },
+      data: { votesCount: { increment: 1 } }
+    });
+    
+    return { voted: true, votesCount: updated.votesCount };
   }
 
   async toggleLikeArtwork(id, userId) {
