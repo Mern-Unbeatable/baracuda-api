@@ -477,6 +477,10 @@ model Comment {
   submission Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
   user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  parentId   String?
+  parent     Comment?   @relation("CommentReplies", fields: [parentId], references: [id])
+  replies    Comment[]  @relation("CommentReplies")
+
   @@index([status, createdAt])
   @@index([submissionId])
   @@index([isPinned])

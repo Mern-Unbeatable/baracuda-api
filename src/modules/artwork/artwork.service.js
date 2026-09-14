@@ -482,6 +482,10 @@ export class ArtworkService {
   }
 
   async toggleSaveArtwork(id, userId) {
+    const submission = await prisma.submission.findUnique({ where: { id } });
+    if (!submission) throw new Error('Artwork not found');
+    if (submission.userId === userId) throw new Error('You cannot save your own artwork');
+
     const existingSave = await prisma.savedArtwork.findUnique({
       where: { submissionId_userId: { submissionId: id, userId } }
     });
@@ -497,9 +501,15 @@ export class ArtworkService {
     }
   }
 
-  async addComment(id, userId, body) {
+  async addComment(id, userId, body, parentId) {
     const submission = await prisma.submission.findUnique({ where: { id } });
     if (!submission) throw new Error('Artwork not found');
+
+    if (submission.userId === userId && !parentId) {
+      throw new Error('You cannot comment on your own artwork, but you can reply to other comments');
+    }
+
+    const status = (submission.userId === userId) ? 'APPROVED' : 'PENDING';
 
     const comment = await prisma.comment.create({
       data: {
@@ -507,7 +517,8 @@ export class ArtworkService {
         submissionId: id,
         userId,
         body,
-        status: 'APPROVED'
+        parentId,
+        status
       },
       include: { user: { select: { id: true, name: true, avatar: true } } }
     });
@@ -524,6 +535,9 @@ export class ArtworkService {
     const submission = await prisma.submission.findUnique({ where: { id } });
     if (!submission) {
       throw new Error('Artwork not found');
+    }
+    if (submission.userId === userId) {
+      throw new Error('You cannot report your own artwork');
     }
 
     return prisma.report.create({

@@ -63,7 +63,8 @@ export const ArtworkValidation = {
   }),
 
   commentSchema: Joi.object({
-    body: Joi.string().required().min(1).max(2000)
+    body: Joi.string().required().min(1).max(2000),
+    parentId: Joi.string().uuid().optional().allow(null, '')
   }),
 
   reportSchema: Joi.object({

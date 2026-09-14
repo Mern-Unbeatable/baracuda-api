@@ -269,8 +269,8 @@ export class ArtworkController {
     try {
       const { id } = req.params;
       const userId = req.user.id;
-      const { body } = req.validatedBody;
-      const comment = await this.artworkService.addComment(id, userId, body);
+      const { body, parentId } = req.validatedBody;
+      const comment = await this.artworkService.addComment(id, userId, body, parentId);
       return ResponseUtil.success(res, 'Comment added successfully', comment, 201);
     } catch (err) {
       next(err);
