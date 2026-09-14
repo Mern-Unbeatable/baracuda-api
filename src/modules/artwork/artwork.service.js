@@ -326,7 +326,7 @@ export class ArtworkService {
     return newSubmission;
   }
 
-  async getPublicArtworks(filters, sort, skip, take) {
+  async getPublicArtworks(filters, sort, skip, take, viewerId = null) {
     // Only fetch APPROVED artworks globally
     const where = { status: 'APPROVED' };
     if (filters.status && filters.status.toUpperCase() !== 'ALL') {
@@ -340,13 +340,28 @@ export class ArtworkService {
       orderBy = { likesCount: 'desc' };
     }
     
-    const [data, total] = await Promise.all([
+    const [rawData, total] = await Promise.all([
       prisma.submission.findMany({
         where,
-        include: {
-          media: { orderBy: { slotIndex: 'asc' } },
+        select: {
+          id: true,
+          kind: true,
+          title: true,
+          story: true,
+          viewsCount: true,
+          likesCount: true,
+          votesCount: true,
+          createdAt: true,
+          competitionState: true,
+          status: true,
+          media: {
+            select: { url: true, format: true },
+            orderBy: { slotIndex: 'asc' },
+            take: 1
+          },
           user: { select: { id: true, name: true, avatar: true } },
-          category: { select: { id: true, name: true } }
+          category: { select: { name: true } },
+          ...(viewerId && { saves: { where: { userId: viewerId }, select: { id: true } } })
         },
         orderBy,
         skip,
@@ -355,8 +370,18 @@ export class ArtworkService {
       prisma.submission.count({ where })
     ]);
     
+    const data = rawData.map(item => {
+      const formatted = { ...item };
+      if (viewerId) {
+        formatted.isSaved = item.saves && item.saves.length > 0;
+        delete formatted.saves;
+      }
+      return formatted;
+    });
+
     return { data, total, skip, take };
   }
+
 
   async getPublicArtworkDetails(id, viewerId) {
     const artwork = await prisma.submission.findUnique({

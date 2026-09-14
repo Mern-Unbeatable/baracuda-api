@@ -43,7 +43,7 @@ export class ArtworkModule {
     this.router.post('/:id/resubmit', requireAuth, ArtworkValidation.validate(ArtworkValidation.resubmitSchema), this.artworkController.resubmitArtwork);
 
     // Public Routes
-    this.router.get('/public/all', this.artworkController.getPublicArtworks);
+    this.router.get('/public/all', optionalAuth, this.artworkController.getPublicArtworks);
     this.router.get('/public/:id', optionalAuth, this.artworkController.getPublicArtworkDetails);
 
     // Interaction Routes
