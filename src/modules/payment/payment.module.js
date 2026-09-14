@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import paymentController from './payment.controller.js';
 import paymentValidation from './payment.validation.js';
-import optionalAuthMiddleware from '../../middlewares/optionalAuth.middleware.js';
+import { optionalAuth } from '../../middlewares/optionalAuth.middleware.js';
 
 const router = Router();
 
@@ -10,7 +10,7 @@ const router = Router();
 // Create a Donation checkout URL
 router.post(
   '/donate',
-  optionalAuthMiddleware,
+  optionalAuth,
   paymentValidation.validate(paymentValidation.donationSchema),
   paymentController.createDonation
 );
