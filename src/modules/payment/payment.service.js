@@ -1,65 +1,84 @@
-import prisma from '../../config/prisma.js';
+import prisma from "../../config/prisma.js";
 
 class PaymentService {
   constructor() {
     this.clientId = process.env.PAYPAL_CLIENT_ID;
     this.clientSecret = process.env.PAYPAL_SECRET;
     // Use sandbox for development, live for production
-    this.baseUrl = process.env.NODE_ENV === 'production' 
-      ? 'https://api-m.paypal.com' 
-      : 'https://api-m.sandbox.paypal.com';
+    this.baseUrl =
+      process.env.NODE_ENV === "production"
+        ? "https://api-m.paypal.com"
+        : "https://api-m.sandbox.paypal.com";
   }
 
   async generateAccessToken() {
-    const auth = Buffer.from(`${this.clientId}:${this.clientSecret}`).toString('base64');
+    const auth = Buffer.from(`${this.clientId}:${this.clientSecret}`).toString(
+      "base64",
+    );
     const response = await fetch(`${this.baseUrl}/v1/oauth2/token`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Authorization': `Basic ${auth}`,
-        'Content-Type': 'application/x-www-form-urlencoded',
+        Authorization: `Basic ${auth}`,
+        "Content-Type": "application/x-www-form-urlencoded",
       },
-      body: 'grant_type=client_credentials'
+      body: "grant_type=client_credentials",
     });
     const data = await response.json();
-    if (!response.ok) throw new Error(data.error_description || 'Failed to generate PayPal access token');
+    if (!response.ok)
+      throw new Error(
+        data.error_description || "Failed to generate PayPal access token",
+      );
     return data.access_token;
   }
 
   async createOneTimeDonation(submissionId, amount, name, email, userId) {
-    const submission = await prisma.submission.findUnique({ where: { id: submissionId } });
-    if (!submission) throw new Error('Artwork not found');
+    const submission = await prisma.submission.findUnique({
+      where: { id: submissionId },
+    });
+    if (!submission) throw new Error("Artwork not found");
 
     const accessToken = await this.generateAccessToken();
 
     // Create PayPal Order
     const orderPayload = {
-      intent: 'CAPTURE',
-      purchase_units: [{
-        amount: {
-          currency_code: 'USD',
-          value: parseFloat(amount).toFixed(2)
+      intent: "CAPTURE",
+      purchase_units: [
+        {
+          amount: {
+            currency_code: "USD",
+            value: parseFloat(amount).toFixed(2),
+          },
+          description: `One-Time Donation for Artwork ${submissionId}`,
         },
-        description: `One-Time Donation for Artwork ${submissionId}`
-      }],
+      ],
       application_context: {
-        return_url: process.env.FRONTEND_URL ? `${process.env.FRONTEND_URL}/payment/success` : `http://localhost:3000/payment/success`,
-        cancel_url: process.env.FRONTEND_URL ? `${process.env.FRONTEND_URL}/payment/cancel` : `http://localhost:3000/payment/cancel`
-      }
+        return_url: process.env.FRONTEND_URL
+          ? `${process.env.FRONTEND_URL}/payment/success`
+          : `http://localhost:3000/payment/success`,
+        cancel_url: process.env.FRONTEND_URL
+          ? `${process.env.FRONTEND_URL}/payment/cancel`
+          : `http://localhost:3000/payment/cancel`,
+        landing_page: "BILLING", // This shows the Debit/Credit Card modal by default
+        user_action: "PAY_NOW",
+      },
     };
 
     const response = await fetch(`${this.baseUrl}/v2/checkout/orders`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Authorization': `Bearer ${accessToken}`,
-        'Content-Type': 'application/json'
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(orderPayload)
+      body: JSON.stringify(orderPayload),
     });
 
     const data = await response.json();
     if (!response.ok) {
-      console.error('PayPal Order Error Details:', JSON.stringify(data, null, 2));
-      throw new Error(data.message || 'Failed to create PayPal order');
+      console.error(
+        "PayPal Order Error Details:",
+        JSON.stringify(data, null, 2),
+      );
+      throw new Error(data.message || "Failed to create PayPal order");
     }
 
     // Store in DB as PENDING
@@ -71,48 +90,54 @@ class PaymentService {
         donorName: name,
         donorEmail: email,
         amount,
-        currency: 'USD',
+        currency: "USD",
         paymentId: data.id, // PayPal Order ID
-        status: 'PENDING',
-        type: 'ONE_TIME'
-      }
+        status: "PENDING",
+        type: "ONE_TIME",
+      },
     });
 
-    const approveLink = data.links.find(link => link.rel === 'approve');
+    const approveLink = data.links.find((link) => link.rel === "approve");
     return {
       donationId: donation.id,
       paymentId: data.id,
-      checkoutUrl: approveLink ? approveLink.href : null
+      checkoutUrl: approveLink ? approveLink.href : null,
     };
   }
 
   async captureOneTimeDonation(paymentId) {
     const accessToken = await this.generateAccessToken();
 
-    const response = await fetch(`${this.baseUrl}/v2/checkout/orders/${paymentId}/capture`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${accessToken}`,
-        'Content-Type': 'application/json'
-      }
-    });
+    const response = await fetch(
+      `${this.baseUrl}/v2/checkout/orders/${paymentId}/capture`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+      },
+    );
 
     const data = await response.json();
-    if (!response.ok) throw new Error(data.message || 'Failed to capture PayPal order');
+    if (!response.ok)
+      throw new Error(data.message || "Failed to capture PayPal order");
 
-    if (data.status === 'COMPLETED') {
+    if (data.status === "COMPLETED") {
       await prisma.donation.updateMany({
         where: { paymentId },
-        data: { status: 'COMPLETED' }
+        data: { status: "COMPLETED" },
       });
-      return { status: 'COMPLETED' };
+      return { status: "COMPLETED" };
     }
     return { status: data.status };
   }
 
   async createMonthlyDonation(submissionId, amount, name, email, userId) {
-    const submission = await prisma.submission.findUnique({ where: { id: submissionId } });
-    if (!submission) throw new Error('Artwork not found');
+    const submission = await prisma.submission.findUnique({
+      where: { id: submissionId },
+    });
+    if (!submission) throw new Error("Artwork not found");
 
     const accessToken = await this.generateAccessToken();
 
@@ -121,64 +146,98 @@ class PaymentService {
     // For simplicity in this module, we will throw a placeholder error,
     // as dynamic subscription plan creation per amount is complex and usually requires a different setup.
     // NOTE: This can be implemented by creating a product on the fly, then a plan on the fly, then a subscription.
-    
+
     // Create Product
-    const productResponse = await fetch(`${this.baseUrl}/v1/catalogs/products`, {
-      method: 'POST',
-      headers: { 'Authorization': `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        name: `Monthly Donation for Artwork ${submissionId}`,
-        type: 'DIGITAL',
-        category: 'DONATION'
-      })
-    });
+    const productResponse = await fetch(
+      `${this.baseUrl}/v1/catalogs/products`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: `Monthly Donation for Artwork ${submissionId}`,
+          type: "DIGITAL",
+          category: "DONATION",
+        }),
+      },
+    );
     const productData = await productResponse.json();
 
     // Create Plan
     const planResponse = await fetch(`${this.baseUrl}/v1/billing/plans`, {
-      method: 'POST',
-      headers: { 'Authorization': `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({
         product_id: productData.id,
         name: `Monthly Support $${amount}`,
-        billing_cycles: [{
-          frequency: { interval_unit: 'MONTH', interval_count: 1 },
-          tenure_type: 'REGULAR',
-          sequence: 1,
-          total_cycles: 0,
-          pricing_scheme: {
-            fixed_price: { value: parseFloat(amount).toFixed(2), currency_code: 'USD' }
-          }
-        }],
+        billing_cycles: [
+          {
+            frequency: { interval_unit: "MONTH", interval_count: 1 },
+            tenure_type: "REGULAR",
+            sequence: 1,
+            total_cycles: 0,
+            pricing_scheme: {
+              fixed_price: {
+                value: parseFloat(amount).toFixed(2),
+                currency_code: "USD",
+              },
+            },
+          },
+        ],
         payment_preferences: {
           auto_bill_outstanding: true,
-          setup_fee_failure_action: 'CONTINUE',
-          payment_failure_threshold: 3
-        }
-      })
+          setup_fee_failure_action: "CONTINUE",
+          payment_failure_threshold: 3,
+        },
+      }),
     });
     const planData = await planResponse.json();
 
     // Create Subscription
-    const subResponse = await fetch(`${this.baseUrl}/v1/billing/subscriptions`, {
-      method: 'POST',
-      headers: { 'Authorization': `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        plan_id: planData.id,
-        subscriber: {
-          name: { given_name: name.split(' ')[0], surname: name.split(' ').slice(1).join(' ') || name },
-          email_address: email
+    const subResponse = await fetch(
+      `${this.baseUrl}/v1/billing/subscriptions`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
         },
-        application_context: {
-          return_url: process.env.FRONTEND_URL ? `${process.env.FRONTEND_URL}/payment/success` : `http://localhost:3000/payment/success`,
-          cancel_url: process.env.FRONTEND_URL ? `${process.env.FRONTEND_URL}/payment/cancel` : `http://localhost:3000/payment/cancel`
-        }
-      })
-    });
+        body: JSON.stringify({
+          plan_id: planData.id,
+          subscriber: {
+            name: {
+              given_name: name.split(" ")[0],
+              surname: name.split(" ").slice(1).join(" ") || name,
+            },
+            email_address: email,
+          },
+          application_context: {
+            return_url: process.env.FRONTEND_URL
+              ? `${process.env.FRONTEND_URL}/payment/success`
+              : `http://localhost:3000/payment/success`,
+            cancel_url: process.env.FRONTEND_URL
+              ? `${process.env.FRONTEND_URL}/payment/cancel`
+              : `http://localhost:3000/payment/cancel`,
+            landing_page: "BILLING",
+            user_action: "SUBSCRIBE_NOW",
+          },
+        }),
+      },
+    );
     const subData = await subResponse.json();
     if (!subResponse.ok) {
-      console.error('PayPal Subscription Error Details:', JSON.stringify(subData, null, 2));
-      throw new Error(subData.message || 'Failed to create PayPal subscription');
+      console.error(
+        "PayPal Subscription Error Details:",
+        JSON.stringify(subData, null, 2),
+      );
+      throw new Error(
+        subData.message || "Failed to create PayPal subscription",
+      );
     }
 
     const donation = await prisma.donation.create({
@@ -189,18 +248,18 @@ class PaymentService {
         donorName: name,
         donorEmail: email,
         amount,
-        currency: 'USD',
+        currency: "USD",
         subscriptionId: subData.id,
-        status: 'PENDING',
-        type: 'MONTHLY'
-      }
+        status: "PENDING",
+        type: "MONTHLY",
+      },
     });
 
-    const approveLink = subData.links.find(link => link.rel === 'approve');
+    const approveLink = subData.links.find((link) => link.rel === "approve");
     return {
       donationId: donation.id,
       subscriptionId: subData.id,
-      checkoutUrl: approveLink ? approveLink.href : null
+      checkoutUrl: approveLink ? approveLink.href : null,
     };
   }
 }

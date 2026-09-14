@@ -163,6 +163,17 @@ enum PaymentStatus {
   REFUNDED
 }
 
+enum DonationStatus {
+  PENDING
+  COMPLETED
+  FAILED
+}
+
+enum DonationType {
+  ONE_TIME
+  MONTHLY
+}
+
 enum PayoutKind {
   PRIZE
   DONATION
@@ -806,11 +817,14 @@ model Donation {
   donorId      String?
   donorName    String
   donorEmail   String
-  amount       Decimal  @db.Decimal(10, 2)
-  currency     String   @default("GBP")
-  message      String?
-  paymentId    String?
-  createdAt    DateTime @default(now())
+  amount         Decimal        @db.Decimal(10, 2)
+  currency       String         @default("GBP")
+  message        String?
+  paymentId      String?
+  status         DonationStatus @default(PENDING)
+  type           DonationType
+  subscriptionId String?
+  createdAt      DateTime       @default(now())
 
   submission Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
   artist     User       @relation("Artist", fields: [artistId], references: [id])
