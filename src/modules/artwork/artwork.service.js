@@ -426,6 +426,9 @@ export class ArtworkService {
     if (!submission || submission.competitionState !== 'IN_COMPETITION') {
       throw new Error('Can only vote for artworks currently in competition');
     }
+    if (submission.userId === userId) {
+      throw new Error('You cannot vote for your own artwork');
+    }
 
     const now = new Date();
     try {
