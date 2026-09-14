@@ -67,7 +67,19 @@ export const ArtworkValidation = {
   }),
 
   reportSchema: Joi.object({
-    reason: Joi.string().required(),
+    reason: Joi.string().valid(
+      'Copyright Infringement',
+      'Illegal or Prohibited Content',
+      'Harmful or Dangerous Content',
+      'Offensive or Abusive Content',
+      'Nudity or Sexual Content',
+      'Spam or Misleading Content',
+      'Stolen Photo',
+      'Child Privacy / COPPA Violation',
+      'Other'
+    ).required().messages({
+      'any.only': 'Invalid report reason. Please select a valid reason from the list.'
+    }),
     details: Joi.string().optional().allow(null, '').max(500)
   }),
 
