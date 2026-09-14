@@ -346,7 +346,7 @@ export class ArtworkService {
         include: {
           media: { orderBy: { slotIndex: 'asc' } },
           user: { select: { id: true, name: true, avatar: true } },
-          category: { select: { id: true, name: true, nameEn: true, nameBn: true } }
+          category: { select: { id: true, name: true } }
         },
         orderBy,
         skip,
@@ -364,7 +364,7 @@ export class ArtworkService {
       include: {
         media: { orderBy: { slotIndex: 'asc' } },
         user: { select: { id: true, name: true, avatar: true } },
-        category: { select: { id: true, name: true, nameEn: true, nameBn: true } },
+        category: { select: { id: true, name: true } },
         comments: {
           include: { user: { select: { id: true, name: true, avatar: true } } },
           orderBy: { createdAt: 'desc' }
