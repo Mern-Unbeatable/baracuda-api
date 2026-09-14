@@ -521,6 +521,11 @@ export class ArtworkService {
   }
 
   async reportArtwork(id, userId, reason, details) {
+    const submission = await prisma.submission.findUnique({ where: { id } });
+    if (!submission) {
+      throw new Error('Artwork not found');
+    }
+
     return prisma.report.create({
       data: {
         submissionId: id,
