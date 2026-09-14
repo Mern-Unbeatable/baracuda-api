@@ -339,6 +339,26 @@
           "name": "Artwork Management",
           "item": [
             {
+              "name": "Get Categories for Artwork",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/categories",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "categories"
+                  ]
+                },
+                "description": "Get all categories and their subcategories for the frontend dropdowns when creating an artwork."
+              },
+              "response": []
+            },
+            {
               "name": "Create Artwork (SINGLE)",
               "request": {
                 "method": "POST",
