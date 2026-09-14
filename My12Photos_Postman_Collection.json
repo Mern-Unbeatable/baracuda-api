@@ -996,6 +996,203 @@
           ]
         }
       ]
+    },
+    {
+      "name": "Website",
+      "item": [
+        {
+          "name": "Competitions",
+          "item": [
+            {
+              "name": "Get All IN_COMPETITION",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/artworks/public/all?status=IN_COMPETITION",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "artworks", "public", "all"],
+                  "query": [{"key": "status", "value": "IN_COMPETITION"}]
+                }
+              }
+            },
+            {
+              "name": "Get Details",
+              "request": {
+                "auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{token}}", "type": "string"}]},
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/artworks/public/:id",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "artworks", "public", ":id"],
+                  "variable": [{"key": "id", "value": "ARTWORK_ID"}]
+                }
+              }
+            },
+            {
+              "name": "Vote",
+              "request": {
+                "auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{token}}", "type": "string"}]},
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/artworks/:id/vote",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "artworks", ":id", "vote"],
+                  "variable": [{"key": "id", "value": "ARTWORK_ID"}]
+                }
+              }
+            },
+            {
+              "name": "Save Artwork",
+              "request": {
+                "auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{token}}", "type": "string"}]},
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/artworks/:id/save",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "artworks", ":id", "save"],
+                  "variable": [{"key": "id", "value": "ARTWORK_ID"}]
+                }
+              }
+            },
+            {
+              "name": "Add Comment",
+              "request": {
+                "auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{token}}", "type": "string"}]},
+                "method": "POST",
+                "header": [{"key": "Content-Type", "value": "application/json"}],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"body\": \"This is a stunning photo!\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/artworks/:id/comment",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "artworks", ":id", "comment"],
+                  "variable": [{"key": "id", "value": "ARTWORK_ID"}]
+                }
+              }
+            },
+            {
+              "name": "Report Artwork",
+              "request": {
+                "auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{token}}", "type": "string"}]},
+                "method": "POST",
+                "header": [{"key": "Content-Type", "value": "application/json"}],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"reason\": \"Inappropriate content\",\n  \"details\": \"This does not belong here.\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/artworks/:id/report",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "artworks", ":id", "report"],
+                  "variable": [{"key": "id", "value": "ARTWORK_ID"}]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Gallery",
+          "item": [
+            {
+              "name": "Get All PROFILE_ONLY",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/artworks/public/all?status=PROFILE_ONLY",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "artworks", "public", "all"],
+                  "query": [{"key": "status", "value": "PROFILE_ONLY"}]
+                }
+              }
+            },
+            {
+              "name": "Get Details",
+              "request": {
+                "auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{token}}", "type": "string"}]},
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/artworks/public/:id",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "artworks", "public", ":id"],
+                  "variable": [{"key": "id", "value": "ARTWORK_ID"}]
+                }
+              }
+            },
+            {
+              "name": "Like",
+              "request": {
+                "auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{token}}", "type": "string"}]},
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/artworks/:id/like",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "artworks", ":id", "like"],
+                  "variable": [{"key": "id", "value": "ARTWORK_ID"}]
+                }
+              }
+            },
+            {
+              "name": "Save Artwork",
+              "request": {
+                "auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{token}}", "type": "string"}]},
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/artworks/:id/save",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "artworks", ":id", "save"],
+                  "variable": [{"key": "id", "value": "ARTWORK_ID"}]
+                }
+              }
+            },
+            {
+              "name": "Add Comment",
+              "request": {
+                "auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{token}}", "type": "string"}]},
+                "method": "POST",
+                "header": [{"key": "Content-Type", "value": "application/json"}],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"body\": \"Great work!\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/artworks/:id/comment",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "artworks", ":id", "comment"],
+                  "variable": [{"key": "id", "value": "ARTWORK_ID"}]
+                }
+              }
+            },
+            {
+              "name": "Report Artwork",
+              "request": {
+                "auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{token}}", "type": "string"}]},
+                "method": "POST",
+                "header": [{"key": "Content-Type", "value": "application/json"}],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"reason\": \"Inappropriate content\",\n  \"details\": \"This does not belong here.\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/artworks/:id/report",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "artworks", ":id", "report"],
+                  "variable": [{"key": "id", "value": "ARTWORK_ID"}]
+                }
+              }
+            }
+          ]
+        }
+      ]
     }
   ]
 }
