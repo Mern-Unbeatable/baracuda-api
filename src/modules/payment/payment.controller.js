@@ -1,5 +1,5 @@
 import paymentService from './payment.service.js';
-import ResponseUtil from '../../utils/response.util.js';
+import ResponseUtil from '../../utils/response.js';
 
 class PaymentController {
   
