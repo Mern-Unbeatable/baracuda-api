@@ -4,8 +4,26 @@ import { ResponseUtil } from '../../utils/response.js';
 export const ArtworkValidation = {
   createSchema: Joi.object({
     kind: Joi.string().valid('SINGLE', 'SIX', 'TWELVE').required(),
-    theme: Joi.string().valid('RED', 'BLUE', 'FULL').optional().allow(null, ''),
-    zodiacSign: Joi.string().valid('ARIES', 'TAURUS', 'GEMINI', 'CANCER', 'LEO', 'VIRGO', 'LIBRA', 'SCORPIO', 'SAGITTARIUS', 'CAPRICORN', 'AQUARIUS', 'PISCES').optional().allow(null, ''),
+    theme: Joi.when('kind', {
+      is: 'SIX',
+      then: Joi.string().valid('RED', 'BLUE').required().messages({
+        'any.only': 'For SIX photos, theme must be RED or BLUE',
+        'any.required': 'Theme is required for SIX photos'
+      }),
+      otherwise: Joi.when('kind', {
+        is: 'TWELVE',
+        then: Joi.string().valid('FULL').required().messages({
+          'any.only': 'For TWELVE photos, theme must be FULL',
+          'any.required': 'Theme is required for TWELVE photos'
+        }),
+        otherwise: Joi.string().valid(null, '').optional()
+      })
+    }),
+    zodiacSign: Joi.when('kind', {
+      is: 'SINGLE',
+      then: Joi.string().valid('ARIES', 'TAURUS', 'GEMINI', 'CANCER', 'LEO', 'VIRGO', 'LIBRA', 'SCORPIO', 'SAGITTARIUS', 'CAPRICORN', 'AQUARIUS', 'PISCES').optional().allow(null, ''),
+      otherwise: Joi.string().valid(null, '').optional()
+    }),
     visibility: Joi.string().valid('PUBLIC', 'PRIVATE_BUSINESS').optional().allow(null, ''),
     competitionState: Joi.string().valid('PROFILE_ONLY', 'IN_COMPETITION', 'ENDED').optional().allow(null, ''),
     categoryId: Joi.string().uuid().optional().allow(null, ''),
