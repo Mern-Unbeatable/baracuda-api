@@ -142,6 +142,32 @@ class PaymentService {
         where: { paymentId },
         data: { status: "COMPLETED" },
       });
+
+      // Fetch the donation record to generate invoice
+      const donation = await prisma.donation.findFirst({
+        where: { paymentId },
+        include: { artist: true }
+      });
+
+      if (donation) {
+        const amountPaid = parseFloat(donation.amount);
+        const platformFee = amountPaid * 0.10; // 10% fee
+        const artistReceives = amountPaid - platformFee;
+
+        return { 
+          status: "COMPLETED",
+          invoice: {
+            artistName: donation.artist.username || donation.artist.name || "Artist",
+            amountPaid: amountPaid.toFixed(2),
+            platformFee: platformFee.toFixed(2),
+            artistReceives: artistReceives.toFixed(2),
+            paymentMethod: "PayPal",
+            transactionId: data.id,
+            date: new Date().toISOString()
+          }
+        };
+      }
+
       return { status: "COMPLETED" };
     }
     return { status: data.status };

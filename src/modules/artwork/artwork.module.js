@@ -45,6 +45,7 @@ export class ArtworkModule {
     // Public Routes
     this.router.get('/public/all', optionalAuth, this.artworkController.getPublicArtworks);
     this.router.get('/public/:id', optionalAuth, this.artworkController.getPublicArtworkDetails);
+    this.router.get('/public/:id/download', optionalAuth, this.artworkController.downloadArtwork);
 
     // Interaction Routes
     this.router.post('/:id/vote', requireAuth, this.artworkController.voteArtwork);

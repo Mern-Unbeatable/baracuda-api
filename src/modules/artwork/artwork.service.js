@@ -1,4 +1,7 @@
 import prisma from '../../config/prisma.js';
+import archiver from 'archiver';
+import fs from 'fs';
+import path from 'path';
 
 export class ArtworkService {
   async createArtwork(userId, data, mediaFiles) {
@@ -26,6 +29,10 @@ export class ArtworkService {
     const getZodiacMapping = (index) => {
       if (data.kind === 'SINGLE') {
         return { zodiacSign: data.zodiacSign || null, slotIndex: 0 };
+      }
+      // If user provides custom array of zodiacSigns matching files order
+      if (data.zodiacSigns && Array.isArray(data.zodiacSigns) && data.zodiacSigns[index]) {
+        return { zodiacSign: data.zodiacSigns[index], slotIndex: index };
       }
       if (data.kind === 'SIX' && data.theme === 'RED') {
         return { zodiacSign: ZODIAC_SIGNS[index] || null, slotIndex: index }; // 0 to 5
@@ -111,6 +118,7 @@ export class ArtworkService {
         viewsCount: true,
         likesCount: true,
         votesCount: true,
+        zodiacSign: true,
         rank: true,
         createdAt: true,
         updatedAt: true,
@@ -124,7 +132,7 @@ export class ArtworkService {
           select: { endsAt: true }
         },
         media: {
-          select: { url: true, format: true },
+          select: { url: true, format: true, zodiacSign: true, slotIndex: true },
           orderBy: { slotIndex: 'asc' },
           take: 1
         }
@@ -159,6 +167,59 @@ export class ArtworkService {
       data: paginatedSubmissions,
       total: allSubmissions.length
     };
+  }
+
+  async downloadArtworkAsZip(id, res) {
+    const submission = await prisma.submission.findUnique({
+      where: { id },
+      include: { media: true }
+    });
+    
+    if (!submission) {
+      throw new Error('Artwork not found');
+    }
+    
+    if (!submission.media || submission.media.length === 0) {
+      throw new Error('No media files found for this artwork');
+    }
+
+    res.writeHead(200, {
+      'Content-Type': 'application/zip',
+      'Content-Disposition': `attachment; filename="Artwork-${id}.zip"`
+    });
+
+    const archive = archiver('zip', {
+      zlib: { level: 9 } // Sets the compression level
+    });
+
+    archive.on('error', (err) => {
+      throw err;
+    });
+
+    // Pipe archive data to the response
+    archive.pipe(res);
+
+    for (const media of submission.media) {
+      // media.url usually looks like '/uploads/filename.jpg'
+      // We need to map it to absolute filesystem path
+      const filePath = path.join(process.cwd(), media.url);
+      
+      if (fs.existsSync(filePath)) {
+        const ext = path.extname(filePath);
+        let zipFileName = '';
+        
+        if (media.kind === 'VIDEO') {
+          zipFileName = `VIDEO${ext}`;
+        } else {
+          // Name the file based on zodiac sign, otherwise fallback to slot index
+          zipFileName = media.zodiacSign ? `${media.zodiacSign}${ext}` : `IMAGE_${media.slotIndex}${ext}`;
+        }
+        
+        archive.file(filePath, { name: zipFileName });
+      }
+    }
+
+    await archive.finalize();
   }
 
   async getArtworkDetails(id) {

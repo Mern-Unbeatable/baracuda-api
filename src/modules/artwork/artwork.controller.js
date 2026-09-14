@@ -11,10 +11,27 @@ export class ArtworkController {
   formatMediaUrls(req, artwork) {
     if (!artwork || !artwork.media) return artwork;
     const formatted = { ...artwork };
-    formatted.media = formatted.media.map(m => ({
-      ...m,
-      url: UrlUtil.getAbsoluteUrl(req, m.url)
-    }));
+    if (formatted.kind === 'TWELVE' || formatted.kind === 'SIX' || formatted.kind === 'SINGLE') {
+      const mappedImages = {};
+      const videos = [];
+      formatted.media.forEach(m => {
+        const url = UrlUtil.getAbsoluteUrl(req, m.url);
+        if (m.kind === 'VIDEO' || (m.format && m.format.startsWith('video'))) {
+          videos.push({ ...m, url });
+        } else {
+          const key = m.zodiacSign ? m.zodiacSign : `IMAGE_${m.slotIndex}`;
+          mappedImages[key] = { ...m, url };
+        }
+      });
+      formatted.images = mappedImages;
+      formatted.video = videos.length > 0 ? videos[0] : null; // Usually 1 video
+      delete formatted.media; // Replaced by structured images and video
+    } else {
+      formatted.media = formatted.media.map(m => ({
+        ...m,
+        url: UrlUtil.getAbsoluteUrl(req, m.url)
+      }));
+    }
     return formatted;
   }
 
@@ -35,11 +52,11 @@ export class ArtworkController {
         story,
         tags,
         camera,
-        resolution,
         format,
         isAiGenerated,
         copyrightConfirmed,
-        quality
+        quality,
+        zodiacSigns
       } = req.validatedBody || req.body;
 
       // Extract uploaded files from req.files
@@ -67,7 +84,8 @@ export class ArtworkController {
         format: format || null,
         isAiGenerated: isAiGenerated === 'true' || isAiGenerated === true,
         copyrightConfirmed: copyrightConfirmed === 'true' || copyrightConfirmed === true,
-        quality: quality || null
+        quality: quality || null,
+        zodiacSigns: zodiacSigns ? (Array.isArray(zodiacSigns) ? zodiacSigns : JSON.parse(zodiacSigns)) : null
       };
 
       const result = await this.artworkService.createArtwork(userId, data, mediaFiles);
@@ -125,6 +143,18 @@ export class ArtworkController {
       res.status(200).json({ success: true, data: this.formatMediaUrls(req, result) });
     } catch (error) {
       res.status(400).json({ success: false, error: error.message });
+    }
+  }
+
+  downloadArtwork = async (req, res) => {
+    try {
+      const { id } = req.params;
+      await this.artworkService.downloadArtworkAsZip(id, res);
+    } catch (error) {
+      // If error happens before headers are sent, return JSON error
+      if (!res.headersSent) {
+        res.status(400).json({ success: false, error: error.message });
+      }
     }
   }
 

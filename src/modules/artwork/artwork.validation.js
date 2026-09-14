@@ -24,6 +24,7 @@ export const ArtworkValidation = {
       then: Joi.string().valid('ARIES', 'TAURUS', 'GEMINI', 'CANCER', 'LEO', 'VIRGO', 'LIBRA', 'SCORPIO', 'SAGITTARIUS', 'CAPRICORN', 'AQUARIUS', 'PISCES').optional().allow(null, ''),
       otherwise: Joi.string().valid(null, '').optional()
     }),
+    zodiacSigns: Joi.any().optional(), // Allow array/JSON of signs for TWELVE and SIX
     visibility: Joi.string().valid('PUBLIC', 'PRIVATE_BUSINESS').optional().allow(null, ''),
     competitionState: Joi.string().valid('PROFILE_ONLY', 'IN_COMPETITION', 'ENDED').optional().allow(null, ''),
     categoryId: Joi.string().uuid().optional().allow(null, ''),
