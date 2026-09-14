@@ -325,4 +325,181 @@ export class ArtworkService {
 
     return newSubmission;
   }
+
+  async getPublicArtworks(filters, sort, skip, take) {
+    // Only fetch APPROVED artworks globally
+    const where = { status: 'APPROVED' };
+    if (filters.status && filters.status.toUpperCase() !== 'ALL') {
+      where.competitionState = filters.status.toUpperCase();
+    }
+    
+    let orderBy = { createdAt: 'desc' };
+    if (sort === 'popular') {
+      orderBy = { viewsCount: 'desc' };
+    } else if (sort === 'most_liked') {
+      orderBy = { likesCount: 'desc' };
+    }
+    
+    const [data, total] = await Promise.all([
+      prisma.submission.findMany({
+        where,
+        include: {
+          media: { orderBy: { slotIndex: 'asc' } },
+          user: { select: { id: true, name: true, avatar: true } },
+          category: { select: { id: true, name: true, nameEn: true, nameBn: true } }
+        },
+        orderBy,
+        skip,
+        take
+      }),
+      prisma.submission.count({ where })
+    ]);
+    
+    return { data, total, skip, take };
+  }
+
+  async getPublicArtworkDetails(id, viewerId) {
+    const artwork = await prisma.submission.findUnique({
+      where: { id, status: 'APPROVED' },
+      include: {
+        media: { orderBy: { slotIndex: 'asc' } },
+        user: { select: { id: true, name: true, avatar: true } },
+        category: { select: { id: true, name: true, nameEn: true, nameBn: true } },
+        comments: {
+          include: { user: { select: { id: true, name: true, avatar: true } } },
+          orderBy: { createdAt: 'desc' }
+        }
+      }
+    });
+
+    if (!artwork) {
+      throw new Error('Artwork not found or not approved');
+    }
+
+    // Handle unique view counting
+    if (viewerId) {
+      try {
+        await prisma.submissionView.create({
+          data: { submissionId: id, viewerId }
+        });
+        // If create succeeds, it means this viewerId hasn't viewed this submission before
+        await prisma.submission.update({
+          where: { id },
+          data: { viewsCount: { increment: 1 } }
+        });
+        artwork.viewsCount += 1;
+      } catch (err) {
+        // Unique constraint violation (P2002) means they already viewed it, ignore.
+      }
+    }
+
+    return artwork;
+  }
+
+  async voteArtwork(id, userId, ipAddress) {
+    const submission = await prisma.submission.findUnique({ where: { id } });
+    if (!submission || submission.competitionState !== 'IN_COMPETITION') {
+      throw new Error('Can only vote for artworks currently in competition');
+    }
+
+    const now = new Date();
+    try {
+      await prisma.vote.create({
+        data: {
+          submissionId: id,
+          userId,
+          ipAddress,
+          kind: submission.kind,
+          year: now.getFullYear(),
+          month: now.getMonth() + 1
+        }
+      });
+      const updated = await prisma.submission.update({
+        where: { id },
+        data: { votesCount: { increment: 1 } }
+      });
+      return { voted: true, votesCount: updated.votesCount };
+    } catch (err) {
+      throw new Error('You have already voted for this kind of album this month');
+    }
+  }
+
+  async toggleLikeArtwork(id, userId) {
+    const submission = await prisma.submission.findUnique({ where: { id } });
+    if (!submission || submission.competitionState !== 'PROFILE_ONLY') {
+      throw new Error('Can only like artworks that are profile only');
+    }
+
+    const existingLike = await prisma.like.findUnique({
+      where: { submissionId_userId: { submissionId: id, userId } }
+    });
+
+    if (existingLike) {
+      await prisma.like.delete({ where: { id: existingLike.id } });
+      const updated = await prisma.submission.update({
+        where: { id },
+        data: { likesCount: { decrement: 1 } }
+      });
+      return { liked: false, likesCount: updated.likesCount };
+    } else {
+      await prisma.like.create({
+        data: { submissionId: id, userId }
+      });
+      const updated = await prisma.submission.update({
+        where: { id },
+        data: { likesCount: { increment: 1 } }
+      });
+      return { liked: true, likesCount: updated.likesCount };
+    }
+  }
+
+  async toggleSaveArtwork(id, userId) {
+    const existingSave = await prisma.savedArtwork.findUnique({
+      where: { submissionId_userId: { submissionId: id, userId } }
+    });
+
+    if (existingSave) {
+      await prisma.savedArtwork.delete({ where: { id: existingSave.id } });
+      return { saved: false };
+    } else {
+      await prisma.savedArtwork.create({
+        data: { submissionId: id, userId }
+      });
+      return { saved: true };
+    }
+  }
+
+  async addComment(id, userId, body) {
+    const submission = await prisma.submission.findUnique({ where: { id } });
+    if (!submission) throw new Error('Artwork not found');
+
+    const comment = await prisma.comment.create({
+      data: {
+        publicCode: `cmt_${Math.random().toString(36).substr(2, 9)}`,
+        submissionId: id,
+        userId,
+        body,
+        status: 'APPROVED'
+      },
+      include: { user: { select: { id: true, name: true, avatar: true } } }
+    });
+
+    await prisma.submission.update({
+      where: { id },
+      data: { commentsCount: { increment: 1 } }
+    });
+
+    return comment;
+  }
+
+  async reportArtwork(id, userId, reason, details) {
+    return prisma.report.create({
+      data: {
+        submissionId: id,
+        userId,
+        reason,
+        details
+      }
+    });
+  }
 }

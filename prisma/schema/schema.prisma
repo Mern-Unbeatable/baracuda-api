@@ -11,7 +11,6 @@ datasource db {
   provider = "postgresql"
 }
 
-
 // ============================================================
 // ENUMS
 // ============================================================
@@ -196,9 +195,6 @@ enum NewsletterStatus {
   FAILED
 }
 
-
-
-
 // ============================================================
 // AUTH & USERS
 // ============================================================
@@ -262,6 +258,8 @@ model User {
   messageLikes         MessageLike[]
   chatParticipants     ChatParticipant[]
   chatMessages         ChatMessage[]
+  savedArtworks        SavedArtwork[]
+  reports              Report[]
 
   @@index([role, status])
   @@index([country])
@@ -281,11 +279,6 @@ model Follow {
   @@index([followingId])
   @@map("follows")
 }
-
-
-
-
-
 
 // ============================================================
 // TAXONOMY (admin editable)
@@ -371,9 +364,11 @@ model Submission {
   story Json?
   tags  String[]
 
-  camera     String?
-  resolution String?
-  format     String?
+  camera        String?
+  resolution    String?
+  format        String?
+  quality       String?
+  isAiGenerated Boolean @default(false)
 
   copyrightConfirmed Boolean @default(false)
   viewsCount         Int     @default(0)
@@ -393,6 +388,7 @@ model Submission {
   competition   Competition?      @relation(fields: [competitionId], references: [id], onDelete: SetNull)
   albumType     AlbumType         @relation(fields: [albumTypeId], references: [id])
   category      Category?         @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  subcategoryId String?
   media         SubmissionMedia[]
   votes         Vote[]
   likes         Like[]
@@ -402,6 +398,9 @@ model Submission {
   promotion     PromotedAlbum?
   businessAlbum BusinessAlbum?
   premiumPhoto  PremiumPhoto?
+  saves         SavedArtwork[]
+  reports       Report[]
+  views         SubmissionView[]
 
   @@index([kind, status, visibility, createdAt])
   @@index([competitionId, kind, votesCount])
@@ -410,7 +409,6 @@ model Submission {
   @@index([competitionState])
   @@map("submissions")
 }
-
 
 model SubmissionMedia {
   id           String      @id @default(uuid())
@@ -504,7 +502,6 @@ model Winner {
   @@index([userId])
   @@map("winners")
 }
-
 
 // ============================================================
 // PRIVATE 12-PHOTO / BUSINESS LINK
@@ -651,9 +648,6 @@ model AdSlot {
 
   @@map("ad_slots")
 }
-
-
-
 
 // ============================================================
 // NEWSLETTER
@@ -939,4 +933,43 @@ model Payout {
 
   @@index([kind, status])
   @@map("payouts")
+}
+
+model SavedArtwork {
+  id           String   @id @default(uuid())
+  submissionId String
+  userId       String
+  createdAt    DateTime @default(now())
+
+  submission Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([submissionId, userId])
+  @@map("saved_artworks")
+}
+
+model Report {
+  id           String   @id @default(uuid())
+  submissionId String
+  userId       String
+  reason       String
+  details      String?  @db.Text
+  createdAt    DateTime @default(now())
+
+  submission Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("reports")
+}
+
+model SubmissionView {
+  id           String   @id @default(uuid())
+  submissionId String
+  viewerId     String // Can be userId or ipAddress
+  createdAt    DateTime @default(now())
+
+  submission Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+
+  @@unique([submissionId, viewerId])
+  @@map("submission_views")
 }

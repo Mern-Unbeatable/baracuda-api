@@ -4,6 +4,7 @@ import { ArtworkService } from './artwork.service.js';
 import { ArtworkValidation } from './artwork.validation.js';
 import { upload } from '../../utils/upload.js';
 import { requireAuth } from '../../middlewares/auth.middleware.js';
+import { optionalAuth } from '../../middlewares/optionalAuth.middleware.js';
 
 /**
  * Artwork Module
@@ -40,5 +41,16 @@ export class ArtworkModule {
     this.router.post('/:id/promote', requireAuth, ArtworkValidation.validate(ArtworkValidation.promoteSchema), this.artworkController.promoteArtwork);
     this.router.post('/:id/switch-to-competition', requireAuth, ArtworkValidation.validate(ArtworkValidation.switchCompetitionSchema), this.artworkController.switchToCompetition);
     this.router.post('/:id/resubmit', requireAuth, ArtworkValidation.validate(ArtworkValidation.resubmitSchema), this.artworkController.resubmitArtwork);
+
+    // Public Routes
+    this.router.get('/public/all', this.artworkController.getPublicArtworks);
+    this.router.get('/public/:id', optionalAuth, this.artworkController.getPublicArtworkDetails);
+
+    // Interaction Routes
+    this.router.post('/:id/vote', requireAuth, this.artworkController.voteArtwork);
+    this.router.post('/:id/like', requireAuth, this.artworkController.likeArtwork);
+    this.router.post('/:id/save', requireAuth, this.artworkController.saveArtwork);
+    this.router.post('/:id/comment', requireAuth, ArtworkValidation.validate(ArtworkValidation.commentSchema), this.artworkController.commentArtwork);
+    this.router.post('/:id/report', requireAuth, ArtworkValidation.validate(ArtworkValidation.reportSchema), this.artworkController.reportArtwork);
   }
 }

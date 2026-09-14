@@ -183,4 +183,90 @@ export class ArtworkController {
       res.status(400).json({ success: false, error: error.message });
     }
   }
+
+  getPublicArtworks = async (req, res, next) => {
+    try {
+      const { status, sort, page, limit } = req.query;
+      const skip = PaginationUtil.getSkip(page, limit);
+      const take = PaginationUtil.getLimit(limit);
+      const filters = { status };
+      const artworks = await this.artworkService.getPublicArtworks(filters, sort || 'newest', skip, take);
+      
+      const formattedData = artworks.data.map(a => this.formatMediaUrls(req, a));
+      return ResponseUtil.success(res, 'Public artworks retrieved successfully', { ...artworks, data: formattedData });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  getPublicArtworkDetails = async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const viewerId = req.user?.id || req.ip;
+      const artwork = await this.artworkService.getPublicArtworkDetails(id, viewerId);
+      return ResponseUtil.success(res, 'Artwork details retrieved successfully', this.formatMediaUrls(req, artwork));
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  voteArtwork = async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const userId = req.user.id;
+      const ipAddress = req.ip || req.headers['x-forwarded-for'] || '127.0.0.1';
+      const result = await this.artworkService.voteArtwork(id, userId, ipAddress);
+      return ResponseUtil.success(res, 'Vote recorded successfully', result);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  likeArtwork = async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const userId = req.user.id;
+      const result = await this.artworkService.toggleLikeArtwork(id, userId);
+      const msg = result.liked ? 'Artwork liked successfully' : 'Artwork unliked successfully';
+      return ResponseUtil.success(res, msg, result);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  saveArtwork = async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const userId = req.user.id;
+      const result = await this.artworkService.toggleSaveArtwork(id, userId);
+      const msg = result.saved ? 'Artwork saved successfully' : 'Artwork removed from saved list';
+      return ResponseUtil.success(res, msg, result);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  commentArtwork = async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const userId = req.user.id;
+      const { body } = req.validatedBody;
+      const comment = await this.artworkService.addComment(id, userId, body);
+      return ResponseUtil.success(res, 'Comment added successfully', comment, 201);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  reportArtwork = async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const userId = req.user.id;
+      const { reason, details } = req.validatedBody;
+      const report = await this.artworkService.reportArtwork(id, userId, reason, details);
+      return ResponseUtil.success(res, 'Report submitted successfully', report, 201);
+    } catch (err) {
+      next(err);
+    }
+  }
 }

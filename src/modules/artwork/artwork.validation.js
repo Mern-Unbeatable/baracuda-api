@@ -62,6 +62,15 @@ export const ArtworkValidation = {
     // newCompetitionId is intentionally omitted as backend auto-resolves OPEN competition
   }),
 
+  commentSchema: Joi.object({
+    body: Joi.string().required().min(1).max(2000)
+  }),
+
+  reportSchema: Joi.object({
+    reason: Joi.string().required(),
+    details: Joi.string().optional().allow(null, '').max(500)
+  }),
+
   validate: (schema) => {
     return (req, res, next) => {
       const payload = { ...req.body };
