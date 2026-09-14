@@ -3,6 +3,7 @@ import { UserModule } from './modules/user/user.module.js';
 import { AuthModule } from './modules/auth/auth.module.js';
 import { CategoryModule } from './modules/category/category.module.js';
 import { ArtworkModule } from './modules/artwork/artwork.module.js';
+import paymentRouter from './modules/payment/payment.module.js';
 import config from './config/env.js';
 
 /**
@@ -60,6 +61,8 @@ class App {
 
     const artworkModule = new ArtworkModule();
     this.app.use('/api/v1/artworks', artworkModule.router);
+
+    this.app.use('/api/v1/payments', paymentRouter);
   }
 
   initializeErrorHandling() {
