@@ -58,6 +58,9 @@ export class AuthService {
         email: true,
         role: true,
         status: true,
+        avatar: true,
+        coverPhoto: true,
+        introVideo: true,
         createdAt: true,
       }
     });

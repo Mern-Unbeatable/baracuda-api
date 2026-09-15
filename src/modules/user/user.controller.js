@@ -2,6 +2,8 @@
  * User Controller Layer
  * Handles HTTP requests and responses for user-related endpoints
  */
+import { UrlUtil } from '../../utils/urlUtil.js';
+
 export class UserController {
   constructor(userService) {
     this.userService = userService;
@@ -13,7 +15,8 @@ export class UserController {
    */
   getAllUsers = async (req, res, next) => {
     try {
-      const users = await this.userService.getAllUsers();
+      let users = await this.userService.getAllUsers();
+      users = users.map(u => UrlUtil.formatUserMedia(req, u));
       
       res.status(200).json({
         success: true,
@@ -43,7 +46,7 @@ export class UserController {
       
       res.status(200).json({
         success: true,
-        data: user
+        data: UrlUtil.formatUserMedia(req, user)
       });
     } catch (error) {
       next(error);
@@ -70,7 +73,7 @@ export class UserController {
       
       res.status(201).json({
         success: true,
-        data: newUser,
+        data: UrlUtil.formatUserMedia(req, newUser),
         message: 'User created successfully'
       });
     } catch (error) {
@@ -91,7 +94,7 @@ export class UserController {
       
       res.status(200).json({
         success: true,
-        data: updatedUser,
+        data: UrlUtil.formatUserMedia(req, updatedUser),
         message: 'User updated successfully'
       });
     } catch (error) {

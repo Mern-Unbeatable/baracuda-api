@@ -9,8 +9,27 @@ export class ArtworkController {
   }
 
   formatMediaUrls(req, artwork) {
-    if (!artwork || !artwork.media) return artwork;
+    if (!artwork) return artwork;
     const formatted = { ...artwork };
+    
+    // Helper to format all avatar fields recursively in the object
+    const formatAvatars = (obj) => {
+      if (!obj || typeof obj !== 'object') return;
+      if (Array.isArray(obj)) {
+        obj.forEach(formatAvatars);
+      } else {
+        if (obj.avatar && typeof obj.avatar === 'string' && !obj.avatar.startsWith('http')) {
+          obj.avatar = UrlUtil.getAbsoluteUrl(req, obj.avatar);
+        }
+        Object.values(obj).forEach(formatAvatars);
+      }
+    };
+    
+    // Format all user avatars (e.g., in user, comments, donations, etc)
+    formatAvatars(formatted);
+
+    if (!formatted.media) return formatted;
+
     if (formatted.kind === 'TWELVE' || formatted.kind === 'SIX' || formatted.kind === 'SINGLE') {
       const mappedImages = {};
       const videos = [];
