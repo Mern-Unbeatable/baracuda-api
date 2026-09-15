@@ -1,4 +1,5 @@
 import prisma from '../../config/prisma.js';
+import { PaginationUtil } from '../../utils/pagination.js';
 
 export class CompetitionService {
   /**
@@ -212,6 +213,74 @@ export class CompetitionService {
     return {
       competition,
       leaderboard
+    };
+  }
+
+  /**
+   * Fetch paginated winners for the Winners Archive page.
+   * Can filter by kind (SINGLE, SIX, TWELVE), and specific month/year.
+   * If kind is not provided (or 'ALL'), it fetches winners from all categories.
+   */
+  async getWinnersArchive({ year, month, kind, page = 1, limit = 10 }) {
+    let competitionId;
+
+    if (year && month) {
+      const competition = await prisma.competition.findUnique({
+        where: { year_month: { year, month } }
+      });
+      // If competition not found for that month, return empty result
+      if (!competition) {
+        return { data: [], meta: PaginationUtil.getMetadata(0, page, limit) };
+      }
+      competitionId = competition.id;
+    }
+
+    const where = {};
+    
+    // Filter by specific competition if requested, otherwise only show winners from CLOSED competitions
+    if (competitionId) {
+      where.competitionId = competitionId;
+    } else {
+      where.competition = { status: 'CLOSED' };
+    }
+    
+    // Only show top 3 winners
+    where.rank = { lte: 3 };
+    
+    // Filter by kind (if provided and not 'ALL')
+    if (kind && kind.toUpperCase() !== 'ALL') {
+      where.kind = kind.toUpperCase();
+    }
+
+    const skip = (page - 1) * limit;
+
+    const [winners, total] = await Promise.all([
+      prisma.winner.findMany({
+        where,
+        orderBy: [
+          { competition: { startsAt: 'desc' } }, // Newest competitions first
+          { kind: 'asc' }, // Group by kind
+          { rank: 'asc' } // Rank 1, 2, 3...
+        ],
+        skip,
+        take: limit,
+        include: {
+          user: { select: { id: true, name: true, avatar: true } },
+          submission: {
+            select: {
+              id: true, title: true, featuredImage: true,
+              media: { where: { slotIndex: 0 }, take: 1 }
+            }
+          },
+          competition: { select: { id: true, title: true, year: true, month: true } }
+        }
+      }),
+      prisma.winner.count({ where })
+    ]);
+
+    return {
+      data: winners,
+      meta: PaginationUtil.getMetadata(total, page, limit)
     };
   }
 }

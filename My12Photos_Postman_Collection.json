@@ -1668,7 +1668,7 @@
                 "method": "GET",
                 "header": [],
                 "url": {
-                  "raw": "{{base_url}}/api/v1/competitions?kind=SINGLE&year=2026&month=9",
+                  "raw": "{{base_url}}/api/v1/competitions?kind=ALL&year=2026&month=9&page=1&limit=10",
                   "host": [
                     "{{base_url}}"
                   ],
@@ -1692,10 +1692,73 @@
                       "key": "month",
                       "value": "9",
                       "description": "Optional month (1-12)"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1",
+                      "description": "Page number"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10",
+                      "description": "Items per page"
                     }
                   ]
                 },
                 "description": "Fetch ongoing or past competition data. Use query params to filter by kind, year, and month."
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Winners",
+          "item": [
+            {
+              "name": "Get Winners Archive",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/competitions/winners?kind=ALL&year=2026&month=9&page=1&limit=10",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "competitions",
+                    "winners"
+                  ],
+                  "query": [
+                    {
+                      "key": "kind",
+                      "value": "ALL",
+                      "description": "AlbumKind: ALL, SINGLE, SIX, TWELVE"
+                    },
+                    {
+                      "key": "year",
+                      "value": "2026",
+                      "description": "Optional year"
+                    },
+                    {
+                      "key": "month",
+                      "value": "9",
+                      "description": "Optional month (1-12)"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1",
+                      "description": "Pagination page (default 1)"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10",
+                      "description": "Pagination limit (default 10)"
+                    }
+                  ]
+                },
+                "description": "Fetch paginated winners from past competitions for the Winners Archive page."
               },
               "response": []
             }

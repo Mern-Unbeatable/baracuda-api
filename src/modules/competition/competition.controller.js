@@ -1,4 +1,5 @@
 import { ResponseUtil } from '../../utils/response.js';
+import { PaginationUtil } from '../../utils/pagination.js';
 import { CompetitionService } from './competition.service.js';
 
 export class CompetitionController {
@@ -36,6 +37,25 @@ export class CompetitionController {
   };
 
 
+
+  getWinners = async (req, res) => {
+    try {
+      const { year, month, kind } = req.query;
+      const { page, limit } = PaginationUtil.getPaginationOptions(req.query);
+      
+      const result = await this.competitionService.getWinnersArchive({
+        year: year ? parseInt(year) : undefined,
+        month: month ? parseInt(month) : undefined,
+        kind,
+        page,
+        limit
+      });
+      
+      return ResponseUtil.success(res, 'Winners archive fetched successfully', result);
+    } catch (error) {
+      return ResponseUtil.error(res, error.message);
+    }
+  };
 
   // TEST ONLY - DO NOT USE IN PRODUCTION
   forceEndMonth = async (req, res) => {

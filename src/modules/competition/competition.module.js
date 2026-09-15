@@ -12,7 +12,10 @@ export class CompetitionModule {
 
   initializeRoutes() {
     // Unified GET endpoint to fetch competitions and leaderboards based on filters
-    this.router.get('/', optionalAuth, this.competitionController.getCompetitions);
+    this.router.get('/leaderboard', optionalAuth, this.competitionController.getCompetitions);
+
+    // GET endpoint to fetch paginated winners for the Winners Archive page
+    this.router.get('/winners', optionalAuth, this.competitionController.getWinners);
     
     // DEV ONLY route to force end month
     if (process.env.NODE_ENV !== 'production') {
