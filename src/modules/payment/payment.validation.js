@@ -10,6 +10,15 @@ const paymentValidation = {
     message: Joi.string().max(500).optional().allow(null, '')
   }),
 
+  promoteSchema: Joi.object({
+    submissionId: Joi.string().uuid().required(),
+    durationDays: Joi.number().valid(7, 15, 30).required(),
+  }),
+
+  captureSchema: Joi.object({
+    paymentId: Joi.string().required(), // PayPal Order ID
+  }),
+
   validate: (schema) => {
     return (req, res, next) => {
       const { error, value } = schema.validate(req.body, { abortEarly: false, allowUnknown: true });

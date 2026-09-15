@@ -885,30 +885,19 @@
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"durationDays\": 7\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
+                  "raw": "{\n  \"durationDays\": 7\n}"
                 },
                 "url": {
-                  "raw": "{{baseUrl}}/api/v1/artworks/:id/promote",
+                  "raw": "{{base_url}}/api/v1/artworks/YOUR_SUBMISSION_ID_HERE/promote",
                   "host": [
-                    "{{baseUrl}}"
+                    "{{base_url}}"
                   ],
                   "path": [
                     "api",
                     "v1",
                     "artworks",
-                    ":id",
+                    "YOUR_SUBMISSION_ID_HERE",
                     "promote"
-                  ],
-                  "variable": [
-                    {
-                      "key": "id",
-                      "value": "PUBLIC_ID_HERE"
-                    }
                   ]
                 }
               },
@@ -997,6 +986,35 @@
                 }
               },
               "response": []
+            },
+            {
+              "name": "Capture Promotion Payment",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"paymentId\": \"YOUR_PAYPAL_ORDER_ID_HERE\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/v1/artworks/promote/capture",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "artworks",
+                    "promote",
+                    "capture"
+                  ]
+                }
+              }
             }
           ]
         }

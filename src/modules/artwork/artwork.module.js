@@ -38,7 +38,8 @@ export class ArtworkModule {
     this.router.put('/:id', requireAuth, ArtworkValidation.validate(ArtworkValidation.updateSchema), this.artworkController.updateArtwork);
     this.router.delete('/:id', requireAuth, this.artworkController.deleteArtwork);
 
-    this.router.post('/:id/promote', requireAuth, ArtworkValidation.validate(ArtworkValidation.promoteSchema), this.artworkController.promoteArtwork);
+    this.router.post('/:id/promote', requireAuth, upload.none(), ArtworkValidation.validate(ArtworkValidation.promoteSchema), this.artworkController.promoteArtwork);
+    this.router.post('/promote/capture', requireAuth, upload.none(), this.artworkController.capturePromotion);
     this.router.post('/:id/switch-to-competition', requireAuth, ArtworkValidation.validate(ArtworkValidation.switchCompetitionSchema), this.artworkController.switchToCompetition);
     this.router.post('/:id/resubmit', requireAuth, ArtworkValidation.validate(ArtworkValidation.resubmitSchema), this.artworkController.resubmitArtwork);
 

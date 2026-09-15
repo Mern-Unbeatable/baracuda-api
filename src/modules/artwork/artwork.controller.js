@@ -209,8 +209,23 @@ export class ArtworkController {
       const { id } = req.params;
       const { durationDays } = req.validatedBody || req.body;
       
-      const result = await this.artworkService.promoteArtwork(id, userId, Number(durationDays));
-      res.status(200).json({ success: true, data: result });
+      const { default: paymentService } = await import('../payment/payment.service.js');
+      const result = await paymentService.createPromotionPayment(id, Number(durationDays), userId);
+      
+      res.status(200).json({ success: true, data: result, message: 'Checkout URL generated successfully' });
+    } catch (error) {
+      res.status(400).json({ success: false, error: error.message });
+    }
+  }
+
+  capturePromotion = async (req, res) => {
+    try {
+      const { paymentId } = req.validatedBody || req.body;
+      
+      const { default: paymentService } = await import('../payment/payment.service.js');
+      const result = await paymentService.capturePromotionPayment(paymentId);
+      
+      res.status(200).json({ success: true, data: result, message: 'Promotion payment captured successfully' });
     } catch (error) {
       res.status(400).json({ success: false, error: error.message });
     }

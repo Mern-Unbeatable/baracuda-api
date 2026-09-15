@@ -32,6 +32,7 @@ class PaymentController {
       next(err);
     }
   }
+
 }
 
 export default new PaymentController();
