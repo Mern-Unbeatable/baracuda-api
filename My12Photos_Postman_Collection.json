@@ -1389,6 +1389,33 @@
               }
             },
             {
+              "name": "Download Artwork",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/artworks/public/:id/download",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "artworks",
+                    "public",
+                    ":id",
+                    "download"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "ARTWORK_ID"
+                    }
+                  ]
+                }
+              }
+            },
+            {
               "name": "Like",
               "request": {
                 "auth": {

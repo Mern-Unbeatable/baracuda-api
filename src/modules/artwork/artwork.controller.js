@@ -52,6 +52,7 @@ export class ArtworkController {
         story,
         tags,
         camera,
+        resolution,
         format,
         isAiGenerated,
         copyrightConfirmed,
@@ -154,6 +155,8 @@ export class ArtworkController {
       // If error happens before headers are sent, return JSON error
       if (!res.headersSent) {
         res.status(400).json({ success: false, error: error.message });
+      } else {
+        res.end();
       }
     }
   }

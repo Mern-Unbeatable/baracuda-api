@@ -33,20 +33,15 @@ export class WatermarkService {
       const metadata = await sharp(filePath).metadata();
       const { width, height } = metadata;
       
-      // Calculate font size relative to image width (approx 3% of width)
-      const fontSize = Math.max(14, Math.floor(width * 0.03));
-      
-      const boxWidth = Math.max(120, fontSize * 8);
-      const boxHeight = Math.max(30, fontSize * 1.5);
+      // Calculate font size relative to image width (approx 5% of width for icon)
+      const fontSize = Math.max(30, Math.floor(width * 0.05));
       
       const svgText = `
-        <svg width="${boxWidth}" height="${boxHeight}">
+        <svg width="${fontSize * 1.5}" height="${fontSize * 1.5}">
           <style>
-            .title { fill: rgba(255, 255, 255, 0.9); font-size: ${fontSize}px; font-weight: bold; font-family: sans-serif; }
-            .bg { fill: rgba(0, 0, 0, 0.6); rx: 4px; }
+            .icon { font-size: ${fontSize}px; font-family: sans-serif; }
           </style>
-          <rect class="bg" x="0" y="0" width="${boxWidth}" height="${boxHeight}" />
-          <text class="title" x="10" y="${fontSize * 1.1}">✨ AI Generated</text>
+          <text class="icon" x="0" y="${fontSize}">✨</text>
         </svg>
       `;
 
@@ -75,12 +70,10 @@ export class WatermarkService {
         .videoFilters({
           filter: 'drawtext',
           options: {
-            text: '✨ AI Generated',
-            fontsize: '(w*0.03)',
+            text: '✨',
+            fontsize: '(w*0.05)',
             fontcolor: 'white',
-            box: 1,
-            boxcolor: 'black@0.5',
-            boxborderw: 5,
+            box: 0,
             x: 'w-tw-20',
             y: 'h-th-20'
           }
