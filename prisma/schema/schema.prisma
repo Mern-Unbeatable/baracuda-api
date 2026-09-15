@@ -504,7 +504,9 @@ model Winner {
   submissionId  String
   userId        String
   kind          AlbumKind
-  place         WinnerPlace
+  place         WinnerPlace?
+  rank          Int         @default(0)
+  isWinner      Boolean     @default(false)
   votes         Int
   points        Int
   createdAt     DateTime    @default(now())
@@ -513,7 +515,7 @@ model Winner {
   submission  Submission  @relation(fields: [submissionId], references: [id], onDelete: Cascade)
   user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([competitionId, kind, place])
+  @@unique([competitionId, kind, rank])
   @@index([userId])
   @@map("winners")
 }
