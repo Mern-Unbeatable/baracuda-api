@@ -395,6 +395,12 @@ export class ArtworkService {
     if (filters.status && filters.status.toUpperCase() !== 'ALL') {
       where.competitionState = filters.status.toUpperCase();
     }
+    if (filters.categoryId) {
+      where.categoryId = filters.categoryId;
+    }
+    if (filters.subcategoryId) {
+      where.subcategoryId = filters.subcategoryId;
+    }
     
     let orderBy = { createdAt: 'desc' };
     if (sort === 'popular') {
