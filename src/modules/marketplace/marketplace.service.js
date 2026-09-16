@@ -462,4 +462,54 @@ export class MarketplaceService {
     archive.finalize();
     return archive;
   }
+
+  async getMyPurchaseStats(userId) {
+    const orders = await prisma.order.findMany({
+      where: { userId, status: 'PAID' },
+      include: { items: true }
+    });
+
+    let totalPurchases = 0;
+    let totalSpent = 0;
+
+    orders.forEach(order => {
+      totalSpent += parseFloat(order.total);
+      totalPurchases += order.items.length;
+    });
+
+    return {
+      totalPurchases,
+      totalSpent: totalSpent.toFixed(2),
+      availableDownloads: totalPurchases // assuming all purchased items can be downloaded
+    };
+  }
+
+  async getMyPurchases(userId, skip = 0, take = 10) {
+    const [items, total] = await Promise.all([
+      prisma.orderItem.findMany({
+        where: { order: { userId, status: 'PAID' } },
+        include: {
+          order: { select: { createdAt: true, paymentMethod: true, paymentId: true } },
+          premiumPhoto: {
+            select: {
+              id: true,
+              title: true,
+              price: true,
+              license: true,
+              user: { select: { name: true, avatar: true } },
+              media: { orderBy: { slotIndex: 'asc' }, take: 1, select: { url: true, format: true } }
+            }
+          }
+        },
+        orderBy: { order: { createdAt: 'desc' } },
+        skip,
+        take
+      }),
+      prisma.orderItem.count({
+        where: { order: { userId, status: 'PAID' } }
+      })
+    ]);
+
+    return { data: items, total };
+  }
 }

@@ -331,4 +331,36 @@ export class MarketplaceController {
       }
     }
   }
+
+  getMyPurchaseStats = async (req, res) => {
+    try {
+      const userId = req.user.id;
+      const stats = await this.marketplaceService.getMyPurchaseStats(userId);
+      return ResponseUtil.success(res, 'My purchase stats fetched', stats);
+    } catch (error) {
+      return ResponseUtil.error(res, error.message, 500);
+    }
+  }
+
+  getMyPurchases = async (req, res) => {
+    try {
+      const userId = req.user.id;
+      const { skip, take, page, limit } = PaginationUtil.getPaginationOptions(req.query);
+      const result = await this.marketplaceService.getMyPurchases(userId, skip, take);
+
+      const formattedData = result.data.map(item => {
+        if (item.premiumPhoto) {
+          item.premiumPhoto = this.formatMediaUrls(req, item.premiumPhoto);
+        }
+        return item;
+      });
+
+      return ResponseUtil.success(res, 'My purchases fetched', {
+        data: formattedData,
+        meta: PaginationUtil.getMetadata(result.total, page, limit)
+      });
+    } catch (error) {
+      return ResponseUtil.error(res, error.message, 500);
+    }
+  }
 }

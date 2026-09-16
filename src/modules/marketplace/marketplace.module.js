@@ -66,6 +66,8 @@ export class MarketplaceModule {
     this.router.post('/premium-images/:id/like', requireAuth, this.marketplaceController.likePremiumPhoto);
 
     // Purchase endpoints
+    this.router.get('/my-purchases/stats', requireAuth, this.marketplaceController.getMyPurchaseStats);
+    this.router.get('/my-purchases', requireAuth, this.marketplaceController.getMyPurchases);
     this.router.post('/premium-images/:id/buy', optionalAuth, this.marketplaceController.buyPremiumPhoto);
     this.router.post('/premium-images/buy/capture', optionalAuth, this.marketplaceController.capturePurchase);
     this.router.get('/premium-images/:id/download', optionalAuth, this.marketplaceController.downloadPurchasedPhoto);
