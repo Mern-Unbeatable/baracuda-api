@@ -367,30 +367,49 @@ export class MarketplaceService {
   }
 
   async capturePurchaseOrder(paymentId) {
-    const captureData = await paymentService.capturePayPalOrder(paymentId);
-    
-    // Find the pending order
-    const order = await prisma.order.findFirst({
-      where: { paymentId },
-      include: { items: true }
-    });
+    // Run PayPal capture and DB order fetch CONCURRENTLY to save time!
+    const [captureData, order] = await Promise.all([
+      paymentService.capturePayPalOrder(paymentId),
+      prisma.order.findFirst({
+        where: { paymentId },
+        include: { items: true }
+      })
+    ]);
 
     if (!order) throw new Error('Order not found for this payment');
 
-    // Update order status to PAID
-    const updatedOrder = await prisma.order.update({
+    // Update order status to PAID and fetch photo details
+    const updateOrderPromise = prisma.order.update({
       where: { id: order.id },
-      data: { status: 'PAID' }
+      data: { status: 'PAID' },
+      include: {
+        items: {
+          include: {
+            premiumPhoto: {
+              select: {
+                id: true,
+                title: true,
+                media: { orderBy: { slotIndex: 'asc' }, take: 1, select: { url: true, format: true } }
+              }
+            }
+          }
+        }
+      }
     });
 
-    // Update total sales for the premium photo
+    const updatePromises = [updateOrderPromise];
+
+    // Update total sales for the premium photo concurrently
     if (order.items && order.items.length > 0) {
-      await prisma.premiumPhoto.update({
-        where: { id: order.items[0].premiumPhotoId },
-        data: { totalSales: { increment: 1 } }
-      });
+      updatePromises.push(
+        prisma.premiumPhoto.update({
+          where: { id: order.items[0].premiumPhotoId },
+          data: { totalSales: { increment: 1 } }
+        })
+      );
     }
 
+    const [updatedOrder] = await Promise.all(updatePromises);
     return updatedOrder;
   }
 

@@ -304,6 +304,11 @@ export class MarketplaceController {
       if (!paymentId) return ResponseUtil.error(res, 'paymentId is required', 400);
 
       const result = await this.marketplaceService.capturePurchaseOrder(paymentId);
+
+      if (result.items && result.items.length > 0 && result.items[0].premiumPhoto) {
+        result.items[0].premiumPhoto = this.formatMediaUrls(req, result.items[0].premiumPhoto);
+      }
+
       return ResponseUtil.success(res, 'Purchase successful', result);
     } catch (error) {
       return ResponseUtil.error(res, error.message, 500);
