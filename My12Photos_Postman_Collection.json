@@ -1429,7 +1429,7 @@
                                 "method": "GET",
                                 "header": [],
                                 "url": {
-                                    "raw": "{{base_url}}/api/v1/marketplace/premium-photos/:id",
+                                    "raw": "{{base_url}}/api/v1/marketplace/premium-images/:id",
                                     "host": [
                                         "{{base_url}}"
                                     ],
@@ -1437,7 +1437,7 @@
                                         "api",
                                         "v1",
                                         "marketplace",
-                                        "premium-photos",
+                                        "premium-images",
                                         ":id"
                                     ],
                                     "variable": [
@@ -1474,7 +1474,7 @@
                                     }
                                 },
                                 "url": {
-                                    "raw": "{{base_url}}/api/v1/marketplace/premium-photos/:id",
+                                    "raw": "{{base_url}}/api/v1/marketplace/premium-images/:id",
                                     "host": [
                                         "{{base_url}}"
                                     ],
@@ -1482,7 +1482,7 @@
                                         "api",
                                         "v1",
                                         "marketplace",
-                                        "premium-photos",
+                                        "premium-images",
                                         ":id"
                                     ],
                                     "variable": [
@@ -1506,7 +1506,7 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/v1/marketplace/premium-photos/:id",
+                                    "raw": "{{base_url}}/api/v1/marketplace/premium-images/:id",
                                     "host": [
                                         "{{base_url}}"
                                     ],
@@ -1514,7 +1514,7 @@
                                         "api",
                                         "v1",
                                         "marketplace",
-                                        "premium-photos",
+                                        "premium-images",
                                         ":id"
                                     ],
                                     "variable": [
@@ -1551,7 +1551,7 @@
                                     }
                                 },
                                 "url": {
-                                    "raw": "{{base_url}}/api/v1/marketplace/premium-photos/:id/promote",
+                                    "raw": "{{base_url}}/api/v1/marketplace/premium-images/:id/promote",
                                     "host": [
                                         "{{base_url}}"
                                     ],
@@ -1559,7 +1559,7 @@
                                         "api",
                                         "v1",
                                         "marketplace",
-                                        "premium-photos",
+                                        "premium-images",
                                         ":id",
                                         "promote"
                                     ],
@@ -1597,7 +1597,7 @@
                                     }
                                 },
                                 "url": {
-                                    "raw": "{{base_url}}/api/v1/marketplace/premium-photos/promote/capture",
+                                    "raw": "{{base_url}}/api/v1/marketplace/premium-images/promote/capture",
                                     "host": [
                                         "{{base_url}}"
                                     ],
@@ -1605,7 +1605,7 @@
                                         "api",
                                         "v1",
                                         "marketplace",
-                                        "premium-photos",
+                                        "premium-images",
                                         "promote",
                                         "capture"
                                     ]
@@ -2390,6 +2390,208 @@
                                 "description": "Fetch paginated winners from past competitions for the Winners Archive page."
                             },
                             "response": []
+                        }
+                    ]
+                },
+                {
+                    "name": "Buy Photos",
+                    "item": [
+                        {
+                            "name": "Explore Premium Photos",
+                            "request": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/api/v1/marketplace/public/premium-images?kind=SINGLE&page=1&limit=10",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "marketplace",
+                                        "public",
+                                        "premium-images"
+                                    ],
+                                    "query": [
+                                        {
+                                            "key": "kind",
+                                            "value": "SINGLE"
+                                        },
+                                        {
+                                            "key": "page",
+                                            "value": "1"
+                                        },
+                                        {
+                                            "key": "limit",
+                                            "value": "10"
+                                        },
+                                        {
+                                            "key": "search",
+                                            "value": "Nature",
+                                            "description": "Search title or story",
+                                            "disabled": true
+                                        },
+                                        {
+                                            "key": "categoryId",
+                                            "value": "eb614b93-3b20-419c-acd3-72dd0d64a0e7",
+                                            "description": "Filter by Parent Category ID",
+                                            "disabled": true
+                                        },
+                                        {
+                                            "key": "subcategoryId",
+                                            "value": "bab96dff-7586-4b38-a6c7-7b46ab29021e",
+                                            "description": "Filter by Subcategory ID",
+                                            "disabled": true
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Get Premium Photo Details",
+                            "request": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/api/v1/marketplace/public/premium-images/{{premiumPhotoId}}",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "marketplace",
+                                        "public",
+                                        "premium-images",
+                                        "{{premiumPhotoId}}"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Like Premium Photo",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{token}}",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{base_url}}/api/v1/marketplace/premium-images/{{premiumPhotoId}}/like",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "marketplace",
+                                        "premium-images",
+                                        "{{premiumPhotoId}}",
+                                        "like"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Buy Premium Photo",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"email\": \"guest@example.com\",\n  \"fullName\": \"Guest User\"\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/api/v1/marketplace/premium-images/{{premiumPhotoId}}/buy",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "marketplace",
+                                        "premium-images",
+                                        "{{premiumPhotoId}}",
+                                        "buy"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Capture Purchase",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"paymentId\": \"PAYPAL_ORDER_ID\"\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/api/v1/marketplace/premium-images/buy/capture",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "marketplace",
+                                        "premium-images",
+                                        "buy",
+                                        "capture"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Download Purchased Photo",
+                            "request": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/api/v1/marketplace/premium-images/{{premiumPhotoId}}/download?orderId={{orderId}}",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "marketplace",
+                                        "premium-images",
+                                        "{{premiumPhotoId}}",
+                                        "download"
+                                    ],
+                                    "query": [
+                                        {
+                                            "key": "orderId",
+                                            "value": "{{orderId}}"
+                                        }
+                                    ]
+                                }
+                            }
                         }
                     ]
                 }

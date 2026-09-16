@@ -1,7 +1,5 @@
 import prisma from '../../config/prisma.js';
-import { createRequire } from 'module';
-const require = createRequire(import.meta.url);
-const archiver = require('archiver');
+import { ZipArchive } from 'archiver';
 import fs from 'fs';
 import path from 'path';
 
@@ -190,7 +188,7 @@ export class ArtworkService {
       'Content-Disposition': `attachment; filename="Artwork-${id}.zip"`
     });
 
-    const archive = archiver('zip', {
+    const archive = new ZipArchive({
       zlib: { level: 9 } // Sets the compression level
     });
 

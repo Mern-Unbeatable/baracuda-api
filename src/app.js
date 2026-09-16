@@ -68,7 +68,7 @@ class App {
     this.app.use('/api/v1/competitions', competitionModule.router);
 
     const marketplaceModule = new MarketplaceModule();
-    this.app.use('/api/v1/marketplace/premium-photos', marketplaceModule.router);
+    this.app.use('/api/v1/marketplace', marketplaceModule.router);
 
     this.app.use('/api/v1/payments', paymentRouter);
   }

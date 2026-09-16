@@ -235,4 +235,95 @@ export class MarketplaceController {
       return ResponseUtil.error(res, error.message || 'Error capturing payment', 500);
     }
   }
+  getPublicPremiumPhotos = async (req, res) => {
+    try {
+      const { kind, categoryId, subcategoryId, sort, search } = req.query;
+      const { skip, take, page, limit } = PaginationUtil.getPaginationOptions(req.query);
+      const viewerId = req.user?.id;
+
+      const result = await this.marketplaceService.getPublicPremiumPhotos(
+        { kind, categoryId, subcategoryId, search },
+        sort || 'newest',
+        skip,
+        take,
+        viewerId
+      );
+
+      const formattedData = result.data.map(p => this.formatMediaUrls(req, p));
+
+      return ResponseUtil.success(res, 'Public premium photos fetched', {
+        data: formattedData,
+        meta: PaginationUtil.getMetadata(result.total, page, limit)
+      });
+    } catch (error) {
+      return ResponseUtil.error(res, error.message, 500);
+    }
+  }
+
+  getPublicPremiumPhotoDetails = async (req, res) => {
+    try {
+      const viewerId = req.user?.id || req.ip;
+      const photo = await this.marketplaceService.getPublicPremiumPhotoDetails(req.params.id, viewerId);
+      if (!photo) return ResponseUtil.error(res, 'Premium photo not found', 404);
+
+      const formattedData = this.formatMediaUrls(req, photo);
+      return ResponseUtil.success(res, 'Premium photo details fetched', formattedData);
+    } catch (error) {
+      return ResponseUtil.error(res, error.message, 500);
+    }
+  }
+
+  likePremiumPhoto = async (req, res) => {
+    try {
+      const userId = req.user.id;
+      const result = await this.marketplaceService.toggleLikePremiumPhoto(req.params.id, userId);
+      const msg = result.liked ? 'Photo liked successfully' : 'Photo unliked successfully';
+      return ResponseUtil.success(res, msg, result);
+    } catch (error) {
+      return ResponseUtil.error(res, error.message, 400);
+    }
+  }
+
+  buyPremiumPhoto = async (req, res) => {
+    try {
+      const { email, fullName } = req.body;
+      if (!email || !fullName) return ResponseUtil.error(res, 'Email and full name are required', 400);
+      
+      const userId = req.user?.id; // guest allowed
+      const result = await this.marketplaceService.createPurchaseOrder(req.params.id, userId, email, fullName);
+      
+      return ResponseUtil.success(res, 'Purchase checkout created', result);
+    } catch (error) {
+      return ResponseUtil.error(res, error.message, 500);
+    }
+  }
+
+  capturePurchase = async (req, res) => {
+    try {
+      const { paymentId } = req.body;
+      if (!paymentId) return ResponseUtil.error(res, 'paymentId is required', 400);
+
+      const result = await this.marketplaceService.capturePurchaseOrder(paymentId);
+      return ResponseUtil.success(res, 'Purchase successful', result);
+    } catch (error) {
+      return ResponseUtil.error(res, error.message, 500);
+    }
+  }
+
+  downloadPurchasedPhoto = async (req, res) => {
+    try {
+      const userId = req.user?.id;
+      const { orderId } = req.query; // If guest, they can provide orderId from email receipt
+
+      const zipStream = await this.marketplaceService.downloadPurchasedPhoto(req.params.id, userId, orderId);
+      
+      res.setHeader('Content-Type', 'application/zip');
+      res.setHeader('Content-Disposition', `attachment; filename="premium_photo_${req.params.id}.zip"`);
+      zipStream.pipe(res);
+    } catch (error) {
+      if (!res.headersSent) {
+        return ResponseUtil.error(res, error.message, (error.message === 'Unauthorized access' || error.message === 'Not purchased') ? 403 : 500);
+      }
+    }
+  }
 }

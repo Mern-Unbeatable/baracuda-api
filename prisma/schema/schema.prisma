@@ -257,6 +257,7 @@ model User {
   donationsReceived    Donation[]            @relation("Artist")
   orders               Order[]
   payouts              Payout[]
+  premiumPhotoLikes    PremiumPhotoLike[]
   payoutAccounts       PayoutAccount[]
   supportTickets       SupportTicket[]
   businessAlbums       BusinessAlbum[]
@@ -564,6 +565,31 @@ model PhotographerMessage {
   @@map("photographer_messages")
 }
 
+model PremiumPhotoLike {
+  id             String       @id @default(uuid())
+  premiumPhotoId String
+  userId         String
+  createdAt      DateTime     @default(now())
+
+  premiumPhoto   PremiumPhoto @relation(fields: [premiumPhotoId], references: [id], onDelete: Cascade)
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([premiumPhotoId, userId])
+  @@map("premium_photo_likes")
+}
+
+model PremiumPhotoView {
+  id             String       @id @default(uuid())
+  premiumPhotoId String
+  viewerId       String       // Can be userId or ipAddress
+  createdAt      DateTime     @default(now())
+
+  premiumPhoto   PremiumPhoto @relation(fields: [premiumPhotoId], references: [id], onDelete: Cascade)
+
+  @@unique([premiumPhotoId, viewerId])
+  @@map("premium_photo_views")
+}
+
 model MessageLike {
   id        String   @id @default(uuid())
   messageId String
@@ -864,12 +890,14 @@ model PremiumPhoto {
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
 
-  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  submission Submission? @relation(fields: [submissionId], references: [id], onDelete: SetNull)
-  category   Category?   @relation(fields: [categoryId], references: [id], onDelete: SetNull)
-  orderItems OrderItem[]
-  media      PremiumPhotoMedia[]
-  promotions PromotedAlbum[]
+  user              User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  submission        Submission?        @relation(fields: [submissionId], references: [id], onDelete: SetNull)
+  category          Category?          @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  orderItems        OrderItem[]
+  media             PremiumPhotoMedia[]
+  promotions        PromotedAlbum[]
+  premiumPhotoLikes PremiumPhotoLike[]
+  premiumPhotoViews PremiumPhotoView[]
 
   @@index([isActive, createdAt])
   @@index([kind])
@@ -898,7 +926,7 @@ model PremiumPhotoMedia {
 
 model Order {
   id            String      @id @default(uuid())
-  userId        String
+  userId        String?
   email         String
   fullName      String
   address       String?
@@ -910,7 +938,7 @@ model Order {
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
 
-  user  User        @relation(fields: [userId], references: [id])
+  user  User?       @relation(fields: [userId], references: [id])
   items OrderItem[]
 
   @@map("orders")

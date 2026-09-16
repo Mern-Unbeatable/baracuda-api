@@ -23,11 +23,11 @@ export class MarketplaceModule {
     ]);
 
     // Endpoints for premium photos
-    this.router.get('/', optionalAuth, this.marketplaceController.getAllPremiumPhotos);
-    this.router.get('/:id', optionalAuth, this.marketplaceController.getPremiumPhotoById);
+    this.router.get('/premium-photos', optionalAuth, this.marketplaceController.getAllPremiumPhotos);
+    this.router.get('/premium-photos/:id', optionalAuth, this.marketplaceController.getPremiumPhotoById);
     
     this.router.post(
-      '/',
+      '/premium-photos',
       requireAuth,
       photoUploadFields,
       MarketplaceValidation.validate(MarketplaceValidation.createSchema),
@@ -35,17 +35,17 @@ export class MarketplaceModule {
     );
     
     this.router.put(
-      '/:id',
+      '/premium-photos/:id',
       requireAuth,
       MarketplaceValidation.validate(MarketplaceValidation.updateSchema),
       this.marketplaceController.updatePremiumPhoto
     );
 
-    this.router.delete('/:id', requireAuth, this.marketplaceController.deletePremiumPhoto);
+    this.router.delete('/premium-photos/:id', requireAuth, this.marketplaceController.deletePremiumPhoto);
 
     // Promotion endpoints
     this.router.post(
-      '/:id/promote',
+      '/premium-photos/:id/promote',
       requireAuth,
       upload.none(),
       MarketplaceValidation.validate(MarketplaceValidation.promoteSchema),
@@ -53,10 +53,21 @@ export class MarketplaceModule {
     );
     
     this.router.post(
-      '/promote/capture',
+      '/premium-photos/promote/capture',
       requireAuth,
       upload.none(),
       this.marketplaceController.capturePromotion
     );
+    // Public endpoints for Explore and Details
+    this.router.get('/public/premium-images', optionalAuth, this.marketplaceController.getPublicPremiumPhotos);
+    this.router.get('/public/premium-images/:id', optionalAuth, this.marketplaceController.getPublicPremiumPhotoDetails);
+
+    // Interaction endpoints
+    this.router.post('/premium-images/:id/like', requireAuth, this.marketplaceController.likePremiumPhoto);
+
+    // Purchase endpoints
+    this.router.post('/premium-images/:id/buy', optionalAuth, this.marketplaceController.buyPremiumPhoto);
+    this.router.post('/premium-images/buy/capture', optionalAuth, this.marketplaceController.capturePurchase);
+    this.router.get('/premium-images/:id/download', optionalAuth, this.marketplaceController.downloadPurchasedPhoto);
   }
 }
