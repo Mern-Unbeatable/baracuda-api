@@ -229,32 +229,58 @@ export class MarketplaceService {
       orderBy = { likesCount: 'desc' };
     }
 
-    const [photos, total] = await Promise.all([
-      prisma.premiumPhoto.findMany({
-        where,
-        select: {
-          id: true,
-          kind: true,
-          title: true,
-          price: true,
-          likesCount: true,
-          viewsCount: true,
-          createdAt: true,
-          media: {
-            select: { url: true, format: true },
-            orderBy: { slotIndex: 'asc' },
-            take: 1
-          },
-          user: { select: { id: true, name: true, avatar: true } },
-          category: { select: { name: true } },
-          ...(viewerId && { premiumPhotoLikes: { where: { userId: viewerId }, select: { id: true } } })
-        },
-        orderBy,
-        skip,
-        take
-      }),
-      prisma.premiumPhoto.count({ where })
+    const now = new Date();
+    
+    // Conditions for active promotion vs unpromoted
+    const activePromoCondition = { isActive: true, endsAt: { gt: now } };
+    const promotedWhere = { ...where, promotions: { some: activePromoCondition } };
+    const unpromotedWhere = { ...where, promotions: { none: activePromoCondition } };
+
+    const select = {
+      id: true,
+      kind: true,
+      title: true,
+      price: true,
+      likesCount: true,
+      viewsCount: true,
+      createdAt: true,
+      media: {
+        select: { url: true, format: true },
+        orderBy: { slotIndex: 'asc' },
+        take: 1
+      },
+      user: { select: { id: true, name: true, avatar: true } },
+      category: { select: { name: true } },
+      ...(viewerId && { premiumPhotoLikes: { where: { userId: viewerId }, select: { id: true } } })
+    };
+
+    const [promotedCount, unpromotedCount] = await Promise.all([
+      prisma.premiumPhoto.count({ where: promotedWhere }),
+      prisma.premiumPhoto.count({ where: unpromotedWhere })
     ]);
+
+    const total = promotedCount + unpromotedCount;
+    let photos = [];
+
+    if (skip < promotedCount) {
+      const promotedTake = Math.min(take, promotedCount - skip);
+      const promotedData = await prisma.premiumPhoto.findMany({
+        where: promotedWhere, select, orderBy, skip, take: promotedTake
+      });
+      photos = photos.concat(promotedData);
+
+      if (photos.length < take && unpromotedCount > 0) {
+        const unpromotedData = await prisma.premiumPhoto.findMany({
+          where: unpromotedWhere, select, orderBy, skip: 0, take: take - photos.length
+        });
+        photos = photos.concat(unpromotedData);
+      }
+    } else {
+      const unpromotedData = await prisma.premiumPhoto.findMany({
+        where: unpromotedWhere, select, orderBy, skip: skip - promotedCount, take
+      });
+      photos = photos.concat(unpromotedData);
+    }
 
     return { data: photos, total };
   }

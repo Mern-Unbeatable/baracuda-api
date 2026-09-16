@@ -407,35 +407,68 @@ export class ArtworkService {
       orderBy = { likesCount: 'desc' };
     }
     
-    const [rawData, total] = await Promise.all([
-      prisma.submission.findMany({
-        where,
-        select: {
-          id: true,
-          kind: true,
-          title: true,
-          story: true,
-          viewsCount: true,
-          likesCount: true,
-          votesCount: true,
-          createdAt: true,
-          competitionState: true,
-          status: true,
-          media: {
-            select: { url: true, format: true },
-            orderBy: { slotIndex: 'asc' },
-            take: 1
-          },
-          user: { select: { id: true, name: true, avatar: true } },
-          category: { select: { name: true } },
-          ...(viewerId && { saves: { where: { userId: viewerId }, select: { id: true } } })
-        },
-        orderBy,
-        skip,
-        take
-      }),
-      prisma.submission.count({ where })
+    const now = new Date();
+    
+    // Conditions for active promotion vs unpromoted
+    const activePromoCondition = { isActive: true, endsAt: { gt: now } };
+    const promotedWhere = { ...where, promotion: activePromoCondition };
+    // For unpromoted, it can either have no promotion, or an inactive/expired one
+    const unpromotedWhere = { 
+      ...where, 
+      OR: [
+        { promotion: null },
+        { promotion: { isNot: activePromoCondition } }
+      ]
+    };
+
+    const select = {
+      id: true,
+      kind: true,
+      title: true,
+      story: true,
+      viewsCount: true,
+      likesCount: true,
+      votesCount: true,
+      createdAt: true,
+      competitionState: true,
+      status: true,
+      media: {
+        select: { url: true, format: true },
+        orderBy: { slotIndex: 'asc' },
+        take: 1
+      },
+      user: { select: { id: true, name: true, avatar: true } },
+      category: { select: { name: true } },
+      ...(viewerId && { saves: { where: { userId: viewerId }, select: { id: true } } })
+    };
+
+    const [promotedCount, unpromotedCount] = await Promise.all([
+      prisma.submission.count({ where: promotedWhere }),
+      prisma.submission.count({ where: unpromotedWhere })
     ]);
+
+    const total = promotedCount + unpromotedCount;
+    let rawData = [];
+
+    if (skip < promotedCount) {
+      const promotedTake = Math.min(take, promotedCount - skip);
+      const promotedData = await prisma.submission.findMany({
+        where: promotedWhere, select, orderBy, skip, take: promotedTake
+      });
+      rawData = rawData.concat(promotedData);
+
+      if (rawData.length < take && unpromotedCount > 0) {
+        const unpromotedData = await prisma.submission.findMany({
+          where: unpromotedWhere, select, orderBy, skip: 0, take: take - rawData.length
+        });
+        rawData = rawData.concat(unpromotedData);
+      }
+    } else {
+      const unpromotedData = await prisma.submission.findMany({
+        where: unpromotedWhere, select, orderBy, skip: skip - promotedCount, take
+      });
+      rawData = rawData.concat(unpromotedData);
+    }
     
     const data = rawData.map(item => {
       const formatted = { ...item };
