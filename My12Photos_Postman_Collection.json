@@ -1017,6 +1017,603 @@
               }
             }
           ]
+        },
+        {
+          "name": "Sell Photos",
+          "item": [
+            {
+              "name": "Create Premium Photo (SINGLE)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{auth_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "kind",
+                      "value": "SINGLE",
+                      "type": "text"
+                    },
+                    {
+                      "key": "zodiacSign",
+                      "value": "ARIES",
+                      "type": "text"
+                    },
+                    {
+                      "key": "title",
+                      "value": "{\"en\": \"My Photo Title\"}",
+                      "type": "text"
+                    },
+                    {
+                      "key": "price",
+                      "value": "5.00",
+                      "type": "text",
+                      "description": "Required. Price in GBP"
+                    },
+                    {
+                      "key": "isAiGenerated",
+                      "value": "false",
+                      "type": "text"
+                    },
+                    {
+                      "key": "copyrightConfirmed",
+                      "value": "true",
+                      "type": "text"
+                    },
+                    {
+                      "key": "resolution",
+                      "value": "60000x60000",
+                      "type": "text"
+                    },
+                    {
+                      "key": "quality",
+                      "value": "4K",
+                      "type": "text"
+                    },
+                    {
+                      "key": "categoryId",
+                      "value": "INSERT_CATEGORY_UUID",
+                      "type": "text"
+                    },
+                    {
+                      "key": "subcategoryId",
+                      "value": "INSERT_SUBCATEGORY_UUID",
+                      "type": "text"
+                    },
+                    {
+                      "key": "images",
+                      "type": "file",
+                      "src": ""
+                    },
+                    {
+                      "key": "video",
+                      "type": "file",
+                      "src": ""
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/v1/marketplace/premium-photos",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "marketplace",
+                    "premium-photos"
+                  ]
+                },
+                "description": "Create a premium photo for sale. Same as Create Artwork but no story/competitionState. Price is required."
+              },
+              "response": []
+            },
+            {
+              "name": "Create Premium Photo (SIX)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{auth_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "kind",
+                      "value": "SIX",
+                      "type": "text"
+                    },
+                    {
+                      "key": "theme",
+                      "value": "RED",
+                      "type": "text",
+                      "description": "RED or BLUE"
+                    },
+                    {
+                      "key": "title",
+                      "value": "{\"en\": \"My Photo Title\"}",
+                      "type": "text"
+                    },
+                    {
+                      "key": "price",
+                      "value": "5.00",
+                      "type": "text",
+                      "description": "Required. Price in GBP"
+                    },
+                    {
+                      "key": "isAiGenerated",
+                      "value": "false",
+                      "type": "text"
+                    },
+                    {
+                      "key": "copyrightConfirmed",
+                      "value": "true",
+                      "type": "text"
+                    },
+                    {
+                      "key": "resolution",
+                      "value": "60000x60000",
+                      "type": "text"
+                    },
+                    {
+                      "key": "quality",
+                      "value": "4K",
+                      "type": "text"
+                    },
+                    {
+                      "key": "categoryId",
+                      "value": "INSERT_CATEGORY_UUID",
+                      "type": "text"
+                    },
+                    {
+                      "key": "subcategoryId",
+                      "value": "INSERT_SUBCATEGORY_UUID",
+                      "type": "text"
+                    },
+                    {
+                      "key": "images",
+                      "type": "file",
+                      "src": ""
+                    },
+                    {
+                      "key": "images",
+                      "type": "file",
+                      "src": ""
+                    },
+                    {
+                      "key": "images",
+                      "type": "file",
+                      "src": ""
+                    },
+                    {
+                      "key": "images",
+                      "type": "file",
+                      "src": ""
+                    },
+                    {
+                      "key": "images",
+                      "type": "file",
+                      "src": ""
+                    },
+                    {
+                      "key": "images",
+                      "type": "file",
+                      "src": ""
+                    },
+                    {
+                      "key": "video",
+                      "type": "file",
+                      "src": ""
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/v1/marketplace/premium-photos",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "marketplace",
+                    "premium-photos"
+                  ]
+                },
+                "description": "Create a premium photo for sale. Same as Create Artwork but no story/competitionState. Price is required."
+              },
+              "response": []
+            },
+            {
+              "name": "Create Premium Photo (TWELVE)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{auth_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "kind",
+                      "value": "TWELVE",
+                      "type": "text"
+                    },
+                    {
+                      "key": "theme",
+                      "value": "FULL",
+                      "type": "text"
+                    },
+                    {
+                      "key": "zodiacSigns",
+                      "value": "[\"ARIES\",\"TAURUS\",\"GEMINI\",\"CANCER\",\"LEO\",\"VIRGO\",\"LIBRA\",\"SCORPIO\",\"SAGITTARIUS\",\"CAPRICORN\",\"AQUARIUS\",\"PISCES\"]",
+                      "type": "text"
+                    },
+                    {
+                      "key": "title",
+                      "value": "{\"en\": \"My Photo Title\"}",
+                      "type": "text"
+                    },
+                    {
+                      "key": "price",
+                      "value": "5.00",
+                      "type": "text",
+                      "description": "Required. Price in GBP"
+                    },
+                    {
+                      "key": "isAiGenerated",
+                      "value": "false",
+                      "type": "text"
+                    },
+                    {
+                      "key": "copyrightConfirmed",
+                      "value": "true",
+                      "type": "text"
+                    },
+                    {
+                      "key": "resolution",
+                      "value": "60000x60000",
+                      "type": "text"
+                    },
+                    {
+                      "key": "quality",
+                      "value": "4K",
+                      "type": "text"
+                    },
+                    {
+                      "key": "categoryId",
+                      "value": "INSERT_CATEGORY_UUID",
+                      "type": "text"
+                    },
+                    {
+                      "key": "subcategoryId",
+                      "value": "INSERT_SUBCATEGORY_UUID",
+                      "type": "text"
+                    },
+                    {
+                      "key": "images",
+                      "type": "file",
+                      "src": ""
+                    },
+                    {
+                      "key": "images",
+                      "type": "file",
+                      "src": ""
+                    },
+                    {
+                      "key": "images",
+                      "type": "file",
+                      "src": ""
+                    },
+                    {
+                      "key": "images",
+                      "type": "file",
+                      "src": ""
+                    },
+                    {
+                      "key": "images",
+                      "type": "file",
+                      "src": ""
+                    },
+                    {
+                      "key": "images",
+                      "type": "file",
+                      "src": ""
+                    },
+                    {
+                      "key": "images",
+                      "type": "file",
+                      "src": ""
+                    },
+                    {
+                      "key": "images",
+                      "type": "file",
+                      "src": ""
+                    },
+                    {
+                      "key": "images",
+                      "type": "file",
+                      "src": ""
+                    },
+                    {
+                      "key": "images",
+                      "type": "file",
+                      "src": ""
+                    },
+                    {
+                      "key": "images",
+                      "type": "file",
+                      "src": ""
+                    },
+                    {
+                      "key": "images",
+                      "type": "file",
+                      "src": ""
+                    },
+                    {
+                      "key": "video",
+                      "type": "file",
+                      "src": ""
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/v1/marketplace/premium-photos",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "marketplace",
+                    "premium-photos"
+                  ]
+                },
+                "description": "Create a premium photo for sale. Same as Create Artwork but no story/competitionState. Price is required."
+              },
+              "response": []
+            },
+            {
+              "name": "Get All Premium Photos",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/marketplace/premium-photos?kind=ALL&page=1&limit=10",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "marketplace",
+                    "premium-photos"
+                  ],
+                  "query": [
+                    {
+                      "key": "kind",
+                      "value": "ALL",
+                      "description": "SINGLE | SIX | TWELVE | ALL"
+                    },
+                    {
+                      "key": "categoryId",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get Premium Photo by ID",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/marketplace/premium-photos/:id",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "marketplace",
+                    "premium-photos",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": ""
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Update Premium Photo",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{auth_token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"title\": {\"en\": \"Updated Title\"},\n  \"price\": 7.50\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/v1/marketplace/premium-photos/:id",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "marketplace",
+                    "premium-photos",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": ""
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Delete Premium Photo",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{auth_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/marketplace/premium-photos/:id",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "marketplace",
+                    "premium-photos",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": ""
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Promote Premium Photo (Checkout)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{auth_token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"durationDays\": 7\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/v1/marketplace/premium-photos/:id/promote",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "marketplace",
+                    "premium-photos",
+                    ":id",
+                    "promote"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": ""
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Capture Promotion Payment",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{auth_token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"paymentId\": \"PAYPAL_ORDER_ID_HERE\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/v1/marketplace/premium-photos/promote/capture",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "marketplace",
+                    "premium-photos",
+                    "promote",
+                    "capture"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
         }
       ]
     },

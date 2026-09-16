@@ -1,7 +1,11 @@
 import sharp from 'sharp';
 import ffmpeg from 'fluent-ffmpeg';
+import ffmpegStatic from 'ffmpeg-static';
 import fs from 'fs/promises';
 import path from 'path';
+
+// Tell fluent-ffmpeg where to find the ffmpeg binary
+ffmpeg.setFfmpegPath(ffmpegStatic);
 
 export class WatermarkService {
   /**

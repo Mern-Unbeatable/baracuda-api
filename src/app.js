@@ -4,6 +4,7 @@ import { AuthModule } from './modules/auth/auth.module.js';
 import { CategoryModule } from './modules/category/category.module.js';
 import { ArtworkModule } from './modules/artwork/artwork.module.js';
 import { CompetitionModule } from './modules/competition/competition.module.js';
+import { MarketplaceModule } from './modules/marketplace/marketplace.module.js';
 import paymentRouter from './modules/payment/payment.module.js';
 import config from './config/env.js';
 
@@ -65,6 +66,9 @@ class App {
 
     const competitionModule = new CompetitionModule();
     this.app.use('/api/v1/competitions', competitionModule.router);
+
+    const marketplaceModule = new MarketplaceModule();
+    this.app.use('/api/v1/marketplace/premium-photos', marketplaceModule.router);
 
     this.app.use('/api/v1/payments', paymentRouter);
   }

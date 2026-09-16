@@ -845,15 +845,15 @@ model PremiumPhoto {
   theme        AlbumTheme?
   zodiacSign   ZodiacSign?
   title        Json
-  description  Json?
   story        Json?
-  previewUrl   String
-  fileUrl      String
   price        Decimal     @db.Decimal(10, 2)
   camera       String?
   resolution   String?
   format       String?
+  quality      String?
   license      String?
+  isAiGenerated     Boolean  @default(false)
+  copyrightConfirmed Boolean @default(false)
   width        Int?
   height       Int?
   likesCount   Int         @default(0)
@@ -868,10 +868,32 @@ model PremiumPhoto {
   submission Submission? @relation(fields: [submissionId], references: [id], onDelete: SetNull)
   category   Category?   @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   orderItems OrderItem[]
+  media      PremiumPhotoMedia[]
+  promotions PromotedAlbum[]
 
   @@index([isActive, createdAt])
   @@index([kind])
   @@map("premium_photos")
+}
+
+model PremiumPhotoMedia {
+  id             String  @id @default(uuid())
+  premiumPhotoId String
+  kind           MediaKind
+  slotIndex      Int     @default(0)
+  zodiacSign     ZodiacSign?
+  url            String
+  thumbnailUrl   String?
+  width          Int?
+  height         Int?
+  format         String?
+  bytes          Int?
+  createdAt      DateTime @default(now())
+
+  premiumPhoto PremiumPhoto @relation(fields: [premiumPhotoId], references: [id], onDelete: Cascade)
+
+  @@index([premiumPhotoId])
+  @@map("premium_photo_media")
 }
 
 model Order {
@@ -907,21 +929,25 @@ model OrderItem {
 }
 
 model PromotedAlbum {
-  id           String   @id @default(uuid())
-  submissionId String   @unique
-  userId       String
-  tierId       String?
-  durationDays Int
-  startsAt     DateTime
-  endsAt       DateTime
-  amountPaid   Decimal  @db.Decimal(10, 2)
-  isActive     Boolean  @default(true)
-  createdAt    DateTime @default(now())
+  id             String   @id @default(uuid())
+  submissionId   String?
+  premiumPhotoId String?
+  userId         String
+  tierId         String?
+  durationDays   Int
+  startsAt       DateTime
+  endsAt         DateTime
+  amountPaid     Decimal  @db.Decimal(10, 2)
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
 
-  submission Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
-  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  submission   Submission?   @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  premiumPhoto PremiumPhoto? @relation(fields: [premiumPhotoId], references: [id], onDelete: Cascade)
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([isActive, endsAt])
+  @@unique([submissionId])
+  @@unique([premiumPhotoId])
   @@map("promoted_albums")
 }
 

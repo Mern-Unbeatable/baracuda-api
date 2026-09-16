@@ -112,7 +112,8 @@ export class ArtworkController {
       ResponseUtil.actionSuccess(res, 'Artwork created successfully', result.id, 201);
       
       // Run watermark asynchronously so response isn't blocked
-      watermarkService.applyWatermarkInBackground(mediaFiles, isAiGenerated).catch(console.error);
+      const aiGenerated = isAiGenerated === 'true' || isAiGenerated === true;
+      watermarkService.applyWatermarkInBackground(mediaFiles, aiGenerated).catch(console.error);
     } catch (error) {
       res.status(400).json({ success: false, error: error.message });
     }

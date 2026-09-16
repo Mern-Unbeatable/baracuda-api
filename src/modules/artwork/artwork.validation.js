@@ -1,45 +1,16 @@
 import Joi from 'joi';
 import { ResponseUtil } from '../../utils/response.js';
+import { basePhotoSchema } from '../../validators/photo.validator.js';
 
 export const ArtworkValidation = {
-  createSchema: Joi.object({
-    kind: Joi.string().valid('SINGLE', 'SIX', 'TWELVE').required(),
-    theme: Joi.when('kind', {
-      is: 'SIX',
-      then: Joi.string().valid('RED', 'BLUE').required().messages({
-        'any.only': 'For SIX photos, theme must be RED or BLUE',
-        'any.required': 'Theme is required for SIX photos'
-      }),
-      otherwise: Joi.when('kind', {
-        is: 'TWELVE',
-        then: Joi.string().valid('FULL').required().messages({
-          'any.only': 'For TWELVE photos, theme must be FULL',
-          'any.required': 'Theme is required for TWELVE photos'
-        }),
-        otherwise: Joi.string().valid(null, '').optional()
-      })
-    }),
-    zodiacSign: Joi.when('kind', {
-      is: 'SINGLE',
-      then: Joi.string().valid('ARIES', 'TAURUS', 'GEMINI', 'CANCER', 'LEO', 'VIRGO', 'LIBRA', 'SCORPIO', 'SAGITTARIUS', 'CAPRICORN', 'AQUARIUS', 'PISCES').optional().allow(null, ''),
-      otherwise: Joi.string().valid(null, '').optional()
-    }),
-    zodiacSigns: Joi.any().optional(), // Allow array/JSON of signs for TWELVE and SIX
+  createSchema: basePhotoSchema.keys({
     visibility: Joi.string().valid('PUBLIC', 'PRIVATE_BUSINESS').optional().allow(null, ''),
     competitionState: Joi.string().valid('PROFILE_ONLY', 'IN_COMPETITION', 'ENDED').optional().allow(null, ''),
-    categoryId: Joi.string().uuid().optional().allow(null, ''),
     subcategoryId: Joi.string().uuid().optional().allow(null, ''),
-    title: Joi.any().required().messages({ 'any.required': 'Title is required' }),
-    story: Joi.any().optional().allow(null, ''),
     tags: Joi.any().optional().allow(null, ''),
-    camera: Joi.string().optional().allow(null, ''),
-    resolution: Joi.string().optional().allow(null, ''),
-    format: Joi.string().optional().allow(null, ''),
     isAiGenerated: Joi.any().optional(),
     copyrightConfirmed: Joi.any().optional(),
     quality: Joi.string().optional().allow(null, ''),
-    images: Joi.any().required().messages({ 'any.required': 'At least one image is required' }),
-    video: Joi.any().optional().allow(null, ''),
   }),
 
   updateSchema: Joi.object({
