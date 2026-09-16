@@ -32,6 +32,16 @@ const fileFilter = (req, file, cb) => {
     } else {
       cb(new Error('Only mp4 videos are allowed!'), false);
     }
+  } else if (file.fieldname === 'media') {
+    const allowedImageTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/avif'];
+    const ext = path.extname(file.originalname).toLowerCase();
+    const allowedImageExts = ['.jpg', '.jpeg', '.png', '.webp', '.avif'];
+
+    if (allowedImageTypes.includes(file.mimetype) || allowedImageExts.includes(ext) || file.mimetype === 'video/mp4') {
+      cb(null, true);
+    } else {
+      cb(new Error('Invalid media file. Supported formats: jpg, jpeg, png, webp, avif, or mp4 video'), false);
+    }
   } else {
     cb(new Error('Unexpected field: ' + file.fieldname), false);
   }
