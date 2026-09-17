@@ -83,6 +83,108 @@ export class AdvertisementService {
     return InvoicePdfGenerator.generate(advertisement);
   }
 
+  // --- ADMIN APIs ---
+
+  async getAllAdvertisements(query = {}) {
+    const page = parseInt(query.page, 10) || 1;
+    const limit = parseInt(query.limit, 10) || 10;
+    const skip = (page - 1) * limit;
+
+    const where = {};
+    
+    if (query.status) {
+      // Map admin's query statuses to DB statuses
+      if (query.status === 'PENDING') {
+        where.status = 'IN_REVIEW';
+      } else {
+        where.status = query.status;
+      }
+    } else {
+      // By default, exclude unpaid (PENDING in DB) advertisements
+      where.status = { not: 'PENDING' };
+    }
+
+    const [data, total] = await Promise.all([
+      prisma.advertisement.findMany({
+        where,
+        skip,
+        take: limit,
+        orderBy: { createdAt: 'desc' },
+        include: { user: { select: { name: true, email: true } } }
+      }),
+      prisma.advertisement.count({ where })
+    ]);
+
+    // Map DB statuses back to Admin expected statuses
+    const mappedData = data.map(ad => {
+      let mappedStatus = ad.status;
+      if (ad.status === 'IN_REVIEW') mappedStatus = 'PENDING';
+      
+      return { ...ad, status: mappedStatus };
+    });
+
+    return {
+      data: mappedData,
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit)
+      }
+    };
+  }
+
+  async getAdvertisementById(id) {
+    const advertisement = await prisma.advertisement.findUnique({
+      where: { id },
+      include: { user: { select: { name: true, email: true } } }
+    });
+
+    if (!advertisement) throw new Error('Advertisement not found');
+    
+    // Map status for Admin
+    let mappedStatus = advertisement.status;
+    if (advertisement.status === 'IN_REVIEW') mappedStatus = 'PENDING';
+
+    return { ...advertisement, status: mappedStatus };
+  }
+
+  async updateStatus(id, status) {
+    const validStatuses = ['PENDING', 'ACTIVE', 'REJECTED', 'EXPIRED'];
+    if (!validStatuses.includes(status)) {
+      throw new Error('Invalid status. Allowed: PENDING, ACTIVE, REJECTED, EXPIRED');
+    }
+
+    // Map Admin's input status to DB status
+    let dbStatusToSet = status;
+    if (status === 'PENDING') dbStatusToSet = 'IN_REVIEW';
+
+    const ad = await prisma.advertisement.findUnique({ where: { id } });
+    if (!ad) throw new Error('Advertisement not found');
+
+    const updateData = { status: dbStatusToSet };
+    
+    // If the admin is publishing (ACTIVE), set the start and end dates
+    if (dbStatusToSet === 'ACTIVE' && ad.status !== 'ACTIVE') {
+      updateData.startsAt = new Date();
+      
+      const endsAt = new Date();
+      endsAt.setDate(endsAt.getDate() + ad.durationDays);
+      updateData.endsAt = endsAt;
+    }
+
+    const updatedAd = await prisma.advertisement.update({
+      where: { id },
+      data: updateData
+    });
+
+    // Map status back for Admin response
+    let mappedStatus = updatedAd.status;
+    if (updatedAd.status === 'IN_REVIEW') mappedStatus = 'PENDING';
+
+    return { ...updatedAd, status: mappedStatus };
+  }
+
   async capturePayment(paymentId) {
     // Run PayPal capture and DB fetch concurrently to save time
     const [captureData, advertisement] = await Promise.all([

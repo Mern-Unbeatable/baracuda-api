@@ -64,4 +64,39 @@ export class AdvertisementController {
       return ResponseUtil.error(res, error.message, 500);
     }
   }
+
+  // --- ADMIN APIs ---
+
+  getAllAdvertisements = async (req, res) => {
+    try {
+      const result = await this.advertisementService.getAllAdvertisements(req.query);
+      return ResponseUtil.success(res, 'Advertisements retrieved successfully', result);
+    } catch (error) {
+      return ResponseUtil.error(res, error.message, 500);
+    }
+  }
+
+  getAdvertisementById = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const result = await this.advertisementService.getAdvertisementById(id);
+      return ResponseUtil.success(res, 'Advertisement retrieved successfully', result);
+    } catch (error) {
+      return ResponseUtil.error(res, error.message, 500);
+    }
+  }
+
+  updateAdvertisementStatus = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { status } = req.body;
+      if (!status) {
+        return ResponseUtil.error(res, 'Status is required', 400);
+      }
+      const result = await this.advertisementService.updateStatus(id, status);
+      return ResponseUtil.success(res, 'Advertisement status updated successfully', result);
+    } catch (error) {
+      return ResponseUtil.error(res, error.message, 500);
+    }
+  }
 }

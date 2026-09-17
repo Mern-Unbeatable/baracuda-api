@@ -29,6 +29,7 @@ enum AdvertisementStatus {
   PENDING
   ACTIVE
   IN_REVIEW
+  REJECTED
   EXPIRED
 }
 

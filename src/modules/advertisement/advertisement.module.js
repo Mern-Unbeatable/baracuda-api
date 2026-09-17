@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { AdvertisementController } from './advertisement.controller.js';
 import { AdvertisementService } from './advertisement.service.js';
 import { AdvertisementValidation } from './advertisement.validation.js';
-import { optionalAuth } from '../../middlewares/auth.middleware.js';
+import { optionalAuth, requireAuth, requireAdmin } from '../../middlewares/auth.middleware.js';
 import { upload } from '../../utils/upload.js';
 
 export class AdvertisementModule {
@@ -30,6 +30,29 @@ export class AdvertisementModule {
     this.router.get(
       '/:id/invoice',
       this.advertisementController.downloadInvoice
+    );
+
+    // --- ADMIN ROUTES ---
+    
+    this.router.get(
+      '/admin/all',
+      requireAuth,
+      requireAdmin,
+      this.advertisementController.getAllAdvertisements
+    );
+
+    this.router.get(
+      '/admin/:id',
+      requireAuth,
+      requireAdmin,
+      this.advertisementController.getAdvertisementById
+    );
+
+    this.router.patch(
+      '/admin/:id/status',
+      requireAuth,
+      requireAdmin,
+      this.advertisementController.updateAdvertisementStatus
     );
   }
 }

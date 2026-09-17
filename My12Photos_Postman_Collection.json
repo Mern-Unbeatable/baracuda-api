@@ -326,6 +326,109 @@
                             "response": []
                         }
                     ]
+                },
+                {
+                    "name": "Advertisements",
+                    "item": [
+                        {
+                            "name": "Get All Advertisements",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{admin_token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{base_url}}/api/v1/advertisements/admin/all?status=IN_REVIEW&page=1&limit=10",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "advertisements",
+                                        "admin",
+                                        "all"
+                                    ],
+                                    "query": [
+                                        {
+                                            "key": "status",
+                                            "value": "IN_REVIEW"
+                                        },
+                                        {
+                                            "key": "page",
+                                            "value": "1"
+                                        },
+                                        {
+                                            "key": "limit",
+                                            "value": "10"
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Get Advertisement Details",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{admin_token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{base_url}}/api/v1/advertisements/admin/{{advertisementId}}",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "advertisements",
+                                        "admin",
+                                        "{{advertisementId}}"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Update Status (Publish/Reject)",
+                            "request": {
+                                "method": "PATCH",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{admin_token}}"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"status\": \"ACTIVE\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/api/v1/advertisements/admin/{{advertisementId}}/status",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "advertisements",
+                                        "admin",
+                                        "{{advertisementId}}",
+                                        "status"
+                                    ]
+                                }
+                            }
+                        }
+                    ]
                 }
             ]
         },
