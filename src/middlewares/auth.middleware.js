@@ -20,6 +20,23 @@ export const requireAuth = (req, res, next) => {
   }
 };
 
+export const optionalAuth = (req, res, next) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return next();
+    }
+
+    const token = authHeader.split(' ')[1];
+    const decoded = JwtUtil.verifyToken(token);
+    req.user = decoded;
+    next();
+  } catch (err) {
+    // If token is invalid, just proceed as guest
+    next();
+  }
+};
+
 export const requireAdmin = (req, res, next) => {
   // Must run after requireAuth
   if (!req.user) {

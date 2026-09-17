@@ -1,0 +1,30 @@
+import { Router } from 'express';
+import { AdvertisementController } from './advertisement.controller.js';
+import { AdvertisementService } from './advertisement.service.js';
+import { AdvertisementValidation } from './advertisement.validation.js';
+import { optionalAuth } from '../../middlewares/auth.middleware.js';
+import { upload } from '../../utils/upload.js';
+
+export class AdvertisementModule {
+  constructor() {
+    this.router = Router();
+    this.advertisementService = new AdvertisementService();
+    this.advertisementController = new AdvertisementController(this.advertisementService);
+    this.initializeRoutes();
+  }
+
+  initializeRoutes() {
+    this.router.post(
+      '/',
+      optionalAuth,
+      upload.single('media'), // Since they upload the image, we can use the existing 'media' fieldname that I allowed previously
+      AdvertisementValidation.validate(AdvertisementValidation.createSchema),
+      this.advertisementController.createAdvertisement
+    );
+
+    this.router.post(
+      '/capture',
+      this.advertisementController.capturePayment
+    );
+  }
+}

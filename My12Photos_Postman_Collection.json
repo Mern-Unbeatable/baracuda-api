@@ -70,18 +70,15 @@
                                 },
                                 {
                                     "key": "avatar",
-                                    "type": "file",
-                                    "src": ""
+                                    "type": "file"
                                 },
                                 {
                                     "key": "coverPhoto",
-                                    "type": "file",
-                                    "src": ""
+                                    "type": "file"
                                 },
                                 {
                                     "key": "introVideo",
-                                    "type": "file",
-                                    "src": ""
+                                    "type": "file"
                                 }
                             ]
                         },
@@ -404,13 +401,11 @@
                                         },
                                         {
                                             "key": "images",
-                                            "type": "file",
-                                            "src": ""
+                                            "type": "file"
                                         },
                                         {
                                             "key": "video",
-                                            "type": "file",
-                                            "src": ""
+                                            "type": "file"
                                         },
                                         {
                                             "key": "story",
@@ -494,13 +489,11 @@
                                         },
                                         {
                                             "key": "images",
-                                            "type": "file",
-                                            "src": ""
+                                            "type": "file"
                                         },
                                         {
                                             "key": "video",
-                                            "type": "file",
-                                            "src": ""
+                                            "type": "file"
                                         },
                                         {
                                             "key": "story",
@@ -534,28 +527,23 @@
                                         },
                                         {
                                             "key": "images",
-                                            "type": "file",
-                                            "src": ""
+                                            "type": "file"
                                         },
                                         {
                                             "key": "images",
-                                            "type": "file",
-                                            "src": ""
+                                            "type": "file"
                                         },
                                         {
                                             "key": "images",
-                                            "type": "file",
-                                            "src": ""
+                                            "type": "file"
                                         },
                                         {
                                             "key": "images",
-                                            "type": "file",
-                                            "src": ""
+                                            "type": "file"
                                         },
                                         {
                                             "key": "images",
-                                            "type": "file",
-                                            "src": ""
+                                            "type": "file"
                                         }
                                     ]
                                 },
@@ -614,8 +602,7 @@
                                         },
                                         {
                                             "key": "images",
-                                            "type": "file",
-                                            "src": ""
+                                            "type": "file"
                                         },
                                         {
                                             "key": "zodiacSigns",
@@ -624,8 +611,7 @@
                                         },
                                         {
                                             "key": "video",
-                                            "type": "file",
-                                            "src": ""
+                                            "type": "file"
                                         },
                                         {
                                             "key": "story",
@@ -659,58 +645,47 @@
                                         },
                                         {
                                             "key": "images",
-                                            "type": "file",
-                                            "src": ""
+                                            "type": "file"
                                         },
                                         {
                                             "key": "images",
-                                            "type": "file",
-                                            "src": ""
+                                            "type": "file"
                                         },
                                         {
                                             "key": "images",
-                                            "type": "file",
-                                            "src": ""
+                                            "type": "file"
                                         },
                                         {
                                             "key": "images",
-                                            "type": "file",
-                                            "src": ""
+                                            "type": "file"
                                         },
                                         {
                                             "key": "images",
-                                            "type": "file",
-                                            "src": ""
+                                            "type": "file"
                                         },
                                         {
                                             "key": "images",
-                                            "type": "file",
-                                            "src": ""
+                                            "type": "file"
                                         },
                                         {
                                             "key": "images",
-                                            "type": "file",
-                                            "src": ""
+                                            "type": "file"
                                         },
                                         {
                                             "key": "images",
-                                            "type": "file",
-                                            "src": ""
+                                            "type": "file"
                                         },
                                         {
                                             "key": "images",
-                                            "type": "file",
-                                            "src": ""
+                                            "type": "file"
                                         },
                                         {
                                             "key": "images",
-                                            "type": "file",
-                                            "src": ""
+                                            "type": "file"
                                         },
                                         {
                                             "key": "images",
-                                            "type": "file",
-                                            "src": ""
+                                            "type": "file"
                                         }
                                     ]
                                 },
@@ -1087,13 +1062,11 @@
                                         },
                                         {
                                             "key": "images",
-                                            "type": "file",
-                                            "src": ""
+                                            "type": "file"
                                         },
                                         {
                                             "key": "video",
-                                            "type": "file",
-                                            "src": ""
+                                            "type": "file"
                                         }
                                     ]
                                 },
@@ -1180,38 +1153,31 @@
                                         },
                                         {
                                             "key": "images",
-                                            "type": "file",
-                                            "src": ""
+                                            "type": "file"
                                         },
                                         {
                                             "key": "images",
-                                            "type": "file",
-                                            "src": ""
+                                            "type": "file"
                                         },
                                         {
                                             "key": "images",
-                                            "type": "file",
-                                            "src": ""
+                                            "type": "file"
                                         },
                                         {
                                             "key": "images",
-                                            "type": "file",
-                                            "src": ""
+                                            "type": "file"
                                         },
                                         {
                                             "key": "images",
-                                            "type": "file",
-                                            "src": ""
+                                            "type": "file"
                                         },
                                         {
                                             "key": "images",
-                                            "type": "file",
-                                            "src": ""
+                                            "type": "file"
                                         },
                                         {
                                             "key": "video",
-                                            "type": "file",
-                                            "src": ""
+                                            "type": "file"
                                         }
                                     ]
                                 },
@@ -1302,68 +1268,55 @@
                                         },
                                         {
                                             "key": "images",
-                                            "type": "file",
-                                            "src": ""
+                                            "type": "file"
                                         },
                                         {
                                             "key": "images",
-                                            "type": "file",
-                                            "src": ""
+                                            "type": "file"
                                         },
                                         {
                                             "key": "images",
-                                            "type": "file",
-                                            "src": ""
+                                            "type": "file"
                                         },
                                         {
                                             "key": "images",
-                                            "type": "file",
-                                            "src": ""
+                                            "type": "file"
                                         },
                                         {
                                             "key": "images",
-                                            "type": "file",
-                                            "src": ""
+                                            "type": "file"
                                         },
                                         {
                                             "key": "images",
-                                            "type": "file",
-                                            "src": ""
+                                            "type": "file"
                                         },
                                         {
                                             "key": "images",
-                                            "type": "file",
-                                            "src": ""
+                                            "type": "file"
                                         },
                                         {
                                             "key": "images",
-                                            "type": "file",
-                                            "src": ""
+                                            "type": "file"
                                         },
                                         {
                                             "key": "images",
-                                            "type": "file",
-                                            "src": ""
+                                            "type": "file"
                                         },
                                         {
                                             "key": "images",
-                                            "type": "file",
-                                            "src": ""
+                                            "type": "file"
                                         },
                                         {
                                             "key": "images",
-                                            "type": "file",
-                                            "src": ""
+                                            "type": "file"
                                         },
                                         {
                                             "key": "images",
-                                            "type": "file",
-                                            "src": ""
+                                            "type": "file"
                                         },
                                         {
                                             "key": "video",
-                                            "type": "file",
-                                            "src": ""
+                                            "type": "file"
                                         }
                                     ]
                                 },
@@ -1756,8 +1709,7 @@
                                         },
                                         {
                                             "key": "media",
-                                            "type": "file",
-                                            "src": []
+                                            "type": "file"
                                         }
                                     ]
                                 },
@@ -1864,8 +1816,7 @@
                                         },
                                         {
                                             "key": "media",
-                                            "type": "file",
-                                            "src": []
+                                            "type": "file"
                                         }
                                     ]
                                 },
@@ -2903,6 +2854,191 @@
                                     ]
                                 }
                             }
+                        }
+                    ]
+                },
+                {
+                    "name": "Advertise with us",
+                    "item": [
+                        {
+                            "name": "Create Advertisement (Local)",
+                            "request": {
+                                "method": "POST",
+                                "header": [],
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "name",
+                                            "value": "John Doe",
+                                            "type": "text"
+                                        },
+                                        {
+                                            "key": "email",
+                                            "value": "john@example.com",
+                                            "type": "text"
+                                        },
+                                        {
+                                            "key": "phone",
+                                            "value": "+1234567890",
+                                            "type": "text"
+                                        },
+                                        {
+                                            "key": "businessType",
+                                            "value": "LOCAL",
+                                            "type": "text"
+                                        },
+                                        {
+                                            "key": "businessName",
+                                            "value": "My Local Shop",
+                                            "type": "text"
+                                        },
+                                        {
+                                            "key": "selectPage",
+                                            "value": "Home",
+                                            "type": "text"
+                                        },
+                                        {
+                                            "key": "description",
+                                            "value": "This is my local business advertisement.",
+                                            "type": "text"
+                                        },
+                                        {
+                                            "key": "location",
+                                            "value": "123 Main St, City",
+                                            "type": "text"
+                                        },
+                                        {
+                                            "key": "durationDays",
+                                            "value": "7",
+                                            "type": "text"
+                                        },
+                                        {
+                                            "key": "media",
+                                            "type": "file"
+                                        }
+                                    ]
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/api/v1/advertisements",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "advertisements"
+                                    ]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Create Advertisement (Online)",
+                            "request": {
+                                "method": "POST",
+                                "header": [],
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "name",
+                                            "value": "Jane Doe",
+                                            "type": "text"
+                                        },
+                                        {
+                                            "key": "email",
+                                            "value": "jane@example.com",
+                                            "type": "text"
+                                        },
+                                        {
+                                            "key": "phone",
+                                            "value": "+1987654321",
+                                            "type": "text"
+                                        },
+                                        {
+                                            "key": "businessType",
+                                            "value": "ONLINE",
+                                            "type": "text"
+                                        },
+                                        {
+                                            "key": "businessName",
+                                            "value": "My Online Store",
+                                            "type": "text"
+                                        },
+                                        {
+                                            "key": "selectPage",
+                                            "value": "Gallery",
+                                            "type": "text"
+                                        },
+                                        {
+                                            "key": "websiteUrl",
+                                            "value": "https://example.com",
+                                            "type": "text"
+                                        },
+                                        {
+                                            "key": "description",
+                                            "value": "This is my online store advertisement.",
+                                            "type": "text"
+                                        },
+                                        {
+                                            "key": "location",
+                                            "value": "Global",
+                                            "type": "text"
+                                        },
+                                        {
+                                            "key": "durationDays",
+                                            "value": "14",
+                                            "type": "text"
+                                        },
+                                        {
+                                            "key": "media",
+                                            "type": "file"
+                                        }
+                                    ]
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/api/v1/advertisements",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "advertisements"
+                                    ]
+                                }
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Capture Payment",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"paymentId\": \"PAYPAL_ORDER_ID_HERE\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/api/v1/advertisements/capture",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "advertisements",
+                                        "capture"
+                                    ]
+                                }
+                            },
+                            "response": []
                         }
                     ]
                 }

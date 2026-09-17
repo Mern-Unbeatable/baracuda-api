@@ -6,6 +6,7 @@ import { ArtworkModule } from './modules/artwork/artwork.module.js';
 import { CompetitionModule } from './modules/competition/competition.module.js';
 import { MarketplaceModule } from './modules/marketplace/marketplace.module.js';
 import { PostModule } from './modules/post/post.module.js';
+import { AdvertisementModule } from './modules/advertisement/advertisement.module.js';
 import paymentRouter from './modules/payment/payment.module.js';
 import config from './config/env.js';
 
@@ -73,6 +74,9 @@ class App {
 
     const postModule = new PostModule();
     this.app.use('/api/v1/posts', postModule.router);
+
+    const advertisementModule = new AdvertisementModule();
+    this.app.use('/api/v1/advertisements', advertisementModule.router);
 
     this.app.use('/api/v1/payments', paymentRouter);
   }
