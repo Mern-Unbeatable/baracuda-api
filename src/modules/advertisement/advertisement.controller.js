@@ -47,4 +47,21 @@ export class AdvertisementController {
       return ResponseUtil.error(res, error.message, 500);
     }
   }
+
+  downloadInvoice = async (req, res) => {
+    try {
+      const { id } = req.params;
+      if (!id) {
+        return ResponseUtil.error(res, 'Advertisement ID is required', 400);
+      }
+
+      const pdfBuffer = await this.advertisementService.generateInvoicePdf(id);
+      
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', `attachment; filename="invoice-${id}.pdf"`);
+      res.send(pdfBuffer);
+    } catch (error) {
+      return ResponseUtil.error(res, error.message, 500);
+    }
+  }
 }

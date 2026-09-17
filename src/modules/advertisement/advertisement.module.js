@@ -26,5 +26,10 @@ export class AdvertisementModule {
       '/capture',
       this.advertisementController.capturePayment
     );
+
+    this.router.get(
+      '/:id/invoice',
+      this.advertisementController.downloadInvoice
+    );
   }
 }

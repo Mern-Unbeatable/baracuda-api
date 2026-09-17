@@ -15,24 +15,22 @@ export class AdvertisementService {
     else if (data.durationDays === 30) amount = 100;
     else throw new Error('Invalid duration days');
 
-    // Generate unique internal order reference just for PayPal custom_id mapping if needed
-    // But we can directly use the advertisement ID.
     const tempId = data.email + '-' + Date.now();
+    const crypto = await import('crypto');
+    const advertisementId = crypto.randomUUID();
 
-    // Generate PayPal Order
-    const orderData = await paymentService.createPayPalOrder({
-      userId: userId || tempId, // PayPal service expects some string
+    // Start PayPal Order Generation and DB Creation CONCURRENTLY to save time
+    const paypalPromise = paymentService.createPayPalOrder({
+      userId: userId || tempId,
       amount: amount,
       currency: 'USD',
       description: `Advertisement placement for ${data.durationDays} days`,
       customId: JSON.stringify({ type: 'ADVERTISEMENT', duration: data.durationDays })
     });
 
-    const paymentId = orderData.order.id;
-
-    // Save to DB as PENDING
-    const advertisement = await prisma.advertisement.create({
+    const dbPromise = prisma.advertisement.create({
       data: {
+        id: advertisementId,
         userId: userId || null,
         name: data.name,
         email: data.email,
@@ -46,10 +44,20 @@ export class AdvertisementService {
         businessImage,
         durationDays: data.durationDays,
         amount,
-        paymentId,
         status: 'PENDING'
       }
     });
+
+    // Wait for both to finish
+    const [orderData, advertisement] = await Promise.all([paypalPromise, dbPromise]);
+
+    // Link the paymentId to the advertisement record
+    await prisma.advertisement.update({
+      where: { id: advertisementId },
+      data: { paymentId: orderData.order.id }
+    });
+
+    advertisement.paymentId = orderData.order.id;
 
     return {
       advertisement,
@@ -58,14 +66,31 @@ export class AdvertisementService {
     };
   }
 
-  async capturePayment(paymentId) {
-    // 1. Capture PayPal Order (this throws an error if it fails)
-    await paymentService.capturePayPalOrder(paymentId);
-
-    // 2. Find pending advertisement
+  async generateInvoicePdf(id) {
     const advertisement = await prisma.advertisement.findUnique({
-      where: { paymentId }
+      where: { id }
     });
+
+    if (!advertisement) {
+      throw new Error('Advertisement not found');
+    }
+
+    if (advertisement.status === 'PENDING') {
+      throw new Error('Invoice not available for unpaid advertisements');
+    }
+
+    const { InvoicePdfGenerator } = await import('./advertisement.pdf.js');
+    return InvoicePdfGenerator.generate(advertisement);
+  }
+
+  async capturePayment(paymentId) {
+    // Run PayPal capture and DB fetch concurrently to save time
+    const [captureData, advertisement] = await Promise.all([
+      paymentService.capturePayPalOrder(paymentId),
+      prisma.advertisement.findUnique({
+        where: { paymentId }
+      })
+    ]);
 
     if (!advertisement) {
       throw new Error('Advertisement not found for this payment');
