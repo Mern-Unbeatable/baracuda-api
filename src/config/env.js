@@ -14,6 +14,7 @@ export const config = {
   app: {
     port: process.env.PORT || 3000,
     env: process.env.NODE_ENV || 'development',
+    frontendUrl: process.env.FRONTEND_URL || 'http://localhost:3000',
   },
   db: {
     url: process.env.DATABASE_URL,

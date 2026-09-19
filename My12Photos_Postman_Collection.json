@@ -429,6 +429,82 @@
               }
             }
           ]
+        },
+        {
+          "name": "Business Links",
+          "item": [
+            {
+              "name": "Get All Business Links",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{admin_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/business-links/admin?page=1&limit=10",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "business-links",
+                    "admin"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get Business Link Details",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{admin_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/business-links/admin/{{business_album_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "business-links",
+                    "admin",
+                    "{{business_album_id}}"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
         }
       ]
     },
@@ -1963,6 +2039,130 @@
                     "v1",
                     "posts",
                     "{{postId}}"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Business Links",
+          "item": [
+            {
+              "name": "Upload Business Link (User)",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{auth_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "kind",
+                      "value": "TWELVE",
+                      "type": "text"
+                    },
+                    {
+                      "key": "title",
+                      "value": "{\"en\":\"My Business Portfolio\"}",
+                      "type": "text"
+                    },
+                    {
+                      "key": "story",
+                      "value": "{\"en\":\"This is the creative narrative behind this cosmological series...\"}",
+                      "type": "text"
+                    },
+                    {
+                      "key": "categoryId",
+                      "value": "{{category_id}}",
+                      "type": "text",
+                      "disabled": true
+                    },
+                    {
+                      "key": "subcategoryId",
+                      "value": "{{subcategory_id}}",
+                      "type": "text",
+                      "disabled": true
+                    },
+                    {
+                      "key": "isAiGenerated",
+                      "value": "false",
+                      "type": "text"
+                    },
+                    {
+                      "key": "copyrightConfirmed",
+                      "value": "true",
+                      "type": "text"
+                    },
+                    {
+                      "key": "images",
+                      "type": "file"
+                    },
+                    {
+                      "key": "images",
+                      "type": "file"
+                    },
+                    {
+                      "key": "images",
+                      "type": "file"
+                    },
+                    {
+                      "key": "images",
+                      "type": "file"
+                    },
+                    {
+                      "key": "images",
+                      "type": "file"
+                    },
+                    {
+                      "key": "images",
+                      "type": "file"
+                    },
+                    {
+                      "key": "images",
+                      "type": "file"
+                    },
+                    {
+                      "key": "images",
+                      "type": "file"
+                    },
+                    {
+                      "key": "images",
+                      "type": "file"
+                    },
+                    {
+                      "key": "images",
+                      "type": "file"
+                    },
+                    {
+                      "key": "images",
+                      "type": "file"
+                    },
+                    {
+                      "key": "images",
+                      "type": "file"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/v1/business-links",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "business-links"
                   ]
                 }
               },
