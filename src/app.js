@@ -8,6 +8,7 @@ import { MarketplaceModule } from './modules/marketplace/marketplace.module.js';
 import { PostModule } from './modules/post/post.module.js';
 import { AdvertisementModule } from './modules/advertisement/advertisement.module.js';
 import { BusinessModule } from './modules/business/business.module.js';
+import { NewsletterModule } from './modules/newsletter/newsletter.module.js';
 import paymentRouter from './modules/payment/payment.module.js';
 import config from './config/env.js';
 
@@ -82,6 +83,9 @@ class App {
 
     const businessModule = new BusinessModule();
     this.app.use('/api/v1/business-links', businessModule.router);
+
+    const newsletterModule = new NewsletterModule();
+    this.app.use('/api/v1/newsletter', newsletterModule.router);
 
     this.app.use('/api/v1/payments', paymentRouter);
   }

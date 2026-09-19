@@ -42,6 +42,16 @@ const fileFilter = (req, file, cb) => {
     } else {
       cb(new Error('Invalid media file. Supported formats: jpg, jpeg, png, webp, avif, or mp4 video'), false);
     }
+  } else if (file.fieldname === 'banner') {
+    const allowedImageTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/avif'];
+    const allowedExtensions = ['.jpg', '.jpeg', '.png', '.webp', '.avif'];
+    const ext = path.extname(file.originalname).toLowerCase();
+    
+    if (allowedImageTypes.includes(file.mimetype) || allowedExtensions.includes(ext)) {
+      cb(null, true);
+    } else {
+      cb(new Error('Invalid banner file. Supported formats are: jpg, jpeg, png, webp, avif'), false);
+    }
   } else {
     cb(new Error('Unexpected field: ' + file.fieldname), false);
   }

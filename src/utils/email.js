@@ -43,6 +43,39 @@ export class EmailUtil {
     }
   }
 
+  static async sendCampaignEmail(to, subjectObj, campaign) {
+    const subject = subjectObj.en || 'My12Photos Newsletter';
+    const title = campaign.title?.en || '';
+    const contentText = campaign.content?.en || '';
+    const baseUrl = config.app.backendUrl ? config.app.backendUrl.replace(/\/$/, '') : 'http://localhost:3000';
+    
+    // Construct HTML template based on UI design
+    // bannerUrl is now already a full URL from the service, but let's make sure it handles both.
+    const finalBannerUrl = campaign.bannerUrl?.startsWith('http') ? campaign.bannerUrl : (campaign.bannerUrl ? `${baseUrl}${campaign.bannerUrl}` : null);
+    
+    const html = `
+      <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
+        ${finalBannerUrl ? `<img src="${finalBannerUrl}" alt="Banner" style="width: 100%; max-height: 400px; object-fit: cover; border-radius: 8px 8px 0 0;" />` : ''}
+        <div style="padding: 30px 20px; background-color: #ffffff; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 8px 8px;">
+          <h1 style="font-size: 24px; color: #111; margin-top: 0;">${title}</h1>
+          <div style="font-size: 16px; line-height: 1.6; color: #555;">
+            ${contentText}
+          </div>
+          ${(campaign.ctaText && campaign.ctaUrl) ? `
+            <div style="margin-top: 30px; text-align: center;">
+              <a href="${campaign.ctaUrl}" style="display: inline-block; padding: 12px 24px; background-color: #007bff; color: #ffffff; text-decoration: none; font-weight: bold; border-radius: 4px;">${campaign.ctaText}</a>
+            </div>
+          ` : ''}
+        </div>
+        <div style="text-align: center; margin-top: 20px; font-size: 12px; color: #999;">
+          <p>You received this email because you are subscribed to My12Photos Newsletter.</p>
+        </div>
+      </div>
+    `;
+    
+    return this.sendEmail(to, subject, contentText, html);
+  }
+
   static async sendOtp(to, otp) {
     const subject = 'Your Password Reset OTP';
     const text = `Your OTP for password reset is: ${otp}. It will expire in 15 minutes.`;

@@ -505,6 +505,262 @@
               "response": []
             }
           ]
+        },
+        {
+          "name": "Newsletter",
+          "item": [
+            {
+              "name": "Get All Subscribers (Admin)",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{auth_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/newsletter/subscribers?page=1&limit=10",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "newsletter",
+                    "subscribers"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Send Campaign (EVERYONE)",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{auth_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "target",
+                      "value": "EVERYONE",
+                      "type": "text"
+                    },
+                    {
+                      "key": "subject",
+                      "value": "{\"en\":\"Big Update from My12Photos!\"}",
+                      "type": "text"
+                    },
+                    {
+                      "key": "title",
+                      "value": "{\"en\":\"Welcome to our new platform\"}",
+                      "type": "text"
+                    },
+                    {
+                      "key": "content",
+                      "value": "{\"en\":\"<p>Hello everyone,</p><p>We are very excited to announce the launch of our new features.</p>\"}",
+                      "type": "text"
+                    },
+                    {
+                      "key": "ctaText",
+                      "value": "Read more",
+                      "type": "text"
+                    },
+                    {
+                      "key": "ctaUrl",
+                      "value": "https://my12photos.com/updates",
+                      "type": "text"
+                    },
+                    {
+                      "key": "banner",
+                      "type": "file"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/newsletter/campaigns/send",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "newsletter",
+                    "campaigns",
+                    "send"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Send Campaign (NEW_SUBSCRIBERS)",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{auth_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "target",
+                      "value": "NEW_SUBSCRIBERS",
+                      "type": "text"
+                    },
+                    {
+                      "key": "subject",
+                      "value": "{\"en\":\"Big Update from My12Photos!\"}",
+                      "type": "text"
+                    },
+                    {
+                      "key": "title",
+                      "value": "{\"en\":\"Welcome to our new platform\"}",
+                      "type": "text"
+                    },
+                    {
+                      "key": "content",
+                      "value": "{\"en\":\"<p>Hello everyone,</p><p>We are very excited to announce the launch of our new features.</p>\"}",
+                      "type": "text"
+                    },
+                    {
+                      "key": "ctaText",
+                      "value": "Read more",
+                      "type": "text"
+                    },
+                    {
+                      "key": "ctaUrl",
+                      "value": "https://my12photos.com/updates",
+                      "type": "text"
+                    },
+                    {
+                      "key": "banner",
+                      "type": "file"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/newsletter/campaigns/send",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "newsletter",
+                    "campaigns",
+                    "send"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Send Campaign (SELECTED)",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{auth_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "target",
+                      "value": "SELECTED",
+                      "type": "text"
+                    },
+                    {
+                      "key": "subject",
+                      "value": "{\"en\":\"Big Update from My12Photos!\"}",
+                      "type": "text"
+                    },
+                    {
+                      "key": "title",
+                      "value": "{\"en\":\"Welcome to our new platform\"}",
+                      "type": "text"
+                    },
+                    {
+                      "key": "content",
+                      "value": "{\"en\":\"<p>Hello everyone,</p><p>We are very excited to announce the launch of our new features.</p>\"}",
+                      "type": "text"
+                    },
+                    {
+                      "key": "ctaText",
+                      "value": "Read more",
+                      "type": "text"
+                    },
+                    {
+                      "key": "ctaUrl",
+                      "value": "https://my12photos.com/updates",
+                      "type": "text"
+                    },
+                    {
+                      "key": "banner",
+                      "type": "file"
+                    },
+                    {
+                      "key": "selectedIds",
+                      "value": "test1@example.com, test2@example.com",
+                      "type": "text"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/newsletter/campaigns/send",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "newsletter",
+                    "campaigns",
+                    "send"
+                  ]
+                }
+              }
+            }
+          ]
         }
       ]
     },
@@ -3395,6 +3651,39 @@
                 }
               },
               "response": []
+            }
+          ]
+        },
+        {
+          "name": "Newsletter",
+          "item": [
+            {
+              "name": "Subscribe (Public)",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"test@example.com\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/newsletter/subscribe",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "newsletter",
+                    "subscribe"
+                  ]
+                }
+              }
             }
           ]
         }
