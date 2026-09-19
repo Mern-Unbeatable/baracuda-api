@@ -251,7 +251,10 @@ export class MarketplaceService {
       },
       user: { select: { id: true, name: true, avatar: true } },
       category: { select: { name: true } },
-      ...(viewerId && { premiumPhotoLikes: { where: { userId: viewerId }, select: { id: true } } })
+      ...(viewerId && { 
+        premiumPhotoLikes: { where: { userId: viewerId }, select: { id: true } },
+        savedPremiumPhotos: { where: { userId: viewerId }, select: { id: true } }
+      })
     };
 
     const [promotedCount, unpromotedCount] = await Promise.all([
@@ -281,8 +284,17 @@ export class MarketplaceService {
       });
       photos = photos.concat(unpromotedData);
     }
+    
+    // Map isLiked and isSaved
+    const formattedPhotos = photos.map(photo => {
+      const isLiked = photo.premiumPhotoLikes && photo.premiumPhotoLikes.length > 0;
+      const isSaved = photo.savedPremiumPhotos && photo.savedPremiumPhotos.length > 0;
+      delete photo.premiumPhotoLikes;
+      delete photo.savedPremiumPhotos;
+      return { ...photo, isLiked, isSaved };
+    });
 
-    return { data: photos, total };
+    return { data: formattedPhotos, total };
   }
 
   async getPublicPremiumPhotoDetails(id, viewerId = null) {
@@ -294,7 +306,10 @@ export class MarketplaceService {
         media: {
           orderBy: { slotIndex: 'asc' }
         },
-        ...(viewerId && { premiumPhotoLikes: { where: { userId: viewerId }, select: { id: true } } })
+        ...(viewerId && { 
+          premiumPhotoLikes: { where: { userId: viewerId }, select: { id: true } },
+          savedPremiumPhotos: { where: { userId: viewerId }, select: { id: true } }
+        })
       }
     });
 
@@ -312,6 +327,12 @@ export class MarketplaceService {
       } catch (err) {
         // Unique constraint violation (P2002) means they already viewed it, ignore.
       }
+      
+      const isLiked = photo.premiumPhotoLikes && photo.premiumPhotoLikes.length > 0;
+      const isSaved = photo.savedPremiumPhotos && photo.savedPremiumPhotos.length > 0;
+      delete photo.premiumPhotoLikes;
+      delete photo.savedPremiumPhotos;
+      return { ...photo, isLiked, isSaved };
     }
 
     return photo;
@@ -351,6 +372,30 @@ export class MarketplaceService {
         prisma.premiumPhoto.update({ where: { id }, data: { likesCount: { increment: 1 } } })
       ]);
       return { liked: true };
+    }
+  }
+
+  async toggleSavePremiumPhoto(id, userId) {
+    const photo = await prisma.premiumPhoto.findUnique({
+      where: { id },
+      select: { userId: true }
+    });
+
+    if (!photo) throw new Error('Photo not found');
+    if (photo.userId === userId) throw new Error('You cannot save your own photo');
+
+    const existingSave = await prisma.savedPremiumPhoto.findUnique({
+      where: {
+        premiumPhotoId_userId: { premiumPhotoId: id, userId }
+      }
+    });
+
+    if (existingSave) {
+      await prisma.savedPremiumPhoto.delete({ where: { id: existingSave.id } });
+      return { saved: false };
+    } else {
+      await prisma.savedPremiumPhoto.create({ data: { premiumPhotoId: id, userId } });
+      return { saved: true };
     }
   }
 

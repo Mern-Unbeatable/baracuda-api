@@ -286,6 +286,7 @@ model User {
   chatParticipants     ChatParticipant[]
   chatMessages         ChatMessage[]
   savedArtworks        SavedArtwork[]
+  savedPremiumPhotos   SavedPremiumPhoto[]
   reports              Report[]
 
   @@index([role, status])
@@ -914,6 +915,7 @@ model PremiumPhoto {
   media             PremiumPhotoMedia[]
   promotions        PromotedAlbum[]
   premiumPhotoLikes PremiumPhotoLike[]
+  savedPremiumPhotos SavedPremiumPhoto[]
   premiumPhotoViews PremiumPhotoView[]
 
   @@index([isActive, createdAt])
@@ -1091,4 +1093,17 @@ model Advertisement {
 
   @@index([status, endsAt])
   @@map("advertisements")
+}
+
+model SavedPremiumPhoto {
+  id             String       @id @default(uuid())
+  premiumPhotoId String
+  userId         String
+  createdAt      DateTime     @default(now())
+
+  premiumPhoto   PremiumPhoto @relation(fields: [premiumPhotoId], references: [id], onDelete: Cascade)
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([premiumPhotoId, userId])
+  @@map("saved_premium_photos")
 }

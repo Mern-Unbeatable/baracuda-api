@@ -363,4 +363,20 @@ export class MarketplaceController {
       return ResponseUtil.error(res, error.message, 500);
     }
   }
+
+  savePremiumPhoto = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const userId = req.user.id;
+
+      const result = await this.marketplaceService.toggleSavePremiumPhoto(id, userId);
+      const msg = result.saved ? 'Premium photo saved successfully' : 'Premium photo removed from saved list';
+      
+      return ResponseUtil.success(res, msg, result);
+    } catch (error) {
+      if (error.message === 'Photo not found') return ResponseUtil.error(res, error.message, 404);
+      if (error.message === 'You cannot save your own photo') return ResponseUtil.error(res, error.message, 400);
+      return ResponseUtil.error(res, error.message, 500);
+    }
+  }
 }
