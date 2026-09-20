@@ -11,6 +11,7 @@ import { BusinessModule } from './modules/business/business.module.js';
 import { NewsletterModule } from './modules/newsletter/newsletter.module.js';
 import { AlbumTypeModule } from './modules/album-type/album-type.module.js';
 import { SupportModule } from './modules/support/support.module.js';
+import { CommentModule } from './modules/comment/comment.module.js';
 import paymentRouter from './modules/payment/payment.module.js';
 import config from './config/env.js';
 
@@ -65,6 +66,9 @@ class App {
 
     const userModule = new UserModule();
     this.app.use('/api/v1/admin/users', userModule.router);
+    
+    const commentModule = new CommentModule();
+    this.app.use('/api/v1/admin/comments', commentModule.router);
     
     this.app.use('/api/v1/categories', CategoryModule.router);
 
