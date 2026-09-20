@@ -84,8 +84,15 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/auth/register",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "auth", "register"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "register"
+              ]
             }
           },
           "response": []
@@ -123,8 +130,15 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/auth/login",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "auth", "login"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ]
             }
           },
           "response": []
@@ -145,8 +159,15 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/auth/forgot-password",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "auth", "forgot-password"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "forgot-password"
+              ]
             }
           },
           "response": []
@@ -167,8 +188,15 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/auth/verify-otp",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "auth", "verify-otp"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "verify-otp"
+              ]
             }
           },
           "response": []
@@ -189,8 +217,15 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/auth/reset-password",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "auth", "reset-password"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "reset-password"
+              ]
             }
           },
           "response": []
@@ -225,8 +260,14 @@
                 },
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/categories",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "categories"]
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "categories"
+                  ]
                 }
               },
               "response": []
@@ -253,8 +294,14 @@
                 },
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/categories",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "categories"]
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "categories"
+                  ]
                 }
               },
               "response": []
@@ -266,8 +313,14 @@
                 "header": [],
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/categories",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "categories"]
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "categories"
+                  ]
                 }
               },
               "response": []
@@ -289,8 +342,16 @@
                 ],
                 "url": {
                   "raw": "{{base_url}}/api/v1/advertisements/admin/all?status=IN_REVIEW&page=1&limit=10",
-                  "host": ["{{base_url}}"],
-                  "path": ["api", "v1", "advertisements", "admin", "all"],
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "advertisements",
+                    "admin",
+                    "all"
+                  ],
                   "query": [
                     {
                       "key": "status",
@@ -320,7 +381,9 @@
                 ],
                 "url": {
                   "raw": "{{base_url}}/api/v1/advertisements/admin/{{advertisementId}}",
-                  "host": ["{{base_url}}"],
+                  "host": [
+                    "{{base_url}}"
+                  ],
                   "path": [
                     "api",
                     "v1",
@@ -351,7 +414,9 @@
                 },
                 "url": {
                   "raw": "{{base_url}}/api/v1/advertisements/admin/{{advertisementId}}/status",
-                  "host": ["{{base_url}}"],
+                  "host": [
+                    "{{base_url}}"
+                  ],
                   "path": [
                     "api",
                     "v1",
@@ -385,8 +450,15 @@
                 "header": [],
                 "url": {
                   "raw": "{{base_url}}/api/v1/business-links/admin?page=1&limit=10",
-                  "host": ["{{base_url}}"],
-                  "path": ["api", "v1", "business-links", "admin"],
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "business-links",
+                    "admin"
+                  ],
                   "query": [
                     {
                       "key": "page",
@@ -418,7 +490,9 @@
                 "header": [],
                 "url": {
                   "raw": "{{base_url}}/api/v1/business-links/admin/{{business_album_id}}",
-                  "host": ["{{base_url}}"],
+                  "host": [
+                    "{{base_url}}"
+                  ],
                   "path": [
                     "api",
                     "v1",
@@ -452,8 +526,15 @@
                 "header": [],
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/newsletter/subscribers?page=1&limit=10",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "newsletter", "subscribers"],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "newsletter",
+                    "subscribers"
+                  ],
                   "query": [
                     {
                       "key": "page",
@@ -523,8 +604,16 @@
                 },
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/newsletter/campaigns/send",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "newsletter", "campaigns", "send"]
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "newsletter",
+                    "campaigns",
+                    "send"
+                  ]
                 }
               }
             },
@@ -584,8 +673,16 @@
                 },
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/newsletter/campaigns/send",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "newsletter", "campaigns", "send"]
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "newsletter",
+                    "campaigns",
+                    "send"
+                  ]
                 }
               }
             },
@@ -650,8 +747,16 @@
                 },
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/newsletter/campaigns/send",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "newsletter", "campaigns", "send"]
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "newsletter",
+                    "campaigns",
+                    "send"
+                  ]
                 }
               }
             }
@@ -676,8 +781,15 @@
                 "method": "GET",
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/admin/users?page=1&limit=10&status=All",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "admin", "users"],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "users"
+                  ],
                   "query": [
                     {
                       "key": "page",
@@ -711,8 +823,16 @@
                 "method": "GET",
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/admin/users/{{user_id}}",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "admin", "users", "{{user_id}}"]
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "users",
+                    "{{user_id}}"
+                  ]
                 }
               }
             },
@@ -742,7 +862,9 @@
                 },
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/admin/users/{{user_id}}/status",
-                  "host": ["{{baseUrl}}"],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
                   "path": [
                     "api",
                     "v1",
@@ -765,8 +887,14 @@
                 "method": "GET",
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/album-types",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "album-types"]
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "album-types"
+                  ]
                 }
               }
             },
@@ -796,8 +924,15 @@
                 },
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/album-types/{{album_type_id}}",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "album-types", "{{album_type_id}}"]
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "album-types",
+                    "{{album_type_id}}"
+                  ]
                 }
               }
             },
@@ -827,8 +962,14 @@
                 },
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/album-types",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "album-types"]
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "album-types"
+                  ]
                 }
               }
             },
@@ -848,14 +989,21 @@
                 "method": "DELETE",
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/album-types/{{album_type_id}}",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "album-types", "{{album_type_id}}"]
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "album-types",
+                    "{{album_type_id}}"
+                  ]
                 }
               }
             }
           ]
         },
-                {
+        {
           "name": "Winners",
           "item": [
             {
@@ -865,8 +1013,14 @@
                 "header": [],
                 "url": {
                   "raw": "{{base_url}}/api/v1/competitions?kind=ALL&year=2026&month=9&page=1&limit=10",
-                  "host": ["{{base_url}}"],
-                  "path": ["api", "v1", "competitions"],
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "competitions"
+                  ],
                   "query": [
                     {
                       "key": "kind",
@@ -898,6 +1052,35 @@
                 "description": "Fetch ongoing or past competition data. Use query params to filter by kind, year, and month."
               },
               "response": []
+            },
+            {
+              "name": "View Winner Details",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{auth_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/api/v1/artworks/{{submissionId}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "artworks",
+                    "{{submissionId}}"
+                  ]
+                },
+                "description": "Fetch the artwork details of a specific winner using the submissionId"
+              }
             }
           ]
         }
@@ -916,8 +1099,14 @@
                 "header": [],
                 "url": {
                   "raw": "{{base_url}}/api/v1/categories",
-                  "host": ["{{base_url}}"],
-                  "path": ["api", "v1", "categories"]
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "categories"
+                  ]
                 },
                 "description": "Get all categories and their subcategories for the frontend dropdowns when creating an artwork."
               },
@@ -1004,8 +1193,14 @@
                 },
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/artworks",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "artworks"]
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "artworks"
+                  ]
                 }
               },
               "response": []
@@ -1111,8 +1306,14 @@
                 },
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/artworks",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "artworks"]
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "artworks"
+                  ]
                 }
               },
               "response": []
@@ -1247,8 +1448,14 @@
                 },
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/artworks",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "artworks"]
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "artworks"
+                  ]
                 }
               },
               "response": []
@@ -1266,8 +1473,14 @@
                 ],
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/artworks?kind=SINGLE&status=all&sort=newest",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "artworks"],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "artworks"
+                  ],
                   "query": [
                     {
                       "key": "kind",
@@ -1299,8 +1512,15 @@
                 ],
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/artworks/:id",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "artworks", ":id"],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "artworks",
+                    ":id"
+                  ],
                   "variable": [
                     {
                       "key": "id",
@@ -1333,8 +1553,15 @@
                 },
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/artworks/:id",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "artworks", ":id"],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "artworks",
+                    ":id"
+                  ],
                   "variable": [
                     {
                       "key": "id",
@@ -1358,8 +1585,15 @@
                 ],
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/artworks/:id",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "artworks", ":id"],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "artworks",
+                    ":id"
+                  ],
                   "variable": [
                     {
                       "key": "id",
@@ -1387,7 +1621,9 @@
                 },
                 "url": {
                   "raw": "{{base_url}}/api/v1/artworks/YOUR_SUBMISSION_ID_HERE/promote",
-                  "host": ["{{base_url}}"],
+                  "host": [
+                    "{{base_url}}"
+                  ],
                   "path": [
                     "api",
                     "v1",
@@ -1421,7 +1657,9 @@
                 },
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/artworks/:id/switch-to-competition",
-                  "host": ["{{baseUrl}}"],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
                   "path": [
                     "api",
                     "v1",
@@ -1461,8 +1699,16 @@
                 },
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/artworks/:id/resubmit",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "artworks", ":id", "resubmit"],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "artworks",
+                    ":id",
+                    "resubmit"
+                  ],
                   "variable": [
                     {
                       "key": "id",
@@ -1489,8 +1735,16 @@
                 },
                 "url": {
                   "raw": "{{base_url}}/api/v1/artworks/promote/capture",
-                  "host": ["{{base_url}}"],
-                  "path": ["api", "v1", "artworks", "promote", "capture"]
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "artworks",
+                    "promote",
+                    "capture"
+                  ]
                 }
               }
             }
@@ -1575,8 +1829,15 @@
                 },
                 "url": {
                   "raw": "{{base_url}}/api/v1/marketplace/premium-photos",
-                  "host": ["{{base_url}}"],
-                  "path": ["api", "v1", "marketplace", "premium-photos"]
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "marketplace",
+                    "premium-photos"
+                  ]
                 },
                 "description": "Create a premium photo for sale. Same as Create Artwork but no story/competitionState. Price is required."
               },
@@ -1679,8 +1940,15 @@
                 },
                 "url": {
                   "raw": "{{base_url}}/api/v1/marketplace/premium-photos",
-                  "host": ["{{base_url}}"],
-                  "path": ["api", "v1", "marketplace", "premium-photos"]
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "marketplace",
+                    "premium-photos"
+                  ]
                 },
                 "description": "Create a premium photo for sale. Same as Create Artwork but no story/competitionState. Price is required."
               },
@@ -1811,8 +2079,15 @@
                 },
                 "url": {
                   "raw": "{{base_url}}/api/v1/marketplace/premium-photos",
-                  "host": ["{{base_url}}"],
-                  "path": ["api", "v1", "marketplace", "premium-photos"]
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "marketplace",
+                    "premium-photos"
+                  ]
                 },
                 "description": "Create a premium photo for sale. Same as Create Artwork but no story/competitionState. Price is required."
               },
@@ -1825,8 +2100,15 @@
                 "header": [],
                 "url": {
                   "raw": "{{base_url}}/api/v1/marketplace/premium-photos?kind=ALL&page=1&limit=10",
-                  "host": ["{{base_url}}"],
-                  "path": ["api", "v1", "marketplace", "premium-photos"],
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "marketplace",
+                    "premium-photos"
+                  ],
                   "query": [
                     {
                       "key": "kind",
@@ -1858,8 +2140,16 @@
                 "header": [],
                 "url": {
                   "raw": "{{base_url}}/api/v1/marketplace/premium-images/:id",
-                  "host": ["{{base_url}}"],
-                  "path": ["api", "v1", "marketplace", "premium-images", ":id"],
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "marketplace",
+                    "premium-images",
+                    ":id"
+                  ],
                   "variable": [
                     {
                       "key": "id",
@@ -1895,8 +2185,16 @@
                 },
                 "url": {
                   "raw": "{{base_url}}/api/v1/marketplace/premium-images/:id",
-                  "host": ["{{base_url}}"],
-                  "path": ["api", "v1", "marketplace", "premium-images", ":id"],
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "marketplace",
+                    "premium-images",
+                    ":id"
+                  ],
                   "variable": [
                     {
                       "key": "id",
@@ -1919,8 +2217,16 @@
                 ],
                 "url": {
                   "raw": "{{base_url}}/api/v1/marketplace/premium-images/:id",
-                  "host": ["{{base_url}}"],
-                  "path": ["api", "v1", "marketplace", "premium-images", ":id"],
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "marketplace",
+                    "premium-images",
+                    ":id"
+                  ],
                   "variable": [
                     {
                       "key": "id",
@@ -1956,7 +2262,9 @@
                 },
                 "url": {
                   "raw": "{{base_url}}/api/v1/marketplace/premium-images/:id/promote",
-                  "host": ["{{base_url}}"],
+                  "host": [
+                    "{{base_url}}"
+                  ],
                   "path": [
                     "api",
                     "v1",
@@ -2000,7 +2308,9 @@
                 },
                 "url": {
                   "raw": "{{base_url}}/api/v1/marketplace/premium-images/promote/capture",
-                  "host": ["{{base_url}}"],
+                  "host": [
+                    "{{base_url}}"
+                  ],
                   "path": [
                     "api",
                     "v1",
@@ -2035,8 +2345,16 @@
                 "header": [],
                 "url": {
                   "raw": "{{base_url}}/api/v1/marketplace/my-purchases/stats",
-                  "host": ["{{base_url}}"],
-                  "path": ["api", "v1", "marketplace", "my-purchases", "stats"]
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "marketplace",
+                    "my-purchases",
+                    "stats"
+                  ]
                 }
               },
               "response": []
@@ -2058,8 +2376,15 @@
                 "header": [],
                 "url": {
                   "raw": "{{base_url}}/api/v1/marketplace/my-purchases?page=1&limit=6",
-                  "host": ["{{base_url}}"],
-                  "path": ["api", "v1", "marketplace", "my-purchases"],
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "marketplace",
+                    "my-purchases"
+                  ],
                   "query": [
                     {
                       "key": "page",
@@ -2091,7 +2416,9 @@
                 "header": [],
                 "url": {
                   "raw": "{{base_url}}/api/v1/marketplace/premium-images/{{premiumPhotoId}}/download",
-                  "host": ["{{base_url}}"],
+                  "host": [
+                    "{{base_url}}"
+                  ],
                   "path": [
                     "api",
                     "v1",
@@ -2145,8 +2472,14 @@
                 },
                 "url": {
                   "raw": "{{base_url}}/api/v1/posts",
-                  "host": ["{{base_url}}"],
-                  "path": ["api", "v1", "posts"]
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "posts"
+                  ]
                 }
               },
               "response": []
@@ -2168,8 +2501,14 @@
                 "header": [],
                 "url": {
                   "raw": "{{base_url}}/api/v1/posts",
-                  "host": ["{{base_url}}"],
-                  "path": ["api", "v1", "posts"]
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "posts"
+                  ]
                 }
               },
               "response": []
@@ -2191,8 +2530,15 @@
                 "header": [],
                 "url": {
                   "raw": "{{base_url}}/api/v1/posts/{{postId}}",
-                  "host": ["{{base_url}}"],
-                  "path": ["api", "v1", "posts", "{{postId}}"]
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "posts",
+                    "{{postId}}"
+                  ]
                 }
               },
               "response": []
@@ -2233,8 +2579,15 @@
                 },
                 "url": {
                   "raw": "{{base_url}}/api/v1/posts/{{postId}}",
-                  "host": ["{{base_url}}"],
-                  "path": ["api", "v1", "posts", "{{postId}}"]
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "posts",
+                    "{{postId}}"
+                  ]
                 }
               },
               "response": []
@@ -2256,8 +2609,15 @@
                 "header": [],
                 "url": {
                   "raw": "{{base_url}}/api/v1/posts/{{postId}}",
-                  "host": ["{{base_url}}"],
-                  "path": ["api", "v1", "posts", "{{postId}}"]
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "posts",
+                    "{{postId}}"
+                  ]
                 }
               },
               "response": []
@@ -2374,8 +2734,14 @@
                 },
                 "url": {
                   "raw": "{{base_url}}/api/v1/business-links",
-                  "host": ["{{base_url}}"],
-                  "path": ["api", "v1", "business-links"]
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "business-links"
+                  ]
                 }
               },
               "response": []
@@ -2397,8 +2763,16 @@
                 "header": [],
                 "url": {
                   "raw": "{{base_url}}/api/v1/artworks/public/all?status=IN_COMPETITION&categoryId={{categoryId}}&subcategoryId={{subcategoryId}}&page=1&limit=10",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "artworks", "public", "all"],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "artworks",
+                    "public",
+                    "all"
+                  ],
                   "query": [
                     {
                       "key": "status",
@@ -2441,8 +2815,16 @@
                 "header": [],
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/artworks/public/:id",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "artworks", "public", ":id"],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "artworks",
+                    "public",
+                    ":id"
+                  ],
                   "variable": [
                     {
                       "key": "id",
@@ -2459,7 +2841,9 @@
                 "header": [],
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/artworks/public/:id/download",
-                  "host": ["{{baseUrl}}"],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
                   "path": [
                     "api",
                     "v1",
@@ -2494,8 +2878,16 @@
                 "header": [],
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/artworks/:id/vote",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "artworks", ":id", "vote"],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "artworks",
+                    ":id",
+                    "vote"
+                  ],
                   "variable": [
                     {
                       "key": "id",
@@ -2522,8 +2914,16 @@
                 "header": [],
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/artworks/:id/save",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "artworks", ":id", "save"],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "artworks",
+                    ":id",
+                    "save"
+                  ],
                   "variable": [
                     {
                       "key": "id",
@@ -2559,8 +2959,16 @@
                 },
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/artworks/:id/comment",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "artworks", ":id", "comment"],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "artworks",
+                    ":id",
+                    "comment"
+                  ],
                   "variable": [
                     {
                       "key": "id",
@@ -2596,8 +3004,16 @@
                 },
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/artworks/:id/report",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "artworks", ":id", "report"],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "artworks",
+                    ":id",
+                    "report"
+                  ],
                   "variable": [
                     {
                       "key": "id",
@@ -2626,8 +3042,15 @@
                     },
                     "url": {
                       "raw": "{{baseUrl}}/api/v1/payments/donate",
-                      "host": ["{{baseUrl}}"],
-                      "path": ["api", "v1", "payments", "donate"]
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "v1",
+                        "payments",
+                        "donate"
+                      ]
                     }
                   }
                 },
@@ -2647,8 +3070,16 @@
                     },
                     "url": {
                       "raw": "{{baseUrl}}/api/v1/payments/donate/capture",
-                      "host": ["{{baseUrl}}"],
-                      "path": ["api", "v1", "payments", "donate", "capture"]
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "v1",
+                        "payments",
+                        "donate",
+                        "capture"
+                      ]
                     }
                   }
                 }
@@ -2666,8 +3097,16 @@
                 "header": [],
                 "url": {
                   "raw": "{{base_url}}/api/v1/artworks/public/all?status=PROFILE_ONLY&categoryId={{categoryId}}&subcategoryId={{subcategoryId}}&page=1&limit=10",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "artworks", "public", "all"],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "artworks",
+                    "public",
+                    "all"
+                  ],
                   "query": [
                     {
                       "key": "status",
@@ -2710,8 +3149,16 @@
                 "header": [],
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/artworks/public/:id",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "artworks", "public", ":id"],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "artworks",
+                    "public",
+                    ":id"
+                  ],
                   "variable": [
                     {
                       "key": "id",
@@ -2728,7 +3175,9 @@
                 "header": [],
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/artworks/public/:id/download",
-                  "host": ["{{baseUrl}}"],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
                   "path": [
                     "api",
                     "v1",
@@ -2763,8 +3212,16 @@
                 "header": [],
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/artworks/:id/like",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "artworks", ":id", "like"],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "artworks",
+                    ":id",
+                    "like"
+                  ],
                   "variable": [
                     {
                       "key": "id",
@@ -2791,8 +3248,16 @@
                 "header": [],
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/artworks/:id/save",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "artworks", ":id", "save"],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "artworks",
+                    ":id",
+                    "save"
+                  ],
                   "variable": [
                     {
                       "key": "id",
@@ -2828,8 +3293,16 @@
                 },
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/artworks/:id/comment",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "artworks", ":id", "comment"],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "artworks",
+                    ":id",
+                    "comment"
+                  ],
                   "variable": [
                     {
                       "key": "id",
@@ -2865,8 +3338,16 @@
                 },
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/artworks/:id/report",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "artworks", ":id", "report"],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "artworks",
+                    ":id",
+                    "report"
+                  ],
                   "variable": [
                     {
                       "key": "id",
@@ -2895,8 +3376,15 @@
                     },
                     "url": {
                       "raw": "{{baseUrl}}/api/v1/payments/donate",
-                      "host": ["{{baseUrl}}"],
-                      "path": ["api", "v1", "payments", "donate"]
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "v1",
+                        "payments",
+                        "donate"
+                      ]
                     }
                   }
                 },
@@ -2916,8 +3404,16 @@
                     },
                     "url": {
                       "raw": "{{baseUrl}}/api/v1/payments/donate/capture",
-                      "host": ["{{baseUrl}}"],
-                      "path": ["api", "v1", "payments", "donate", "capture"]
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "v1",
+                        "payments",
+                        "donate",
+                        "capture"
+                      ]
                     }
                   }
                 }
@@ -2935,8 +3431,14 @@
                 "header": [],
                 "url": {
                   "raw": "{{base_url}}/api/v1/competitions?kind=ALL&year=2026&month=9&page=1&limit=10",
-                  "host": ["{{base_url}}"],
-                  "path": ["api", "v1", "competitions"],
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "competitions"
+                  ],
                   "query": [
                     {
                       "key": "kind",
@@ -2981,8 +3483,15 @@
                 "header": [],
                 "url": {
                   "raw": "{{base_url}}/api/v1/competitions/winners?kind=ALL&year=2026&month=9&page=1&limit=10",
-                  "host": ["{{base_url}}"],
-                  "path": ["api", "v1", "competitions", "winners"],
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "competitions",
+                    "winners"
+                  ],
                   "query": [
                     {
                       "key": "kind",
@@ -3027,7 +3536,9 @@
                 "header": [],
                 "url": {
                   "raw": "{{base_url}}/api/v1/marketplace/public/premium-images?kind=SINGLE&page=1&limit=10",
-                  "host": ["{{base_url}}"],
+                  "host": [
+                    "{{base_url}}"
+                  ],
                   "path": [
                     "api",
                     "v1",
@@ -3077,7 +3588,9 @@
                 "header": [],
                 "url": {
                   "raw": "{{base_url}}/api/v1/marketplace/public/premium-images/{{premiumPhotoId}}",
-                  "host": ["{{base_url}}"],
+                  "host": [
+                    "{{base_url}}"
+                  ],
                   "path": [
                     "api",
                     "v1",
@@ -3102,7 +3615,9 @@
                 ],
                 "url": {
                   "raw": "{{base_url}}/api/v1/marketplace/premium-images/{{premiumPhotoId}}/like",
-                  "host": ["{{base_url}}"],
+                  "host": [
+                    "{{base_url}}"
+                  ],
                   "path": [
                     "api",
                     "v1",
@@ -3135,7 +3650,9 @@
                 },
                 "url": {
                   "raw": "{{base_url}}/api/v1/marketplace/premium-images/{{premiumPhotoId}}/buy",
-                  "host": ["{{base_url}}"],
+                  "host": [
+                    "{{base_url}}"
+                  ],
                   "path": [
                     "api",
                     "v1",
@@ -3178,7 +3695,9 @@
                 },
                 "url": {
                   "raw": "{{base_url}}/api/v1/marketplace/premium-images/buy/capture",
-                  "host": ["{{base_url}}"],
+                  "host": [
+                    "{{base_url}}"
+                  ],
                   "path": [
                     "api",
                     "v1",
@@ -3197,7 +3716,9 @@
                 "header": [],
                 "url": {
                   "raw": "{{base_url}}/api/v1/marketplace/premium-images/{{premiumPhotoId}}/download?orderId={{orderId}}",
-                  "host": ["{{base_url}}"],
+                  "host": [
+                    "{{base_url}}"
+                  ],
                   "path": [
                     "api",
                     "v1",
@@ -3232,7 +3753,9 @@
                 "header": [],
                 "url": {
                   "raw": "{{base_url}}/api/v1/marketplace/premium-images/{{premium_photo_id}}/save",
-                  "host": ["{{base_url}}"],
+                  "host": [
+                    "{{base_url}}"
+                  ],
                   "path": [
                     "api",
                     "v1",
@@ -3311,8 +3834,14 @@
                 },
                 "url": {
                   "raw": "{{base_url}}/api/v1/advertisements",
-                  "host": ["{{base_url}}"],
-                  "path": ["api", "v1", "advertisements"]
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "advertisements"
+                  ]
                 }
               },
               "response": []
@@ -3383,8 +3912,14 @@
                 },
                 "url": {
                   "raw": "{{base_url}}/api/v1/advertisements",
-                  "host": ["{{base_url}}"],
-                  "path": ["api", "v1", "advertisements"]
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "advertisements"
+                  ]
                 }
               },
               "response": []
@@ -3405,8 +3940,15 @@
                 },
                 "url": {
                   "raw": "{{base_url}}/api/v1/advertisements/capture",
-                  "host": ["{{base_url}}"],
-                  "path": ["api", "v1", "advertisements", "capture"]
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "advertisements",
+                    "capture"
+                  ]
                 }
               },
               "response": []
@@ -3418,7 +3960,9 @@
                 "header": [],
                 "url": {
                   "raw": "{{base_url}}/api/v1/advertisements/{{advertisementId}}/invoice",
-                  "host": ["{{base_url}}"],
+                  "host": [
+                    "{{base_url}}"
+                  ],
                   "path": [
                     "api",
                     "v1",
@@ -3451,8 +3995,15 @@
                 },
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/newsletter/subscribe",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "newsletter", "subscribe"]
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "newsletter",
+                    "subscribe"
+                  ]
                 }
               }
             }
