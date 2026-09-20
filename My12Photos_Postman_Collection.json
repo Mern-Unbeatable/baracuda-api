@@ -935,6 +935,71 @@
                   ]
                 }
               }
+            },
+            {
+              "name": "Create Album Type",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{auth_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"kind\": \"SINGLE\",\n  \"name\": \"Single Photo\",\n  \"prizeMoney\": 1500,\n  \"description\": \"Submit one outstanding photograph.\",\n  \"features\": \"Monthly competition\\\\nPublic community voting\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/album-types",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "album-types"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Delete Album Type",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{auth_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/album-types/{{album_type_id}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "album-types",
+                    "{{album_type_id}}"
+                  ]
+                }
+              }
             }
           ]
         }

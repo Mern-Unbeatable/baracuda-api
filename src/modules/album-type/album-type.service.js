@@ -15,6 +15,45 @@ export class AlbumTypeService {
   }
 
   /**
+   * Create an Album Type
+   */
+  async createAlbumType(data) {
+    try {
+      let photoCount = 1;
+      if (data.kind === 'SIX') photoCount = 6;
+      if (data.kind === 'TWELVE') photoCount = 12;
+
+      const createData = {
+        kind: data.kind,
+        prizeMoney: data.prizeMoney,
+        name: { en: data.name },
+        photoCount
+      };
+      
+      if (data.description !== undefined) {
+        createData.description = { en: data.description };
+      }
+
+      if (data.features !== undefined) {
+        const featureList = data.features
+          ? data.features.split('\\n').map(f => f.trim()).filter(f => f.length > 0)
+          : [];
+        createData.features = { en: featureList, cy: [] };
+      }
+
+      return await prisma.albumType.create({
+        data: createData
+      });
+    } catch (error) {
+      if (error.code === 'P2002') {
+        throw new Error(`Album Type '${data.kind}' already exists.`);
+      }
+      // Provide a clean error message instead of raw Prisma errors
+      throw new Error('Failed to create Album Type. Please check if all required fields are valid.');
+    }
+  }
+
+  /**
    * Update an Album Type
    */
   async updateAlbumType(id, data) {
@@ -49,6 +88,19 @@ export class AlbumTypeService {
       });
     } catch (error) {
       throw new Error('Failed to update album type: ' + error.message);
+    }
+  }
+
+  /**
+   * Delete an Album Type
+   */
+  async deleteAlbumType(id) {
+    try {
+      return await prisma.albumType.delete({
+        where: { id }
+      });
+    } catch (error) {
+      throw new Error('Failed to delete album type: ' + error.message);
     }
   }
 }

@@ -16,6 +16,8 @@ export class AlbumTypeModule {
 
   initializeRoutes() {
     this.router.get('/', this.albumTypeController.getAllAlbumTypes);
+    this.router.post('/', requireAuth, requireAdmin, this.albumTypeController.createAlbumType);
     this.router.patch('/:id', requireAuth, requireAdmin, this.albumTypeController.updateAlbumType);
+    this.router.delete('/:id', requireAuth, requireAdmin, this.albumTypeController.deleteAlbumType);
   }
 }

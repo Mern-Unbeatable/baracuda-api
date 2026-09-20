@@ -7,6 +7,39 @@ export class AlbumTypeController {
   }
 
   /**
+   * Create an Album Type
+   * @route POST /api/v1/album-types
+   */
+  createAlbumType = async (req, res, next) => {
+    try {
+      const { error, value } = albumTypeValidation.create.validate(req.body);
+      if (error) {
+        return ResponseUtil.error(res, error.details[0].message, 400);
+      }
+
+      const created = await this.albumTypeService.createAlbumType(value);
+      
+      const formatted = {
+        ...created,
+        name: created.name?.en || created.name,
+        description: created.description?.en || created.description,
+        features: Array.isArray(created.features?.en) ? created.features.en.join('\\n') : created.features
+      };
+
+      res.status(201).json({
+        success: true,
+        data: formatted,
+        message: 'Album Type created successfully'
+      });
+    } catch (error) {
+      if (error.message.includes('already exists')) {
+        return ResponseUtil.error(res, error.message, 409);
+      }
+      next(error);
+    }
+  };
+
+  /**
    * Get all Album Types
    * @route GET /api/v1/album-types
    */
@@ -61,6 +94,25 @@ export class AlbumTypeController {
         success: true,
         data: formatted,
         message: 'Album Type updated successfully'
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  /**
+   * Delete Album Type
+   * @route DELETE /api/v1/album-types/:id
+   */
+  deleteAlbumType = async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      
+      await this.albumTypeService.deleteAlbumType(id);
+      
+      res.status(200).json({
+        success: true,
+        message: 'Album Type deleted successfully'
       });
     } catch (error) {
       next(error);
