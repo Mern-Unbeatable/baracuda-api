@@ -669,6 +669,7 @@ model DemoProfile {
   username     String   @unique
   phone        String
   email        String
+  password     String
   bio          Json
   socialLinks  String[]
   profilePhoto String?

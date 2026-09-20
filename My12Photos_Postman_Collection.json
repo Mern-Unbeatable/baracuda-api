@@ -1330,6 +1330,235 @@
               }
             }
           ]
+        },
+        {
+          "name": "Demo Profiles",
+          "item": [
+            {
+              "name": "Create Demo Profile",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{auth_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "fullName",
+                      "value": "Elena Vasquez",
+                      "type": "text"
+                    },
+                    {
+                      "key": "username",
+                      "value": "elenavasquez",
+                      "type": "text"
+                    },
+                    {
+                      "key": "phone",
+                      "value": "+1 555 201 3344",
+                      "type": "text"
+                    },
+                    {
+                      "key": "email",
+                      "value": "elena@photocraft.io",
+                      "type": "text"
+                    },
+                    {
+                      "key": "bio",
+                      "value": "Award-winning landscape photographer.",
+                      "type": "text"
+                    },
+                    {
+                      "key": "socialLinks",
+                      "value": "https://instagram.com/elenavasquez",
+                      "type": "text"
+                    },
+                    {
+                      "key": "password",
+                      "value": "password123",
+                      "type": "text"
+                    },
+                    {
+                      "key": "isActive",
+                      "value": "true",
+                      "type": "text"
+                    },
+                    {
+                      "key": "profilePhoto",
+                      "type": "file",
+                      "src": []
+                    },
+                    {
+                      "key": "coverPhoto",
+                      "type": "file",
+                      "src": []
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/v1/admin/demo-profiles",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "demo-profiles"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Get Demo Profile Stats",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{auth_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/api/v1/admin/demo-profiles/stats",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "demo-profiles",
+                    "stats"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Get All Demo Profiles",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{auth_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/api/v1/admin/demo-profiles?isActive=true&page=1&limit=10",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "demo-profiles"
+                  ],
+                  "query": [
+                    {
+                      "key": "isActive",
+                      "value": "true"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Get Demo Profile Details",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{auth_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/api/v1/admin/demo-profiles/{{profile_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "demo-profiles",
+                    "{{profile_id}}"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Update Demo Profile Status",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{auth_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"isActive\": false\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/v1/admin/demo-profiles/{{profile_id}}/status",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "demo-profiles",
+                    "{{profile_id}}",
+                    "status"
+                  ]
+                }
+              }
+            }
+          ]
         }
       ]
     },
