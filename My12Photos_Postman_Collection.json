@@ -121,7 +121,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"email\": \"shanjid.maktech@gmail.com\",\r\n  \"password\": \"password123\"\r\n}",
+              "raw": "{\n  \"email\": \"shanjid.maktech@gmail.com\",\n  \"password\": \"password123\"\n  \n  // ADMIN CREDENTIALS:\n  // \"email\": \"admin@my12photos.com\",\n  // \"password\": \"admin123\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1080,6 +1080,138 @@
                   ]
                 },
                 "description": "Fetch the artwork details of a specific winner using the submissionId"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Support",
+          "item": [
+            {
+              "name": "Get Pending Tickets",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{auth_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/api/v1/support/admin/pending?page=1&limit=10",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "support",
+                    "admin",
+                    "pending"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Get Answered Tickets",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{auth_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/api/v1/support/admin/answered?page=1&limit=10",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "support",
+                    "admin",
+                    "answered"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Reply to Ticket",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{auth_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"answer\": \"<p>We are looking into this issue. <strong>Thanks!</strong></p>\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/v1/support/admin/{{ticket_id}}/reply",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "support",
+                    "admin",
+                    "{{ticket_id}}",
+                    "reply"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Get Admin Ticket Details",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{auth_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/api/v1/support/admin/{{ticket_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "support",
+                    "admin",
+                    "{{ticket_id}}"
+                  ]
+                }
               }
             }
           ]
@@ -2745,6 +2877,119 @@
                 }
               },
               "response": []
+            }
+          ]
+        },
+        {
+          "name": "Support",
+          "item": [
+            {
+              "name": "Create Support Ticket",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{auth_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"subject\": \"App is crashing\",\n  \"message\": \"I cannot open the app.\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/v1/support",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "support"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Get My Tickets",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{auth_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/api/v1/support/my-tickets?status=PENDING&page=1&limit=10",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "support",
+                    "my-tickets"
+                  ],
+                  "query": [
+                    {
+                      "key": "status",
+                      "value": "PENDING"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Get My Ticket Details",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{auth_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/api/v1/support/my-tickets/{{ticket_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "support",
+                    "my-tickets",
+                    "{{ticket_id}}"
+                  ]
+                }
+              }
             }
           ]
         }
