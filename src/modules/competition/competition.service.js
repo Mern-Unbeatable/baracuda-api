@@ -265,7 +265,7 @@ export class CompetitionService {
         skip,
         take: limit,
         include: {
-          user: { select: { id: true, name: true, avatar: true } },
+          user: { select: { id: true, name: true, avatar: true, country: true } },
           submission: {
             select: {
               id: true, title: true, featuredImage: true,
