@@ -1,8 +1,6 @@
-/**
- * User Controller Layer
- * Handles HTTP requests and responses for user-related endpoints
- */
 import { UrlUtil } from '../../utils/urlUtil.js';
+import { userValidation } from './user.validation.js';
+import { ResponseUtil } from '../../utils/response.js';
 
 export class UserController {
   constructor(userService) {
@@ -10,18 +8,28 @@ export class UserController {
   }
 
   /**
-   * Get all users
-   * @route GET /api/users
+   * Get all users (Admin)
+   * @route GET /api/v1/admin/users
    */
   getAllUsers = async (req, res, next) => {
     try {
-      let users = await this.userService.getAllUsers();
-      users = users.map(u => UrlUtil.formatUserMedia(req, u));
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 10;
+      const status = req.query.status;
+
+      const { users, totalCount } = await this.userService.getAllUsers(page, limit, status);
+      
+      const formattedUsers = users.map(u => UrlUtil.formatUserMedia(req, u));
       
       res.status(200).json({
         success: true,
-        data: users,
-        count: users.length
+        data: formattedUsers,
+        pagination: {
+          total: totalCount,
+          page,
+          limit,
+          totalPages: Math.ceil(totalCount / limit)
+        }
       });
     } catch (error) {
       next(error);
@@ -29,8 +37,8 @@ export class UserController {
   }
 
   /**
-   * Get single user by ID
-   * @route GET /api/users/:id
+   * Get single user by ID (Admin)
+   * @route GET /api/v1/admin/users/:id
    */
   getUserById = async (req, res, next) => {
     try {
@@ -38,10 +46,7 @@ export class UserController {
       const user = await this.userService.getUserById(id);
       
       if (!user) {
-        return res.status(404).json({
-          success: false,
-          error: 'User not found'
-        });
+        return ResponseUtil.error(res, 'User not found', 404);
       }
       
       res.status(200).json({
@@ -54,67 +59,27 @@ export class UserController {
   }
 
   /**
-   * Create new user
-   * @route POST /api/users
+   * Update User Status (Admin)
+   * @route PATCH /api/v1/admin/users/:id/status
    */
-  createUser = async (req, res, next) => {
-    try {
-      const userData = req.body;
-      
-      // Basic validation
-      if (!userData.name || !userData.email) {
-        return res.status(400).json({
-          success: false,
-          error: 'Name and email are required'
-        });
-      }
-      
-      const newUser = await this.userService.createUser(userData);
-      
-      res.status(201).json({
-        success: true,
-        data: UrlUtil.formatUserMedia(req, newUser),
-        message: 'User created successfully'
-      });
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  /**
-   * Update existing user
-   * @route PUT /api/users/:id
-   */
-  updateUser = async (req, res, next) => {
+  updateUserStatus = async (req, res, next) => {
     try {
       const { id } = req.params;
-      const userData = req.body;
       
-      const updatedUser = await this.userService.updateUser(id, userData);
+      // Validate request body
+      const { error, value } = userValidation.updateStatus.validate(req.body);
+      if (error) {
+        return ResponseUtil.error(res, error.details[0].message, 400);
+      }
+
+      const { status, reason } = value;
+
+      const updatedUser = await this.userService.updateUserStatus(id, status, reason);
       
       res.status(200).json({
         success: true,
         data: UrlUtil.formatUserMedia(req, updatedUser),
-        message: 'User updated successfully'
-      });
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  /**
-   * Delete user
-   * @route DELETE /api/users/:id
-   */
-  deleteUser = async (req, res, next) => {
-    try {
-      const { id } = req.params;
-      const result = await this.userService.deleteUser(id);
-      
-      res.status(200).json({
-        success: true,
-        data: result,
-        message: 'User deleted successfully'
+        message: `User status updated to ${status}`
       });
     } catch (error) {
       next(error);

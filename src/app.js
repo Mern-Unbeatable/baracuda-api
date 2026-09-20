@@ -62,7 +62,7 @@ class App {
     this.app.use('/api/v1/auth', authModule.router);
 
     const userModule = new UserModule();
-    this.app.use('/api/v1/users', userModule.router);
+    this.app.use('/api/v1/admin/users', userModule.router);
     
     this.app.use('/api/v1/categories', CategoryModule.router);
 

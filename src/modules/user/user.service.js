@@ -1,95 +1,113 @@
-// import { PrismaClient } from '@prisma/client';
+import prisma from '../../config/prisma.js';
 
 /**
  * User Service Layer
  * Handles business logic and database operations for users
  */
 export class UserService {
-  constructor(prisma = null) {
-    // In a real app, inject PrismaClient instance via constructor
-    this.prisma = prisma;
-  }
-
   /**
-   * Get all users from database
-   * @returns {Promise<Array>} List of users
+   * Get all users with pagination and filtering
    */
-  async getAllUsers() {
+  async getAllUsers(page = 1, limit = 10, status) {
     try {
-      // Example: return await this.prisma.user.findMany();
+      const skip = (page - 1) * limit;
+      const where = {
+        role: 'USER'
+      };
       
-      // Mock data for demonstration
-      return [
-        { id: 1, name: 'John Doe', email: 'john@example.com' },
-        { id: 2, name: 'Jane Smith', email: 'jane@example.com' }
-      ];
+      if (status && status !== 'All') {
+        where.status = status.toUpperCase();
+      }
+
+      const [users, totalCount] = await Promise.all([
+        prisma.user.findMany({
+          where,
+          skip,
+          take: limit,
+          orderBy: { createdAt: 'desc' },
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            phone: true,
+            status: true,
+            createdAt: true,
+            avatar: true,
+            suspendReason: true,
+            suspendedAt: true
+          }
+        }),
+        prisma.user.count({ where })
+      ]);
+
+      return { users, totalCount };
     } catch (error) {
-      throw new Error(`Failed to fetch users: ${error.message}`);
+      throw new Error('Failed to fetch users: ' + error.message);
     }
   }
 
   /**
    * Get a single user by ID
-   * @param {number} id - User ID
-   * @returns {Promise<Object>} User object
    */
   async getUserById(id) {
     try {
-      // Example: return await this.prisma.user.findUnique({ where: { id: parseInt(id) } });
-      
-      // Mock data for demonstration
-      return { id: parseInt(id), name: 'John Doe', email: 'john@example.com' };
+      return await prisma.user.findUnique({
+        where: { id },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          phone: true,
+          status: true,
+          createdAt: true,
+          avatar: true,
+          coverPhoto: true,
+          bio: true,
+          city: true,
+          country: true,
+          role: true,
+          isVerified: true,
+          suspendReason: true,
+          suspendedAt: true,
+          lastLoginAt: true
+        }
+      });
     } catch (error) {
-      throw new Error(`Failed to fetch user: ${error.message}`);
+      throw new Error('Failed to fetch user: ' + error.message);
     }
   }
 
   /**
-   * Create a new user
-   * @param {Object} userData - User data
-   * @returns {Promise<Object>} Created user object
+   * Update user status (Active/Suspend)
    */
-  async createUser(userData) {
+  async updateUserStatus(id, status, reason = null) {
     try {
-      // Example: return await this.prisma.user.create({ data: userData });
-      
-      // Mock data for demonstration
-      return { id: 3, ...userData };
-    } catch (error) {
-      throw new Error(`Failed to create user: ${error.message}`);
-    }
-  }
+      const updateData = {
+        status: status,
+      };
 
-  /**
-   * Update an existing user
-   * @param {number} id - User ID
-   * @param {Object} userData - Updated user data
-   * @returns {Promise<Object>} Updated user object
-   */
-  async updateUser(id, userData) {
-    try {
-      // Example: return await this.prisma.user.update({ where: { id: parseInt(id) }, data: userData });
-      
-      // Mock data for demonstration
-      return { id: parseInt(id), ...userData };
-    } catch (error) {
-      throw new Error(`Failed to update user: ${error.message}`);
-    }
-  }
+      if (status === 'SUSPENDED') {
+        updateData.suspendReason = reason;
+        updateData.suspendedAt = new Date();
+      } else if (status === 'ACTIVE') {
+        updateData.suspendReason = null;
+        updateData.suspendedAt = null;
+      }
 
-  /**
-   * Delete a user
-   * @param {number} id - User ID
-   * @returns {Promise<Object>} Deleted user object
-   */
-  async deleteUser(id) {
-    try {
-      // Example: return await this.prisma.user.delete({ where: { id: parseInt(id) } });
-      
-      // Mock data for demonstration
-      return { id: parseInt(id), message: 'User deleted successfully' };
+      return await prisma.user.update({
+        where: { id },
+        data: updateData,
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          status: true,
+          suspendReason: true,
+          suspendedAt: true
+        }
+      });
     } catch (error) {
-      throw new Error(`Failed to delete user: ${error.message}`);
+      throw new Error('Failed to update user status: ' + error.message);
     }
   }
 }

@@ -1,12 +1,8 @@
 import { Router } from 'express';
 import { UserController } from './user.controller.js';
 import { UserService } from './user.service.js';
+import { requireAuth, requireAdmin } from '../../middlewares/auth.middleware.js';
 
-/**
- * User Module
- * Acts as the entry point for the user feature domain.
- * Wires dependencies and exposes the configured router.
- */
 export class UserModule {
   constructor() {
     this.router = Router();
@@ -19,10 +15,9 @@ export class UserModule {
   }
 
   initializeRoutes() {
-    this.router.get('/', this.userController.getAllUsers);
-    this.router.get('/:id', this.userController.getUserById);
-    this.router.post('/', this.userController.createUser);
-    this.router.put('/:id', this.userController.updateUser);
-    this.router.delete('/:id', this.userController.deleteUser);
+    // Admin User Management Routes
+    this.router.get('/', requireAuth, requireAdmin, this.userController.getAllUsers);
+    this.router.get('/:id', requireAuth, requireAdmin, this.userController.getUserById);
+    this.router.patch('/:id/status', requireAuth, requireAdmin, this.userController.updateUserStatus);
   }
 }

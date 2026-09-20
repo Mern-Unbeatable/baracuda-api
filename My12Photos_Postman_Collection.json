@@ -761,6 +761,122 @@
               }
             }
           ]
+        },
+        {
+          "name": "Users Management",
+          "item": [
+            {
+              "name": "Get All Users",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{auth_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/users?page=1&limit=10&status=All",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "users"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "status",
+                      "value": "All"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Get User By ID",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{auth_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/users/{{user_id}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "users",
+                    "{{user_id}}"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Update User Status",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{auth_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"status\": \"SUSPENDED\",\n  \"reason\": \"Violation of terms\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/users/{{user_id}}/status",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "users",
+                    "{{user_id}}",
+                    "status"
+                  ]
+                }
+              }
+            }
+          ]
         }
       ]
     },
