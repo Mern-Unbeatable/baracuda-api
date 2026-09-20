@@ -35,7 +35,7 @@ export class DemoProfileController {
         message: 'Demo profile created successfully'
       });
     } catch (error) {
-      if (error.message.includes('Username already exists')) {
+      if (error.message.includes('Username already exists') || error.message.includes('Email is already registered')) {
         return ResponseUtil.error(res, error.message, 409);
       }
       next(error);

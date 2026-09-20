@@ -8,12 +8,20 @@ export class DemoProfileService {
   async createProfile(data, adminId) {
     const { bio, ...rest } = data;
     
-    // Check username exists in DemoProfile or User table
-    const existingDemo = await prisma.demoProfile.findUnique({ where: { username: rest.username } });
-    const existingUser = await prisma.user.findUnique({ where: { username: rest.username } });
+    // Check username and email exist in DemoProfile or User table
+    const [existingDemoUsername, existingUserUsername, existingDemoEmail, existingUserEmail] = await Promise.all([
+      prisma.demoProfile.findUnique({ where: { username: rest.username } }),
+      prisma.user.findUnique({ where: { username: rest.username } }),
+      prisma.demoProfile.findFirst({ where: { email: rest.email } }),
+      prisma.user.findUnique({ where: { email: rest.email } })
+    ]);
     
-    if (existingDemo || existingUser) {
+    if (existingDemoUsername || existingUserUsername) {
       throw new Error('Username already exists');
+    }
+    
+    if (existingDemoEmail || existingUserEmail) {
+      throw new Error('Email is already registered');
     }
 
     const newProfile = await prisma.demoProfile.create({

@@ -668,7 +668,7 @@ model DemoProfile {
   fullName     String
   username     String   @unique
   phone        String
-  email        String
+  email        String   @unique
   password     String
   bio          Json
   socialLinks  String[]
