@@ -9,6 +9,7 @@ import { PostModule } from './modules/post/post.module.js';
 import { AdvertisementModule } from './modules/advertisement/advertisement.module.js';
 import { BusinessModule } from './modules/business/business.module.js';
 import { NewsletterModule } from './modules/newsletter/newsletter.module.js';
+import { AlbumTypeModule } from './modules/album-type/album-type.module.js';
 import paymentRouter from './modules/payment/payment.module.js';
 import config from './config/env.js';
 
@@ -86,6 +87,9 @@ class App {
 
     const newsletterModule = new NewsletterModule();
     this.app.use('/api/v1/newsletter', newsletterModule.router);
+
+    const albumTypeModule = new AlbumTypeModule();
+    this.app.use('/api/v1/album-types', albumTypeModule.router);
 
     this.app.use('/api/v1/payments', paymentRouter);
   }

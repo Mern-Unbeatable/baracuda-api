@@ -389,6 +389,7 @@ model Submission {
   visibility       SubmissionVisibility        @default(PUBLIC)
   status           SubmissionStatus            @default(PENDING)
   competitionState SubmissionCompetitionState?
+  prizeMoney       Decimal?                    @db.Decimal(10, 2)
 
   title Json
   story Json?

@@ -58,6 +58,7 @@ export class ArtworkService {
         competitionId: activeCompetitionId,
         userId,
         status: 'APPROVED',
+        prizeMoney: data.competitionState === 'IN_COMPETITION' ? albumType.prizeMoney : null,
         media: {
           create: [
             ...images.map((file, index) => {
