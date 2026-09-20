@@ -162,7 +162,7 @@ export class CompetitionService {
             rank: 'asc'
           },
           include: {
-            user: { select: { id: true, name: true, avatar: true } },
+            user: { select: { id: true, name: true, avatar: true, country: true } },
             submission: {
               select: {
                 id: true, title: true, featuredImage: true,
@@ -182,7 +182,7 @@ export class CompetitionService {
           orderBy: { votesCount: 'desc' },
           take: 10,
           include: {
-            user: { select: { id: true, name: true, avatar: true } },
+            user: { select: { id: true, name: true, avatar: true, country: true } },
             media: { where: { slotIndex: 0 }, take: 1 }
           }
         });
