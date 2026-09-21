@@ -20,7 +20,7 @@ export class AdminPaymentService {
         include: {
           user: {
             select: {
-              fullName: true,
+              name: true,
               email: true
             }
           }
@@ -38,7 +38,7 @@ export class AdminPaymentService {
       amount: Number(p.amount),
       status: p.status,
       user: {
-        name: p.user?.fullName || 'Unknown User',
+        name: p.user?.name || 'Unknown User',
         email: p.user?.email || 'Unknown Email'
       }
     }));
@@ -58,6 +58,24 @@ export class AdminPaymentService {
     const payout = await prisma.payout.findUnique({ where: { id } });
     if (!payout) {
       throw new Error('Payout request not found');
+    }
+
+    if (payout.status === status) {
+      const error = new Error(`Payout is already ${status}`);
+      error.status = 400;
+      throw error;
+    }
+
+    if (payout.status === 'PAID') {
+      const error = new Error('Cannot change status of a payout that has already been PAID');
+      error.status = 400;
+      throw error;
+    }
+
+    if (payout.status === 'REJECTED') {
+      const error = new Error('Cannot change status of a payout that has already been REJECTED');
+      error.status = 400;
+      throw error;
     }
 
     const updatedPayout = await prisma.payout.update({

@@ -1591,13 +1591,7 @@
               "name": "Get Prize Money Payouts",
               "request": {
                 "method": "GET",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{token}}",
-                    "type": "text"
-                  }
-                ],
+                "header": [],
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/payments/admin/payouts/prize-money",
                   "host": [
@@ -1611,6 +1605,16 @@
                     "payouts",
                     "prize-money"
                   ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
                 }
               },
               "response": []
@@ -1619,13 +1623,7 @@
               "name": "Get Donations Payouts",
               "request": {
                 "method": "GET",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{token}}",
-                    "type": "text"
-                  }
-                ],
+                "header": [],
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/payments/admin/payouts/donations",
                   "host": [
@@ -1639,6 +1637,16 @@
                     "payouts",
                     "donations"
                   ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
                 }
               },
               "response": []
@@ -1647,13 +1655,7 @@
               "name": "Get Photo Sales Payouts",
               "request": {
                 "method": "GET",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{token}}",
-                    "type": "text"
-                  }
-                ],
+                "header": [],
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/payments/admin/payouts/photo-sales",
                   "host": [
@@ -1667,6 +1669,16 @@
                     "payouts",
                     "photo-sales"
                   ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
                 }
               },
               "response": []
@@ -1675,13 +1687,7 @@
               "name": "Update Payout Status",
               "request": {
                 "method": "PATCH",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{token}}",
-                    "type": "text"
-                  }
-                ],
+                "header": [],
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"status\": \"APPROVED\"\n}",
@@ -1704,6 +1710,16 @@
                     "payouts",
                     "REPLACE_WITH_PAYOUT_ID",
                     "status"
+                  ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
                   ]
                 }
               },

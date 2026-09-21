@@ -86,7 +86,7 @@ class UserPaymentController {
   async requestPayout(req, res, next) {
     try {
       const { type, amount, accountNumber } = req.body;
-      const result = await userPaymentService.requestPayout(req.user.id, type, amount, 'Stripe', accountNumber);
+      const result = await userPaymentService.requestPayout(req.user.id, type, amount, 'payPal', accountNumber);
       return ResponseUtil.success(res, 'Payout requested successfully', result);
     } catch (error) {
       // If error is about insufficient balance, return 400
