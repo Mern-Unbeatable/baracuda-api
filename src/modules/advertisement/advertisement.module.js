@@ -32,6 +32,13 @@ export class AdvertisementModule {
       this.advertisementController.downloadInvoice
     );
 
+    // --- PUBLIC ROUTE ---
+    this.router.get(
+      '/public',
+      AdvertisementValidation.validateQuery(AdvertisementValidation.publicAdsQuerySchema),
+      this.advertisementController.getPublicAds
+    );
+
     // --- ADMIN ROUTES ---
     
     this.router.get(

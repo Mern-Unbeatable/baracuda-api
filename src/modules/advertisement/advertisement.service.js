@@ -83,6 +83,39 @@ export class AdvertisementService {
     return InvoicePdfGenerator.generate(advertisement);
   }
 
+  // --- PUBLIC APIs ---
+
+  async getPublicAds(req, pageName) {
+    const { UrlUtil } = await import('../../utils/urlUtil.js');
+
+    const where = { status: 'ACTIVE' };
+    if (pageName) {
+      where.selectPage = { equals: pageName, mode: 'insensitive' };
+    }
+
+    const ads = await prisma.advertisement.findMany({
+      where,
+      orderBy: { createdAt: 'desc' }
+    });
+
+    return ads.map(ad => {
+      const baseResponse = {
+        id: ad.id,
+        businessType: ad.businessType,
+        description: ad.description,
+        media: UrlUtil.getAbsoluteUrl(req, ad.businessImage)
+      };
+
+      if (ad.businessType === 'LOCAL') {
+        baseResponse.location = ad.location;
+      } else if (ad.businessType === 'ONLINE') {
+        baseResponse.websiteUrl = ad.websiteUrl;
+      }
+
+      return baseResponse;
+    });
+  }
+
   // --- ADMIN APIs ---
 
   async getAllAdvertisements(query = {}) {

@@ -5130,6 +5130,38 @@
           ]
         }
       ]
+    },
+    {
+      "name": "Advertise with us",
+      "item": [
+        {
+          "name": "Get Public Advertisements",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/advertisements/public?page=Home",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "advertisements",
+                "public"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "Home",
+                  "description": "Filter ads by page name"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
     }
   ]
 }

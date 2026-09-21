@@ -65,6 +65,18 @@ export class AdvertisementController {
     }
   }
 
+  // --- PUBLIC APIs ---
+
+  getPublicAds = async (req, res) => {
+    try {
+      const pageName = req.query.page;
+      const result = await this.advertisementService.getPublicAds(req, pageName);
+      return ResponseUtil.success(res, 'Public advertisements retrieved successfully', result);
+    } catch (error) {
+      return ResponseUtil.error(res, error.message, 500);
+    }
+  }
+
   // --- ADMIN APIs ---
 
   getAllAdvertisements = async (req, res) => {
