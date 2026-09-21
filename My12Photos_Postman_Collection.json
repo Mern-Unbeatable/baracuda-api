@@ -5087,6 +5087,53 @@
                 }
               },
               "response": []
+            },
+            {
+              "name": "Report Premium Photo",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{auth_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"reason\": \"Copyright Infringement\",\n  \"details\": \"This photo belongs to me.\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/v1/marketplace/premium-images/:id/report",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "marketplace",
+                    "premium-images",
+                    ":id",
+                    "report"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "{{photo_id}}"
+                    }
+                  ]
+                }
+              },
+              "response": []
             }
           ]
         },
