@@ -133,7 +133,8 @@ export class DemoProfileService {
       about: bioText,
       socialMedia: profile.socialLinks,
       profilePhoto: profile.profilePhoto,
-      coverPhoto: profile.coverPhoto
+      coverPhoto: profile.coverPhoto,
+      password: profile.password
     };
   }
 }
