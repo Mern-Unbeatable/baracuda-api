@@ -241,6 +241,7 @@ model User {
   city        String?
   country     String?
   website     String?
+  paypalAccount String?
   language    SupportedLocale @default(en)
   socialLinks Json?
 
@@ -263,6 +264,7 @@ model User {
   updatedAt DateTime @updatedAt
 
   submissions          Submission[]
+  campaignSubmission   CampaignSubmission?
   votes                Vote[]
   likes                Like[]
   comments             Comment[]
@@ -1144,4 +1146,50 @@ model SavedPremiumPhoto {
 
   @@unique([premiumPhotoId, userId])
   @@map("saved_premium_photos")
+}
+
+// ============================================================
+// PROMO CAMPAIGNS
+// ============================================================
+
+enum PromoLinkStatus {
+  ACTIVE
+  USED
+  EXPIRED
+}
+
+enum CampaignRewardStatus {
+  UNDER_REVIEW
+  PAID
+  NOT_ELIGIBLE
+}
+
+model CampaignLink {
+  id          String           @id @default(uuid())
+  token       String           @unique
+  validUntil  DateTime
+  status      PromoLinkStatus  @default(ACTIVE)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  submission  CampaignSubmission?
+
+  @@map("campaign_links")
+}
+
+model CampaignSubmission {
+  id                    String               @id @default(uuid())
+  campaignLinkId        String               @unique
+  userId                String               @unique
+  checklist             Json                 // Detailed breakdown of completed requirements
+  totalRequirements     Int
+  completedRequirements Int
+  rewardStatus          CampaignRewardStatus @default(NOT_ELIGIBLE)
+  createdAt             DateTime             @default(now())
+  updatedAt             DateTime             @updatedAt
+
+  link                  CampaignLink         @relation(fields: [campaignLinkId], references: [id], onDelete: Cascade)
+  user                  User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("campaign_submissions")
 }

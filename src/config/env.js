@@ -15,6 +15,7 @@ export const config = {
     port: process.env.PORT || 3000,
     env: process.env.NODE_ENV || 'development',
     frontendUrl: process.env.FRONTEND_URL || 'http://localhost:3000',
+    promoCodeLink: process.env.PROMO_CODE_LINK || 'https://baracuda260.maktechgroup.tech/join/promo',
   },
   db: {
     url: process.env.DATABASE_URL,

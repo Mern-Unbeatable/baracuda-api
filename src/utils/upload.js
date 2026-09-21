@@ -16,7 +16,7 @@ const storage = multer.diskStorage({
 });
 
 const fileFilter = (req, file, cb) => {
-  if (file.fieldname === 'avatar' || file.fieldname === 'profilePhoto' || file.fieldname === 'coverPhoto' || file.fieldname === 'images') {
+  if (file.fieldname === 'avatar' || file.fieldname === 'profilePhoto' || file.fieldname === 'coverPhoto' || file.fieldname === 'images' || file.fieldname === 'singlePhoto' || file.fieldname === 'sixPhotos' || file.fieldname === 'twelvePhotos') {
     const allowedImageTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/avif'];
     const allowedExtensions = ['.jpg', '.jpeg', '.png', '.webp', '.avif'];
     const ext = path.extname(file.originalname).toLowerCase();
@@ -26,7 +26,7 @@ const fileFilter = (req, file, cb) => {
     } else {
       cb(new Error('Invalid image file. Supported formats are: jpg, jpeg, png, webp, avif'), false);
     }
-  } else if (file.fieldname === 'introVideo' || file.fieldname === 'video') {
+  } else if (file.fieldname === 'introVideo' || file.fieldname === 'video' || file.fieldname === 'singleVideo' || file.fieldname === 'sixVideo' || file.fieldname === 'twelveVideo') {
     if (file.mimetype === 'video/mp4') {
       cb(null, true);
     } else {

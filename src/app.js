@@ -14,6 +14,7 @@ import { SupportModule } from './modules/support/support.module.js';
 import { CommentModule } from './modules/comment/comment.module.js';
 import { DemoProfileModule } from './modules/demo-profile/demo-profile.module.js';
 import paymentRouter from './modules/payment/payment.module.js';
+import { CampaignModule } from './modules/campaign/campaign.module.js';
 import config from './config/env.js';
 
 /**
@@ -104,6 +105,7 @@ class App {
     this.app.use('/api/v1/support', supportModule.router);
 
     this.app.use('/api/v1/payments', paymentRouter);
+    this.app.use('/api/v1/campaigns', CampaignModule.router);
   }
 
   initializeErrorHandling() {

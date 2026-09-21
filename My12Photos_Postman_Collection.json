@@ -1726,6 +1726,206 @@
               "response": []
             }
           ]
+        },
+        {
+          "name": "Promo Links Management",
+          "item": [
+            {
+              "name": "Admin - Generate Promo Link",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/campaigns/links",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "campaigns",
+                    "links"
+                  ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{admin_token}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Admin - Get Dashboard Stats",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/campaigns/stats",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "campaigns",
+                    "stats"
+                  ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{admin_token}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Admin - Get All Promo Links",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/campaigns/links?status=ALL&dateCreated=ALL&requirements=ALL&rewardStatus=ALL&page=1&limit=10",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "campaigns",
+                    "links"
+                  ],
+                  "query": [
+                    {
+                      "key": "status",
+                      "value": "ALL"
+                    },
+                    {
+                      "key": "dateCreated",
+                      "value": "ALL"
+                    },
+                    {
+                      "key": "requirements",
+                      "value": "ALL"
+                    },
+                    {
+                      "key": "rewardStatus",
+                      "value": "ALL"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    }
+                  ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{admin_token}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Admin - Get Link Details",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/campaigns/links/:id",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "campaigns",
+                    "links",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "REPLACE_ME"
+                    }
+                  ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{admin_token}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Admin - Change Reward Status",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"status\": \"PAID\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/v1/campaigns/links/:id/reward",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "campaigns",
+                    "links",
+                    ":id",
+                    "reward"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "REPLACE_ME"
+                    }
+                  ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{admin_token}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
         }
       ]
     },
@@ -5123,6 +5323,342 @@
                     "v1",
                     "newsletter",
                     "subscribe"
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Promo Code Reward",
+          "item": [
+            {
+              "name": "Public - Submit Campaign / Register",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "fullName",
+                      "value": "John Doe",
+                      "type": "text"
+                    },
+                    {
+                      "key": "username",
+                      "value": "johndoe",
+                      "type": "text"
+                    },
+                    {
+                      "key": "email",
+                      "value": "john@example.com",
+                      "type": "text"
+                    },
+                    {
+                      "key": "phone",
+                      "value": "+1234567890",
+                      "type": "text"
+                    },
+                    {
+                      "key": "country",
+                      "value": "USA",
+                      "type": "text"
+                    },
+                    {
+                      "key": "paypalAccount",
+                      "value": "john@paypal.com",
+                      "type": "text"
+                    },
+                    {
+                      "key": "about",
+                      "value": "I am a photographer",
+                      "type": "text"
+                    },
+                    {
+                      "key": "socialLinks",
+                      "value": "[\"https://instagram.com/johndoe\",\"https://facebook.com/johndoe\"]",
+                      "type": "text"
+                    },
+                    {
+                      "key": "password",
+                      "value": "password123",
+                      "type": "text"
+                    },
+                    {
+                      "key": "profilePhoto",
+                      "type": "file",
+                      "src": []
+                    },
+                    {
+                      "key": "coverPhoto",
+                      "type": "file",
+                      "src": []
+                    },
+                    {
+                      "key": "introVideo",
+                      "type": "file",
+                      "src": []
+                    },
+                    {
+                      "key": "singlePhoto",
+                      "type": "file",
+                      "src": []
+                    },
+                    {
+                      "key": "singleVideo",
+                      "type": "file",
+                      "src": []
+                    },
+                    {
+                      "key": "singleZodiacSign",
+                      "value": "GEMINI",
+                      "type": "text"
+                    },
+                    {
+                      "key": "singleQuality",
+                      "value": "4K",
+                      "type": "text"
+                    },
+                    {
+                      "key": "singleIsAiGenerated",
+                      "value": "false",
+                      "type": "text"
+                    },
+                    {
+                      "key": "singleCopyrightConfirmed",
+                      "value": "true",
+                      "type": "text"
+                    },
+                    {
+                      "key": "singleTitle",
+                      "value": "Single Photo Masterpiece",
+                      "type": "text"
+                    },
+                    {
+                      "key": "singleCategoryId",
+                      "value": "b2f5c76c-310e-4360-84c4-7be434f815ea",
+                      "type": "text"
+                    },
+                    {
+                      "key": "singleSubcategoryId",
+                      "value": "e5b32a76-12c8-47bc-9189-df6b88b77054",
+                      "type": "text"
+                    },
+                    {
+                      "key": "singleStory",
+                      "value": "The creative narrative behind the single photo...",
+                      "type": "text"
+                    },
+                    {
+                      "key": "singleResolution",
+                      "value": "6000*6000",
+                      "type": "text"
+                    },
+                    {
+                      "key": "singleFileSize",
+                      "value": "125 KB",
+                      "type": "text"
+                    },
+                    {
+                      "key": "sixTheme",
+                      "value": "RED",
+                      "type": "text"
+                    },
+                    {
+                      "key": "sixPhotos",
+                      "type": "file",
+                      "src": []
+                    },
+                    {
+                      "key": "sixPhotos",
+                      "type": "file",
+                      "src": []
+                    },
+                    {
+                      "key": "sixPhotos",
+                      "type": "file",
+                      "src": []
+                    },
+                    {
+                      "key": "sixPhotos",
+                      "type": "file",
+                      "src": []
+                    },
+                    {
+                      "key": "sixPhotos",
+                      "type": "file",
+                      "src": []
+                    },
+                    {
+                      "key": "sixPhotos",
+                      "type": "file",
+                      "src": []
+                    },
+                    {
+                      "key": "sixVideo",
+                      "type": "file",
+                      "src": []
+                    },
+                    {
+                      "key": "sixTitle",
+                      "value": "Celestial Archetypes of Fire",
+                      "type": "text"
+                    },
+                    {
+                      "key": "sixCategoryId",
+                      "value": "b2f5c76c-310e-4360-84c4-7be434f815ea",
+                      "type": "text"
+                    },
+                    {
+                      "key": "sixSubcategoryId",
+                      "value": "e5b32a76-12c8-47bc-9189-df6b88b77054",
+                      "type": "text"
+                    },
+                    {
+                      "key": "sixStory",
+                      "value": "Share the creative narrative behind this cosmological series...",
+                      "type": "text"
+                    },
+                    {
+                      "key": "sixResolution",
+                      "value": "6000*6000",
+                      "type": "text"
+                    },
+                    {
+                      "key": "sixFileSize",
+                      "value": "125 KB",
+                      "type": "text"
+                    },
+                    {
+                      "key": "sixQuality",
+                      "value": "4K",
+                      "type": "text"
+                    },
+                    {
+                      "key": "twelveTheme",
+                      "value": "FULL",
+                      "type": "text"
+                    },
+                    {
+                      "key": "twelvePhotos",
+                      "type": "file",
+                      "src": []
+                    },
+                    {
+                      "key": "twelvePhotos",
+                      "type": "file",
+                      "src": []
+                    },
+                    {
+                      "key": "twelvePhotos",
+                      "type": "file",
+                      "src": []
+                    },
+                    {
+                      "key": "twelvePhotos",
+                      "type": "file",
+                      "src": []
+                    },
+                    {
+                      "key": "twelvePhotos",
+                      "type": "file",
+                      "src": []
+                    },
+                    {
+                      "key": "twelvePhotos",
+                      "type": "file",
+                      "src": []
+                    },
+                    {
+                      "key": "twelvePhotos",
+                      "type": "file",
+                      "src": []
+                    },
+                    {
+                      "key": "twelvePhotos",
+                      "type": "file",
+                      "src": []
+                    },
+                    {
+                      "key": "twelvePhotos",
+                      "type": "file",
+                      "src": []
+                    },
+                    {
+                      "key": "twelvePhotos",
+                      "type": "file",
+                      "src": []
+                    },
+                    {
+                      "key": "twelvePhotos",
+                      "type": "file",
+                      "src": []
+                    },
+                    {
+                      "key": "twelvePhotos",
+                      "type": "file",
+                      "src": []
+                    },
+                    {
+                      "key": "twelveVideo",
+                      "type": "file",
+                      "src": []
+                    },
+                    {
+                      "key": "twelveTitle",
+                      "value": "Celestial Archetypes of the Universe",
+                      "type": "text"
+                    },
+                    {
+                      "key": "twelveCategoryId",
+                      "value": "b2f5c76c-310e-4360-84c4-7be434f815ea",
+                      "type": "text"
+                    },
+                    {
+                      "key": "twelveSubcategoryId",
+                      "value": "e5b32a76-12c8-47bc-9189-df6b88b77054",
+                      "type": "text"
+                    },
+                    {
+                      "key": "twelveStory",
+                      "value": "Share the creative narrative behind this cosmological series...",
+                      "type": "text"
+                    },
+                    {
+                      "key": "twelveResolution",
+                      "value": "6000*6000",
+                      "type": "text"
+                    },
+                    {
+                      "key": "twelveFileSize",
+                      "value": "125 KB",
+                      "type": "text"
+                    },
+                    {
+                      "key": "twelveQuality",
+                      "value": "4K",
+                      "type": "text"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/v1/campaigns/submit/:token",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "campaigns",
+                    "submit",
+                    ":token"
+                  ],
+                  "variable": [
+                    {
+                      "key": "token",
+                      "value": "8XK29P"
+                    }
                   ]
                 }
               }
