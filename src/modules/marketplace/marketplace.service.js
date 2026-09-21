@@ -391,12 +391,38 @@ export class MarketplaceService {
     });
 
     if (existingSave) {
-      await prisma.savedPremiumPhoto.delete({ where: { id: existingSave.id } });
-      return { saved: false };
+      await prisma.save.delete({ where: { id: existingSave.id } });
+      return { message: 'Photo unsaved successfully', saved: false };
     } else {
-      await prisma.savedPremiumPhoto.create({ data: { premiumPhotoId: id, userId } });
-      return { saved: true };
+      await prisma.save.create({
+        data: {
+          submissionId: id,
+          userId
+        }
+      });
+      return { message: 'Photo saved successfully', saved: true };
     }
+  }
+
+  async reportPremiumPhoto(id, userId, reason, details) {
+    const photo = await prisma.submission.findUnique({
+      where: { id }
+    });
+    if (!photo) {
+      throw new Error('Premium photo not found');
+    }
+    if (photo.userId === userId) {
+      throw new Error('You cannot report your own photo');
+    }
+
+    return prisma.report.create({
+      data: {
+        submissionId: id,
+        userId,
+        reason,
+        details
+      }
+    });
   }
 
   async createPurchaseOrder(premiumPhotoId, userId, email, fullName) {

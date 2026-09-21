@@ -181,6 +181,28 @@ export class MarketplaceController {
     }
   }
 
+  savePremiumPhoto = async (req, res) => {
+    try {
+      const result = await this.marketplaceService.savePremiumPhoto(req.params.id, req.user.id);
+      return ResponseUtil.success(res, result.message, result);
+    } catch (error) {
+      return ResponseUtil.error(res, error.message || 'Error saving premium photo', error.message ? 400 : 500);
+    }
+  };
+
+  reportPremiumPhoto = async (req, res) => {
+    try {
+      const { reason, details } = req.body;
+      if (!reason) {
+        return ResponseUtil.error(res, 'Report reason is required', 400);
+      }
+      const result = await this.marketplaceService.reportPremiumPhoto(req.params.id, req.user.id, reason, details);
+      return ResponseUtil.success(res, 'Report submitted successfully', result);
+    } catch (error) {
+      return ResponseUtil.error(res, error.message || 'Error reporting premium photo', error.message ? 400 : 500);
+    }
+  };
+
   promotePremiumPhoto = async (req, res) => {
     try {
       const userId = req.user?.id || 'TEST_USER_ID';
