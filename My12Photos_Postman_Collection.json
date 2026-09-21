@@ -242,13 +242,7 @@
               "name": "Create Category",
               "request": {
                 "method": "POST",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{token}}",
-                    "type": "text"
-                  }
-                ],
+                "header": [],
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"name\": {\"en\": \"Nature\"},\n  \"slug\": \"nature\"\n}",
@@ -268,6 +262,16 @@
                     "v1",
                     "categories"
                   ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
                 }
               },
               "response": []
@@ -276,13 +280,7 @@
               "name": "Create Subcategory",
               "request": {
                 "method": "POST",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{token}}",
-                    "type": "text"
-                  }
-                ],
+                "header": [],
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"name\": {\"en\": \"Forest\"},\n  \"slug\": \"forest\",\n  \"parentId\": \"REPLACE_WITH_PARENT_UUID\"\n}",
@@ -301,6 +299,16 @@
                     "api",
                     "v1",
                     "categories"
+                  ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
                   ]
                 }
               },
@@ -334,12 +342,7 @@
               "name": "Get All Advertisements",
               "request": {
                 "method": "GET",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{admin_token}}"
-                  }
-                ],
+                "header": [],
                 "url": {
                   "raw": "{{base_url}}/api/v1/advertisements/admin/all?status=IN_REVIEW&page=1&limit=10",
                   "host": [
@@ -366,6 +369,16 @@
                       "value": "10"
                     }
                   ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
                 }
               }
             },
@@ -373,12 +386,7 @@
               "name": "Get Advertisement Details",
               "request": {
                 "method": "GET",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{admin_token}}"
-                  }
-                ],
+                "header": [],
                 "url": {
                   "raw": "{{base_url}}/api/v1/advertisements/admin/{{advertisementId}}",
                   "host": [
@@ -391,6 +399,16 @@
                     "admin",
                     "{{advertisementId}}"
                   ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
                 }
               }
             },
@@ -399,10 +417,6 @@
               "request": {
                 "method": "PATCH",
                 "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{admin_token}}"
-                  },
                   {
                     "key": "Content-Type",
                     "value": "application/json"
@@ -425,6 +439,16 @@
                     "{{advertisementId}}",
                     "status"
                   ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
                 }
               }
             }
@@ -441,7 +465,7 @@
                   "bearer": [
                     {
                       "key": "token",
-                      "value": "{{admin_token}}",
+                      "value": "{{token}}",
                       "type": "string"
                     }
                   ]
@@ -481,7 +505,7 @@
                   "bearer": [
                     {
                       "key": "token",
-                      "value": "{{admin_token}}",
+                      "value": "{{token}}",
                       "type": "string"
                     }
                   ]
@@ -517,7 +541,7 @@
                   "bearer": [
                     {
                       "key": "token",
-                      "value": "{{auth_token}}",
+                      "value": "{{token}}",
                       "type": "string"
                     }
                   ]
@@ -556,7 +580,7 @@
                   "bearer": [
                     {
                       "key": "token",
-                      "value": "{{auth_token}}",
+                      "value": "{{token}}",
                       "type": "string"
                     }
                   ]
@@ -625,7 +649,7 @@
                   "bearer": [
                     {
                       "key": "token",
-                      "value": "{{auth_token}}",
+                      "value": "{{token}}",
                       "type": "string"
                     }
                   ]
@@ -694,7 +718,7 @@
                   "bearer": [
                     {
                       "key": "token",
-                      "value": "{{auth_token}}",
+                      "value": "{{token}}",
                       "type": "string"
                     }
                   ]
@@ -773,7 +797,7 @@
                   "bearer": [
                     {
                       "key": "token",
-                      "value": "{{auth_token}}",
+                      "value": "{{token}}",
                       "type": "string"
                     }
                   ]
@@ -815,7 +839,7 @@
                   "bearer": [
                     {
                       "key": "token",
-                      "value": "{{auth_token}}",
+                      "value": "{{token}}",
                       "type": "string"
                     }
                   ]
@@ -844,7 +868,7 @@
                   "bearer": [
                     {
                       "key": "token",
-                      "value": "{{auth_token}}",
+                      "value": "{{token}}",
                       "type": "string"
                     }
                   ]
@@ -906,7 +930,7 @@
                   "bearer": [
                     {
                       "key": "token",
-                      "value": "{{auth_token}}",
+                      "value": "{{token}}",
                       "type": "string"
                     }
                   ]
@@ -944,7 +968,7 @@
                   "bearer": [
                     {
                       "key": "token",
-                      "value": "{{auth_token}}",
+                      "value": "{{token}}",
                       "type": "string"
                     }
                   ]
@@ -981,7 +1005,7 @@
                   "bearer": [
                     {
                       "key": "token",
-                      "value": "{{auth_token}}",
+                      "value": "{{token}}",
                       "type": "string"
                     }
                   ]
@@ -1061,7 +1085,7 @@
                   "bearer": [
                     {
                       "key": "token",
-                      "value": "{{auth_token}}",
+                      "value": "{{token}}",
                       "type": "string"
                     }
                   ]
@@ -1095,7 +1119,7 @@
                   "bearer": [
                     {
                       "key": "token",
-                      "value": "{{auth_token}}",
+                      "value": "{{token}}",
                       "type": "string"
                     }
                   ]
@@ -1124,7 +1148,7 @@
                   "bearer": [
                     {
                       "key": "token",
-                      "value": "{{auth_token}}",
+                      "value": "{{token}}",
                       "type": "string"
                     }
                   ]
@@ -1153,7 +1177,7 @@
                   "bearer": [
                     {
                       "key": "token",
-                      "value": "{{auth_token}}",
+                      "value": "{{token}}",
                       "type": "string"
                     }
                   ]
@@ -1193,7 +1217,7 @@
                   "bearer": [
                     {
                       "key": "token",
-                      "value": "{{auth_token}}",
+                      "value": "{{token}}",
                       "type": "string"
                     }
                   ]
@@ -1227,7 +1251,7 @@
                   "bearer": [
                     {
                       "key": "token",
-                      "value": "{{auth_token}}",
+                      "value": "{{token}}",
                       "type": "string"
                     }
                   ]
@@ -1269,7 +1293,7 @@
                   "bearer": [
                     {
                       "key": "token",
-                      "value": "{{auth_token}}",
+                      "value": "{{token}}",
                       "type": "string"
                     }
                   ]
@@ -1298,7 +1322,7 @@
                   "bearer": [
                     {
                       "key": "token",
-                      "value": "{{auth_token}}",
+                      "value": "{{token}}",
                       "type": "string"
                     }
                   ]
@@ -1342,7 +1366,7 @@
                   "bearer": [
                     {
                       "key": "token",
-                      "value": "{{auth_token}}",
+                      "value": "{{token}}",
                       "type": "string"
                     }
                   ]
@@ -1426,7 +1450,7 @@
                   "bearer": [
                     {
                       "key": "token",
-                      "value": "{{auth_token}}",
+                      "value": "{{token}}",
                       "type": "string"
                     }
                   ]
@@ -1455,7 +1479,7 @@
                   "bearer": [
                     {
                       "key": "token",
-                      "value": "{{auth_token}}",
+                      "value": "{{token}}",
                       "type": "string"
                     }
                   ]
@@ -1497,7 +1521,7 @@
                   "bearer": [
                     {
                       "key": "token",
-                      "value": "{{auth_token}}",
+                      "value": "{{token}}",
                       "type": "string"
                     }
                   ]
@@ -1526,7 +1550,7 @@
                   "bearer": [
                     {
                       "key": "token",
-                      "value": "{{auth_token}}",
+                      "value": "{{token}}",
                       "type": "string"
                     }
                   ]
@@ -1592,13 +1616,7 @@
               "name": "Create Artwork (SINGLE)",
               "request": {
                 "method": "POST",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{token}}",
-                    "type": "text"
-                  }
-                ],
+                "header": [],
                 "body": {
                   "mode": "formdata",
                   "formdata": [
@@ -1677,6 +1695,16 @@
                     "v1",
                     "artworks"
                   ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
                 }
               },
               "response": []
@@ -1685,13 +1713,7 @@
               "name": "Create Artwork (SIX - Red Theme)",
               "request": {
                 "method": "POST",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{token}}",
-                    "type": "text"
-                  }
-                ],
+                "header": [],
                 "body": {
                   "mode": "formdata",
                   "formdata": [
@@ -1790,6 +1812,16 @@
                     "v1",
                     "artworks"
                   ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
                 }
               },
               "response": []
@@ -1798,13 +1830,7 @@
               "name": "Create Artwork (TWELVE)",
               "request": {
                 "method": "POST",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{token}}",
-                    "type": "text"
-                  }
-                ],
+                "header": [],
                 "body": {
                   "mode": "formdata",
                   "formdata": [
@@ -1932,6 +1958,16 @@
                     "v1",
                     "artworks"
                   ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
                 }
               },
               "response": []
@@ -1940,13 +1976,7 @@
               "name": "Get All Artworks",
               "request": {
                 "method": "GET",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{token}}",
-                    "type": "text"
-                  }
-                ],
+                "header": [],
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/artworks?kind=SINGLE&status=all&sort=newest",
                   "host": [
@@ -1971,6 +2001,16 @@
                       "value": "newest"
                     }
                   ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
                 }
               },
               "response": []
@@ -1979,13 +2019,7 @@
               "name": "Get Artwork Details",
               "request": {
                 "method": "GET",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{token}}",
-                    "type": "text"
-                  }
-                ],
+                "header": [],
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/artworks/:id",
                   "host": [
@@ -2003,6 +2037,16 @@
                       "value": "PUBLIC_ID_HERE"
                     }
                   ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
                 }
               },
               "response": []
@@ -2011,13 +2055,7 @@
               "name": "Update Artwork",
               "request": {
                 "method": "PUT",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{token}}",
-                    "type": "text"
-                  }
-                ],
+                "header": [],
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"title\": {\"en\": \"Updated Title\"}\n}",
@@ -2044,6 +2082,16 @@
                       "value": "PUBLIC_ID_HERE"
                     }
                   ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
                 }
               },
               "response": []
@@ -2052,13 +2100,7 @@
               "name": "Delete Artwork",
               "request": {
                 "method": "DELETE",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{token}}",
-                    "type": "text"
-                  }
-                ],
+                "header": [],
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/artworks/:id",
                   "host": [
@@ -2076,6 +2118,16 @@
                       "value": "PUBLIC_ID_HERE"
                     }
                   ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
                 }
               },
               "response": []
@@ -2084,13 +2136,7 @@
               "name": "Promote Artwork",
               "request": {
                 "method": "POST",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{token}}",
-                    "type": "text"
-                  }
-                ],
+                "header": [],
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"durationDays\": 7\n}"
@@ -2107,6 +2153,16 @@
                     "YOUR_SUBMISSION_ID_HERE",
                     "promote"
                   ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
                 }
               },
               "response": []
@@ -2115,13 +2171,7 @@
               "name": "Switch to Competition",
               "request": {
                 "method": "POST",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{token}}",
-                    "type": "text"
-                  }
-                ],
+                "header": [],
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"competitionId\": \"COMPETITION_ID_HERE\"\n}",
@@ -2149,6 +2199,16 @@
                       "value": "PUBLIC_ID_HERE"
                     }
                   ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
                 }
               },
               "response": []
@@ -2157,13 +2217,7 @@
               "name": "Resubmit Artwork",
               "request": {
                 "method": "POST",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{token}}",
-                    "type": "text"
-                  }
-                ],
+                "header": [],
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"newCompetitionId\": \"NEW_COMPETITION_ID_HERE\"\n}",
@@ -2189,6 +2243,16 @@
                     {
                       "key": "id",
                       "value": "PUBLIC_ID_HERE"
+                    }
+                  ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
                     }
                   ]
                 }
@@ -2233,12 +2297,7 @@
               "name": "Create Premium Photo (SINGLE)",
               "request": {
                 "method": "POST",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{auth_token}}"
-                  }
-                ],
+                "header": [],
                 "body": {
                   "mode": "formdata",
                   "formdata": [
@@ -2315,7 +2374,17 @@
                     "premium-photos"
                   ]
                 },
-                "description": "Create a premium photo for sale. Same as Create Artwork but no story/competitionState. Price is required."
+                "description": "Create a premium photo for sale. Same as Create Artwork but no story/competitionState. Price is required.",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                }
               },
               "response": []
             },
@@ -2323,12 +2392,7 @@
               "name": "Create Premium Photo (SIX)",
               "request": {
                 "method": "POST",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{auth_token}}"
-                  }
-                ],
+                "header": [],
                 "body": {
                   "mode": "formdata",
                   "formdata": [
@@ -2426,7 +2490,17 @@
                     "premium-photos"
                   ]
                 },
-                "description": "Create a premium photo for sale. Same as Create Artwork but no story/competitionState. Price is required."
+                "description": "Create a premium photo for sale. Same as Create Artwork but no story/competitionState. Price is required.",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                }
               },
               "response": []
             },
@@ -2434,12 +2508,7 @@
               "name": "Create Premium Photo (TWELVE)",
               "request": {
                 "method": "POST",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{auth_token}}"
-                  }
-                ],
+                "header": [],
                 "body": {
                   "mode": "formdata",
                   "formdata": [
@@ -2565,7 +2634,17 @@
                     "premium-photos"
                   ]
                 },
-                "description": "Create a premium photo for sale. Same as Create Artwork but no story/competitionState. Price is required."
+                "description": "Create a premium photo for sale. Same as Create Artwork but no story/competitionState. Price is required.",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                }
               },
               "response": []
             },
@@ -2642,10 +2721,6 @@
                 "method": "PUT",
                 "header": [
                   {
-                    "key": "Authorization",
-                    "value": "Bearer {{auth_token}}"
-                  },
-                  {
                     "key": "Content-Type",
                     "value": "application/json"
                   }
@@ -2677,6 +2752,16 @@
                       "value": ""
                     }
                   ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
                 }
               },
               "response": []
@@ -2685,12 +2770,7 @@
               "name": "Delete Premium Photo",
               "request": {
                 "method": "DELETE",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{auth_token}}"
-                  }
-                ],
+                "header": [],
                 "url": {
                   "raw": "{{base_url}}/api/v1/marketplace/premium-images/:id",
                   "host": [
@@ -2709,6 +2789,16 @@
                       "value": ""
                     }
                   ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
                 }
               },
               "response": []
@@ -2718,10 +2808,6 @@
               "request": {
                 "method": "POST",
                 "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{auth_token}}"
-                  },
                   {
                     "key": "Content-Type",
                     "value": "application/json"
@@ -2755,6 +2841,16 @@
                       "value": ""
                     }
                   ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
                 }
               },
               "response": []
@@ -2764,10 +2860,6 @@
               "request": {
                 "method": "POST",
                 "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{auth_token}}"
-                  },
                   {
                     "key": "Content-Type",
                     "value": "application/json"
@@ -2794,6 +2886,16 @@
                     "premium-images",
                     "promote",
                     "capture"
+                  ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
                   ]
                 }
               },
@@ -3111,7 +3213,7 @@
                   "bearer": [
                     {
                       "key": "token",
-                      "value": "{{auth_token}}",
+                      "value": "{{token}}",
                       "type": "string"
                     }
                   ]
@@ -3235,7 +3337,7 @@
                   "bearer": [
                     {
                       "key": "token",
-                      "value": "{{auth_token}}",
+                      "value": "{{token}}",
                       "type": "string"
                     }
                   ]
@@ -3272,7 +3374,7 @@
                   "bearer": [
                     {
                       "key": "token",
-                      "value": "{{auth_token}}",
+                      "value": "{{token}}",
                       "type": "string"
                     }
                   ]
@@ -3314,7 +3416,7 @@
                   "bearer": [
                     {
                       "key": "token",
-                      "value": "{{auth_token}}",
+                      "value": "{{token}}",
                       "type": "string"
                     }
                   ]
@@ -3331,6 +3433,288 @@
                     "support",
                     "my-tickets",
                     "{{ticket_id}}"
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Payment",
+          "item": [
+            {
+              "name": "Get Prize Money",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/payments/user/prize-money?page=1&limit=10",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "payments",
+                    "user",
+                    "prize-money"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    }
+                  ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Get Donations",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/payments/user/donations?page=1&limit=10",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "payments",
+                    "user",
+                    "donations"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    }
+                  ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Get Photo Sales",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/payments/user/photo-sales?page=1&limit=10&search=",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "payments",
+                    "user",
+                    "photo-sales"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "search",
+                      "value": ""
+                    }
+                  ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Export Photo Sales (CSV)",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/payments/user/photo-sales/export?search=",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "payments",
+                    "user",
+                    "photo-sales",
+                    "export"
+                  ],
+                  "query": [
+                    {
+                      "key": "search",
+                      "value": ""
+                    }
+                  ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "View Image in Marketplace (Public)",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/marketplace/public/premium-images/REPLACE_WITH_PREMIUM_PHOTO_ID",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "marketplace",
+                    "public",
+                    "premium-images",
+                    "REPLACE_WITH_PREMIUM_PHOTO_ID"
+                  ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Get Payment History",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/payments/user/history?page=1&limit=10",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "payments",
+                    "user",
+                    "history"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    }
+                  ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Request Payout",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"Prize Money\",\n  \"amount\": 50,\n  \"accountNumber\": \"(702) 555-0122\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/payments/user/request-payout",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "payments",
+                    "user",
+                    "request-payout"
+                  ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
                   ]
                 }
               }
@@ -4195,13 +4579,7 @@
               "name": "Like Premium Photo",
               "request": {
                 "method": "POST",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{token}}",
-                    "type": "text"
-                  }
-                ],
+                "header": [],
                 "url": {
                   "raw": "{{base_url}}/api/v1/marketplace/premium-images/{{premiumPhotoId}}/like",
                   "host": [
@@ -4214,6 +4592,16 @@
                     "premium-images",
                     "{{premiumPhotoId}}",
                     "like"
+                  ]
+                },
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
                   ]
                 }
               }
@@ -4333,7 +4721,7 @@
                   "bearer": [
                     {
                       "key": "token",
-                      "value": "{{auth_token}}",
+                      "value": "{{token}}",
                       "type": "string"
                     }
                   ]

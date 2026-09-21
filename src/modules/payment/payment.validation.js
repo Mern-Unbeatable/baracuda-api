@@ -19,6 +19,12 @@ const paymentValidation = {
     paymentId: Joi.string().required(), // PayPal Order ID
   }),
 
+  payoutRequestSchema: Joi.object({
+    type: Joi.string().valid('Prize Money', 'Prize', 'Donation', 'Donations', 'Photo Sales', 'Premium').required(),
+    amount: Joi.number().min(0.01).required(),
+    accountNumber: Joi.string().required()
+  }),
+
   validate: (schema) => {
     return (req, res, next) => {
       const { error, value } = schema.validate(req.body, { abortEarly: false, allowUnknown: true });
