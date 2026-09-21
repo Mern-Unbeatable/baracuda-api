@@ -1583,6 +1583,133 @@
               }
             }
           ]
+        },
+        {
+          "name": "Payouts",
+          "item": [
+            {
+              "name": "Get Prize Money Payouts",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/payments/admin/payouts/prize-money",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "payments",
+                    "admin",
+                    "payouts",
+                    "prize-money"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get Donations Payouts",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/payments/admin/payouts/donations",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "payments",
+                    "admin",
+                    "payouts",
+                    "donations"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get Photo Sales Payouts",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/payments/admin/payouts/photo-sales",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "payments",
+                    "admin",
+                    "payouts",
+                    "photo-sales"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Update Payout Status",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"status\": \"APPROVED\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/payments/admin/payouts/REPLACE_WITH_PAYOUT_ID/status",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "payments",
+                    "admin",
+                    "payouts",
+                    "REPLACE_WITH_PAYOUT_ID",
+                    "status"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
         }
       ]
     },

@@ -25,6 +25,10 @@ const paymentValidation = {
     accountNumber: Joi.string().required()
   }),
 
+  updatePayoutStatusSchema: Joi.object({
+    status: Joi.string().valid('APPROVED', 'REJECTED', 'PAID').required()
+  }),
+
   validate: (schema) => {
     return (req, res, next) => {
       const { error, value } = schema.validate(req.body, { abortEarly: false, allowUnknown: true });
