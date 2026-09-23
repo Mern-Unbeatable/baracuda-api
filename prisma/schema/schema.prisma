@@ -232,18 +232,18 @@ model User {
   status     UserStatus @default(PENDING)
   isVerified Boolean    @default(false)
 
-  name        String
-  avatar      String?
-  coverPhoto  String?
-  introVideo  String?
-  bio         String?         @db.VarChar(250)
-  phone       String?
-  city        String?
-  country     String?
-  website     String?
+  name          String
+  avatar        String?
+  coverPhoto    String?
+  introVideo    String?
+  bio           String?         @db.VarChar(250)
+  phone         String?
+  city          String?
+  country       String?
+  website       String?
   paypalAccount String?
-  language    SupportedLocale @default(en)
-  socialLinks Json?
+  language      SupportedLocale @default(en)
+  socialLinks   Json?
 
   resetPasswordToken   String?
   resetPasswordExpires DateTime?
@@ -291,6 +291,7 @@ model User {
   savedArtworks        SavedArtwork[]
   savedPremiumPhotos   SavedPremiumPhoto[]
   reports              Report[]
+  moderationAudits     ModerationAudit[]
 
   @@index([role, status])
   @@index([country])
@@ -326,12 +327,12 @@ model Category {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  parent         Category?      @relation("CategoryToSubcategory", fields: [parentId], references: [id], onDelete: SetNull)
-  subcategories       Category[]     @relation("CategoryToSubcategory")
-  submissions         Submission[]
-  premiumPhotos       PremiumPhoto[]
-  businessAlbums      BusinessAlbum[] @relation("BusinessCategory")
-  businessSubalbums   BusinessAlbum[] @relation("BusinessSubcategory")
+  parent            Category?       @relation("CategoryToSubcategory", fields: [parentId], references: [id], onDelete: SetNull)
+  subcategories     Category[]      @relation("CategoryToSubcategory")
+  submissions       Submission[]
+  premiumPhotos     PremiumPhoto[]
+  businessAlbums    BusinessAlbum[] @relation("BusinessCategory")
+  businessSubalbums BusinessAlbum[] @relation("BusinessSubcategory")
 
   @@map("categories")
 }
@@ -510,9 +511,9 @@ model Comment {
   submission Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
   user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  parentId   String?
-  parent     Comment?   @relation("CommentReplies", fields: [parentId], references: [id])
-  replies    Comment[]  @relation("CommentReplies")
+  parentId String?
+  parent   Comment?  @relation("CommentReplies", fields: [parentId], references: [id])
+  replies  Comment[] @relation("CommentReplies")
 
   @@index([status, createdAt])
   @@index([submissionId])
@@ -521,17 +522,17 @@ model Comment {
 }
 
 model Winner {
-  id            String      @id @default(uuid())
+  id            String       @id @default(uuid())
   competitionId String
   submissionId  String
   userId        String
   kind          AlbumKind
   place         WinnerPlace?
-  rank          Int         @default(0)
-  isWinner      Boolean     @default(false)
+  rank          Int          @default(0)
+  isWinner      Boolean      @default(false)
   votes         Int
   points        Int
-  createdAt     DateTime    @default(now())
+  createdAt     DateTime     @default(now())
 
   competition Competition @relation(fields: [competitionId], references: [id], onDelete: Cascade)
   submission  Submission  @relation(fields: [submissionId], references: [id], onDelete: Cascade)
@@ -547,55 +548,55 @@ model Winner {
 // ============================================================
 
 model BusinessAlbum {
-  id                 String       @id @default(uuid())
-  albumId            String       @unique // e.g., ALB-45215 for the frontend route
+  id                 String      @id @default(uuid())
+  albumId            String      @unique // e.g., ALB-45215 for the frontend route
   userId             String
   categoryId         String?
   subcategoryId      String?
-  kind               AlbumKind    @default(TWELVE)
+  kind               AlbumKind   @default(TWELVE)
   theme              AlbumTheme?
   zodiacSign         ZodiacSign?
   title              Json
   story              Json?
   resolution         String?
   quality            String?
-  isAiGenerated      Boolean      @default(false)
-  copyrightConfirmed Boolean      @default(false)
+  isAiGenerated      Boolean     @default(false)
+  copyrightConfirmed Boolean     @default(false)
 
   // From User profile at time of creation, per admin requirements
-  email              String
-  phone              String?
-  country            String?
+  email   String
+  phone   String?
+  country String?
 
-  businessLink       String?      @unique
-  isPublished        Boolean      @default(false)
-  reviewedAt         DateTime?
-  createdAt          DateTime     @default(now())
-  updatedAt          DateTime     @updatedAt
+  businessLink String?   @unique
+  isPublished  Boolean   @default(false)
+  reviewedAt   DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 
-  user               User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
-  category           Category?            @relation("BusinessCategory", fields: [categoryId], references: [id], onDelete: SetNull)
-  subcategory        Category?            @relation("BusinessSubcategory", fields: [subcategoryId], references: [id], onDelete: SetNull)
-  media              BusinessAlbumMedia[]
+  user        User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category    Category?            @relation("BusinessCategory", fields: [categoryId], references: [id], onDelete: SetNull)
+  subcategory Category?            @relation("BusinessSubcategory", fields: [subcategoryId], references: [id], onDelete: SetNull)
+  media       BusinessAlbumMedia[]
 
   @@index([createdAt])
   @@map("business_albums")
 }
 
 model BusinessAlbumMedia {
-  id              String        @id @default(uuid())
+  id              String      @id @default(uuid())
   businessAlbumId String
   kind            MediaKind
-  slotIndex       Int           @default(0)
+  slotIndex       Int         @default(0)
   zodiacSign      ZodiacSign?
   url             String
   thumbnailUrl    String?
   format          String?
   bytes           Int?
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
 
-  businessAlbum   BusinessAlbum @relation(fields: [businessAlbumId], references: [id], onDelete: Cascade)
+  businessAlbum BusinessAlbum @relation(fields: [businessAlbumId], references: [id], onDelete: Cascade)
 
   @@index([businessAlbumId, slotIndex])
   @@map("business_album_media")
@@ -610,39 +611,40 @@ model PhotographerMessage {
   userId             String
   body               String   @db.Text
   mediaUrl           String?
-  mediaType          String?  // e.g., 'IMAGE' or 'VIDEO'
+  mediaType          String? // e.g., 'IMAGE' or 'VIDEO'
   copyrightConfirmed Boolean  @default(false)
   likesCount         Int      @default(0)
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
 
-  user  User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  likes MessageLike[]
+  user    User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  likes   MessageLike[]
+  reports Report[]
 
   @@index([userId, createdAt])
   @@map("photographer_messages")
 }
 
 model PremiumPhotoLike {
-  id             String       @id @default(uuid())
+  id             String   @id @default(uuid())
   premiumPhotoId String
   userId         String
-  createdAt      DateTime     @default(now())
+  createdAt      DateTime @default(now())
 
-  premiumPhoto   PremiumPhoto @relation(fields: [premiumPhotoId], references: [id], onDelete: Cascade)
-  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  premiumPhoto PremiumPhoto @relation(fields: [premiumPhotoId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([premiumPhotoId, userId])
   @@map("premium_photo_likes")
 }
 
 model PremiumPhotoView {
-  id             String       @id @default(uuid())
+  id             String   @id @default(uuid())
   premiumPhotoId String
-  viewerId       String       // Can be userId or ipAddress
-  createdAt      DateTime     @default(now())
+  viewerId       String // Can be userId or ipAddress
+  createdAt      DateTime @default(now())
 
-  premiumPhoto   PremiumPhoto @relation(fields: [premiumPhotoId], references: [id], onDelete: Cascade)
+  premiumPhoto PremiumPhoto @relation(fields: [premiumPhotoId], references: [id], onDelete: Cascade)
 
   @@unique([premiumPhotoId, viewerId])
   @@map("premium_photo_views")
@@ -898,12 +900,12 @@ model Payment {
 }
 
 model Donation {
-  id           String   @id @default(uuid())
-  submissionId String
-  artistId     String
-  donorId      String?
-  donorName    String
-  donorEmail   String
+  id             String         @id @default(uuid())
+  submissionId   String
+  artistId       String
+  donorId        String?
+  donorName      String
+  donorEmail     String
   amount         Decimal        @db.Decimal(10, 2)
   currency       String         @default("GBP")
   message        String?
@@ -922,42 +924,43 @@ model Donation {
 }
 
 model PremiumPhoto {
-  id           String      @id @default(uuid())
-  userId       String
-  submissionId String?     @unique
-  categoryId   String?
-  kind         AlbumKind?
-  theme        AlbumTheme?
-  zodiacSign   ZodiacSign?
-  title        Json
-  story        Json?
-  price        Decimal     @db.Decimal(10, 2)
-  camera       String?
-  resolution   String?
-  format       String?
-  quality      String?
-  license      String?
-  isAiGenerated     Boolean  @default(false)
-  copyrightConfirmed Boolean @default(false)
-  width        Int?
-  height       Int?
-  likesCount   Int         @default(0)
-  viewsCount   Int         @default(0)
-  totalSales   Int         @default(0)
-  expiryDate   DateTime?
-  isActive     Boolean     @default(true)
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
+  id                 String      @id @default(uuid())
+  userId             String
+  submissionId       String?     @unique
+  categoryId         String?
+  kind               AlbumKind?
+  theme              AlbumTheme?
+  zodiacSign         ZodiacSign?
+  title              Json
+  story              Json?
+  price              Decimal     @db.Decimal(10, 2)
+  camera             String?
+  resolution         String?
+  format             String?
+  quality            String?
+  license            String?
+  isAiGenerated      Boolean     @default(false)
+  copyrightConfirmed Boolean     @default(false)
+  width              Int?
+  height             Int?
+  likesCount         Int         @default(0)
+  viewsCount         Int         @default(0)
+  totalSales         Int         @default(0)
+  expiryDate         DateTime?
+  isActive           Boolean     @default(true)
+  createdAt          DateTime    @default(now())
+  updatedAt          DateTime    @updatedAt
 
-  user              User               @relation(fields: [userId], references: [id], onDelete: Cascade)
-  submission        Submission?        @relation(fields: [submissionId], references: [id], onDelete: SetNull)
-  category          Category?          @relation(fields: [categoryId], references: [id], onDelete: SetNull)
-  orderItems        OrderItem[]
-  media             PremiumPhotoMedia[]
-  promotions        PromotedAlbum[]
-  premiumPhotoLikes PremiumPhotoLike[]
+  user               User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  submission         Submission?         @relation(fields: [submissionId], references: [id], onDelete: SetNull)
+  category           Category?           @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  orderItems         OrderItem[]
+  media              PremiumPhotoMedia[]
+  promotions         PromotedAlbum[]
+  premiumPhotoLikes  PremiumPhotoLike[]
   savedPremiumPhotos SavedPremiumPhoto[]
-  premiumPhotoViews PremiumPhotoView[]
+  premiumPhotoViews  PremiumPhotoView[]
+  reports            Report[]
 
   @@index([isActive, createdAt])
   @@index([kind])
@@ -965,10 +968,10 @@ model PremiumPhoto {
 }
 
 model PremiumPhotoMedia {
-  id             String  @id @default(uuid())
+  id             String      @id @default(uuid())
   premiumPhotoId String
   kind           MediaKind
-  slotIndex      Int     @default(0)
+  slotIndex      Int         @default(0)
   zodiacSign     ZodiacSign?
   url            String
   thumbnailUrl   String?
@@ -976,7 +979,7 @@ model PremiumPhotoMedia {
   height         Int?
   format         String?
   bytes          Int?
-  createdAt      DateTime @default(now())
+  createdAt      DateTime    @default(now())
 
   premiumPhoto PremiumPhoto @relation(fields: [premiumPhotoId], references: [id], onDelete: Cascade)
 
@@ -1033,9 +1036,9 @@ model PromotedAlbum {
   premiumPhoto PremiumPhoto? @relation(fields: [premiumPhotoId], references: [id], onDelete: Cascade)
   user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([isActive, endsAt])
   @@unique([submissionId])
   @@unique([premiumPhotoId])
+  @@index([isActive, endsAt])
   @@map("promoted_albums")
 }
 
@@ -1083,16 +1086,22 @@ model SavedArtwork {
 }
 
 model Report {
-  id           String   @id @default(uuid())
-  submissionId String
-  userId       String
-  reason       String
-  details      String?  @db.Text
-  createdAt    DateTime @default(now())
+  id             String       @id @default(uuid())
+  submissionId   String?
+  premiumPhotoId String?
+  postId         String?
+  userId         String
+  reason         String
+  details        String?      @db.Text
+  status         ReportStatus @default(PENDING)
+  createdAt      DateTime     @default(now())
 
-  submission Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
-  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  submission   Submission?          @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  premiumPhoto PremiumPhoto?        @relation(fields: [premiumPhotoId], references: [id], onDelete: Cascade)
+  post         PhotographerMessage? @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user         User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@index([status])
   @@map("reports")
 }
 
@@ -1109,41 +1118,41 @@ model SubmissionView {
 }
 
 model Advertisement {
-  id             String              @id @default(uuid())
-  userId         String?
-  name           String
-  email          String
-  phone          String
-  businessType   BusinessType
-  businessName   String
-  selectPage     String
-  websiteUrl     String?
-  description    String              @db.VarChar(200)
-  location       String
-  businessImage  String
-  durationDays   Int
-  amount         Decimal             @db.Decimal(10, 2)
-  paymentId      String?             @unique
-  status         AdvertisementStatus @default(PENDING)
-  startsAt       DateTime?
-  endsAt         DateTime?
-  createdAt      DateTime            @default(now())
-  updatedAt      DateTime            @updatedAt
+  id            String              @id @default(uuid())
+  userId        String?
+  name          String
+  email         String
+  phone         String
+  businessType  BusinessType
+  businessName  String
+  selectPage    String
+  websiteUrl    String?
+  description   String              @db.VarChar(200)
+  location      String
+  businessImage String
+  durationDays  Int
+  amount        Decimal             @db.Decimal(10, 2)
+  paymentId     String?             @unique
+  status        AdvertisementStatus @default(PENDING)
+  startsAt      DateTime?
+  endsAt        DateTime?
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
 
-  user           User?               @relation(fields: [userId], references: [id], onDelete: SetNull)
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
 
   @@index([status, endsAt])
   @@map("advertisements")
 }
 
 model SavedPremiumPhoto {
-  id             String       @id @default(uuid())
+  id             String   @id @default(uuid())
   premiumPhotoId String
   userId         String
-  createdAt      DateTime     @default(now())
+  createdAt      DateTime @default(now())
 
-  premiumPhoto   PremiumPhoto @relation(fields: [premiumPhotoId], references: [id], onDelete: Cascade)
-  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  premiumPhoto PremiumPhoto @relation(fields: [premiumPhotoId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([premiumPhotoId, userId])
   @@map("saved_premium_photos")
@@ -1166,14 +1175,14 @@ enum CampaignRewardStatus {
 }
 
 model CampaignLink {
-  id          String           @id @default(uuid())
-  token       String           @unique
-  validUntil  DateTime
-  status      PromoLinkStatus  @default(ACTIVE)
-  createdAt   DateTime         @default(now())
-  updatedAt   DateTime         @updatedAt
+  id         String          @id @default(uuid())
+  token      String          @unique
+  validUntil DateTime
+  status     PromoLinkStatus @default(ACTIVE)
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
 
-  submission  CampaignSubmission?
+  submission CampaignSubmission?
 
   @@map("campaign_links")
 }
@@ -1182,15 +1191,45 @@ model CampaignSubmission {
   id                    String               @id @default(uuid())
   campaignLinkId        String               @unique
   userId                String               @unique
-  checklist             Json                 // Detailed breakdown of completed requirements
+  checklist             Json // Detailed breakdown of completed requirements
   totalRequirements     Int
   completedRequirements Int
   rewardStatus          CampaignRewardStatus @default(NOT_ELIGIBLE)
   createdAt             DateTime             @default(now())
   updatedAt             DateTime             @updatedAt
 
-  link                  CampaignLink         @relation(fields: [campaignLinkId], references: [id], onDelete: Cascade)
-  user                  User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  link CampaignLink @relation(fields: [campaignLinkId], references: [id], onDelete: Cascade)
+  user User         @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("campaign_submissions")
+}
+
+// ============================================================
+// MODERATION & REPORTS
+// ============================================================
+
+enum ReportStatus {
+  PENDING
+  UNDER_REVIEW
+  RESOLVED
+}
+
+enum ModerationAction {
+  CONTENT_REMOVED
+  WARN
+  SUSPEND
+  BAN
+}
+
+model ModerationAudit {
+  id        String           @id @default(uuid())
+  userId    String
+  adminId   String
+  action    ModerationAction
+  reason    String?          @db.Text
+  createdAt DateTime         @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("moderation_audits")
 }

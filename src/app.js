@@ -15,6 +15,7 @@ import { CommentModule } from './modules/comment/comment.module.js';
 import { DemoProfileModule } from './modules/demo-profile/demo-profile.module.js';
 import paymentRouter from './modules/payment/payment.module.js';
 import { CampaignModule } from './modules/campaign/campaign.module.js';
+import { AdminReportModule } from './modules/admin-report/admin-report.module.js';
 import config from './config/env.js';
 
 /**
@@ -69,6 +70,10 @@ class App {
     const userModule = new UserModule();
     this.app.use('/api/v1/admin/users', userModule.adminRouter);
     this.app.use('/api/v1/users', userModule.publicRouter);
+    
+    const adminReportModule = new AdminReportModule();
+    this.app.use('/api/v1/admin/reports', adminReportModule.router);
+    this.app.use('/api/v1/admin/users', adminReportModule.userAuditRouter);
     
     const demoProfileModule = new DemoProfileModule();
     this.app.use('/api/v1/admin/demo-profiles', demoProfileModule.router);
