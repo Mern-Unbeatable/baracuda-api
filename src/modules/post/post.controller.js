@@ -1,4 +1,5 @@
 import { ResponseUtil } from '../../utils/response.js';
+import prisma from '../../config/prisma.js';
 
 export class PostController {
   constructor(postService) {
@@ -31,11 +32,36 @@ export class PostController {
     }
   }
 
-  getMyPosts = async (req, res) => {
+  getPosts = async (req, res) => {
     try {
-      let posts = await this.postService.getMyPosts(req.user.id);
-      posts = posts.map(post => this.formatPost(req, post));
-      return ResponseUtil.success(res, 'Posts fetched successfully', posts);
+      const { page = 1, limit = 10, username } = req.query;
+      
+      // If username is provided, look up the user by username
+      let targetUserId = req.user?.id;
+      if (username) {
+        const user = await prisma.user.findUnique({ where: { username }, select: { id: true } });
+        if (!user) return ResponseUtil.error(res, 'User not found', 404);
+        targetUserId = user.id;
+      }
+      
+      const pageNum = parseInt(page);
+      const limitNum = parseInt(limit);
+      const skip = (pageNum - 1) * limitNum;
+
+      let result = await this.postService.getPosts(targetUserId, skip, limitNum);
+      
+      // Format all posts
+      const formattedPosts = result.posts.map(post => this.formatPost(req, post));
+      
+      return ResponseUtil.success(res, 'Posts fetched successfully', {
+        data: formattedPosts,
+        meta: {
+          total: result.total,
+          page: pageNum,
+          limit: limitNum,
+          totalPages: Math.ceil(result.total / limitNum)
+        }
+      });
     } catch (error) {
       return ResponseUtil.error(res, error.message, 500);
     }

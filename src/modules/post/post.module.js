@@ -3,6 +3,7 @@ import { PostController } from './post.controller.js';
 import { PostService } from './post.service.js';
 import { PostValidation } from './post.validation.js';
 import { requireAuth } from '../../middlewares/auth.middleware.js';
+import { optionalAuth } from '../../middlewares/optionalAuth.middleware.js';
 import { upload } from '../../utils/upload.js';
 
 export class PostModule {
@@ -22,8 +23,8 @@ export class PostModule {
       this.postController.createPost
     );
 
-    this.router.get('/', requireAuth, this.postController.getMyPosts);
-    this.router.get('/:id', requireAuth, this.postController.getPostById);
+    this.router.get('/', optionalAuth, this.postController.getPosts);
+    this.router.get('/:id', optionalAuth, this.postController.getPostById);
 
     this.router.put(
       '/:id',

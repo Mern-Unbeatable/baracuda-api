@@ -259,6 +259,7 @@ model User {
   copyrightAcceptedAt DateTime?
   lastLoginIp         String?
   lastLoginAt         DateTime?
+  profileViews        Int       @default(0)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

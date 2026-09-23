@@ -1926,6 +1926,194 @@
               }
             }
           ]
+        },
+        {
+          "name": "Admin Reports & Moderation",
+          "item": [
+            {
+              "name": "Get Report Stats",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{admin_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/api/v1/reports/stats",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "reports",
+                    "stats"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Get All Reports",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{admin_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/api/v1/reports?page=1&limit=10&status=PENDING",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "reports"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "status",
+                      "value": "PENDING"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Get Report Details",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{admin_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/api/v1/reports/:id",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "reports",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "report_id_here"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Update Report Status",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{admin_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"status\": \"RESOLVED\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/v1/reports/:id/status",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "reports",
+                    ":id",
+                    "status"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "report_id_here"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Warn Reported User",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{admin_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "url": {
+                  "raw": "{{base_url}}/api/v1/reports/:id/warn",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "reports",
+                    ":id",
+                    "warn"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "report_id_here"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
         }
       ]
     },
@@ -2342,42 +2530,6 @@
                     {
                       "key": "sort",
                       "value": "newest"
-                    }
-                  ]
-                },
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "Get Artwork Details",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/v1/artworks/:id",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "api",
-                    "v1",
-                    "artworks",
-                    ":id"
-                  ],
-                  "variable": [
-                    {
-                      "key": "id",
-                      "value": "PUBLIC_ID_HERE"
                     }
                   ]
                 },
@@ -2985,46 +3137,6 @@
                       "key": "token",
                       "value": "{{token}}",
                       "type": "string"
-                    }
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "Get All Premium Photos",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{base_url}}/api/v1/marketplace/premium-photos?kind=ALL&page=1&limit=10",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "v1",
-                    "marketplace",
-                    "premium-photos"
-                  ],
-                  "query": [
-                    {
-                      "key": "kind",
-                      "value": "ALL",
-                      "description": "SINGLE | SIX | TWELVE | ALL"
-                    },
-                    {
-                      "key": "categoryId",
-                      "value": "",
-                      "disabled": true
-                    },
-                    {
-                      "key": "page",
-                      "value": "1"
-                    },
-                    {
-                      "key": "limit",
-                      "value": "10"
                     }
                   ]
                 }
@@ -4057,6 +4169,296 @@
                       "key": "token",
                       "value": "{{token}}",
                       "type": "string"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Profile",
+          "item": [
+            {
+              "name": "Get My Profile",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{auth_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/api/v1/users/profile/me",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "users",
+                    "profile",
+                    "me"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Get Public Profile",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{auth_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/api/v1/users/profile/{{username}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "users",
+                    "profile",
+                    "{{username}}"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Edit Profile",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{auth_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "name",
+                      "value": "Updated Name",
+                      "type": "text"
+                    },
+                    {
+                      "key": "bio",
+                      "value": "My new bio",
+                      "type": "text"
+                    },
+                    {
+                      "key": "country",
+                      "value": "USA",
+                      "type": "text"
+                    },
+                    {
+                      "key": "socialLinks",
+                      "value": "{\"facebook\":\"https://fb.com\",\"twitter\":\"https://tw.com\"}",
+                      "type": "text"
+                    },
+                    {
+                      "key": "avatar",
+                      "type": "file",
+                      "src": []
+                    },
+                    {
+                      "key": "coverPhoto",
+                      "type": "file",
+                      "src": []
+                    },
+                    {
+                      "key": "introVideo",
+                      "type": "file",
+                      "src": []
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/v1/users/profile",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "users",
+                    "profile"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Get All Artworks (Public)",
+              "request": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/api/v1/artworks?kind=SINGLE&status=all&sort=newest&username={{username}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "artworks"
+                  ],
+                  "query": [
+                    {
+                      "key": "kind",
+                      "value": "SINGLE"
+                    },
+                    {
+                      "key": "status",
+                      "value": "all"
+                    },
+                    {
+                      "key": "sort",
+                      "value": "newest"
+                    },
+                    {
+                      "key": "username",
+                      "value": "{{username}}"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Get Artwork Details",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{auth_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/api/v1/artworks/{{artwork_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "artworks",
+                    "{{artwork_id}}"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Get All Premium Photos",
+              "request": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/api/v1/marketplace/premium-photos?kind=ALL&page=1&limit=10&username={{username}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "marketplace",
+                    "premium-photos"
+                  ],
+                  "query": [
+                    {
+                      "key": "kind",
+                      "value": "ALL"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "username",
+                      "value": "{{username}}"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Get Premium Photo By ID",
+              "request": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/api/v1/marketplace/premium-images/{{photo_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "marketplace",
+                    "premium-images",
+                    "{{photo_id}}"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Get Posts (Paginated/Public)",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{auth_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/api/v1/posts?page=1&limit=10&username={{username}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "posts"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "username",
+                      "value": "{{username}}"
                     }
                   ]
                 }

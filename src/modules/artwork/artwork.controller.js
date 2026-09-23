@@ -2,6 +2,7 @@ import { UrlUtil } from '../../utils/urlUtil.js';
 import { PaginationUtil } from '../../utils/pagination.js';
 import { ResponseUtil } from '../../utils/response.js';
 import { watermarkService } from './watermark.service.js';
+import prisma from '../../config/prisma.js';
 
 export class ArtworkController {
   constructor(artworkService) {
@@ -121,8 +122,16 @@ export class ArtworkController {
 
   getAllArtworks = async (req, res) => {
     try {
-      const userId = req.user?.id || 'TEST_USER_ID';
-      const { kind, promoted, status, sort } = req.query;
+      const { kind, promoted, status, sort, username } = req.query;
+      
+      let targetUserId = req.user?.id;
+      if (username) {
+        const user = await prisma.user.findUnique({ where: { username }, select: { id: true } });
+        if (!user) return ResponseUtil.error(res, 'User not found', 404);
+        targetUserId = user.id;
+      }
+      
+      const userId = targetUserId || 'TEST_USER_ID';
       
       const { skip, take, page, limit } = PaginationUtil.getPaginationOptions(req.query);
       

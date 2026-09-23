@@ -30,8 +30,8 @@ export class ArtworkModule {
     ]);
 
     // Endpoints
-    this.router.get('/', requireAuth, this.artworkController.getAllArtworks);
-    this.router.get('/:id', requireAuth, this.artworkController.getArtworkDetails);
+    this.router.get('/', optionalAuth, this.artworkController.getAllArtworks);
+    this.router.get('/:id', optionalAuth, this.artworkController.getArtworkDetails);
     
     this.router.post('/', requireAuth, artworkUploadFields, ArtworkValidation.validate(ArtworkValidation.createSchema), this.artworkController.createArtwork);
     

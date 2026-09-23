@@ -3,6 +3,7 @@ import { PaginationUtil } from '../../utils/pagination.js';
 import { UrlUtil } from '../../utils/urlUtil.js';
 import paymentService from '../payment/payment.service.js';
 import { watermarkService } from '../artwork/watermark.service.js';
+import prisma from '../../config/prisma.js';
 
 export class MarketplaceController {
   constructor(marketplaceService) {
@@ -111,8 +112,14 @@ export class MarketplaceController {
 
   getAllPremiumPhotos = async (req, res) => {
     try {
-      const { kind, categoryId } = req.query;
-      const userId = req.query.userId;
+      const { kind, categoryId, username } = req.query;
+      let userId = req.user?.id; // default to logged in user if applicable
+
+      if (username) {
+        const user = await prisma.user.findUnique({ where: { username }, select: { id: true } });
+        if (!user) return ResponseUtil.error(res, 'User not found', 404);
+        userId = user.id;
+      }
       const { skip, take, page, limit } = PaginationUtil.getPaginationOptions(req.query);
 
       const result = await this.marketplaceService.getAllPremiumPhotos(

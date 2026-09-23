@@ -85,4 +85,95 @@ export class UserController {
       next(error);
     }
   }
+
+  /**
+   * Get My Profile (No username required)
+   * @route GET /api/v1/users/profile/me
+   */
+  getMyProfile = async (req, res, next) => {
+    try {
+      const viewerId = req.user.id;
+      
+      // Fetch basic user to get username
+      const user = await this.userService.getUserById(viewerId);
+      if (!user) {
+        return ResponseUtil.error(res, 'User not found', 404);
+      }
+      
+      // Use existing public profile logic, which aggregates all stats
+      const profile = await this.userService.getPublicProfile(user.username, viewerId);
+      const formattedProfile = UrlUtil.formatUserMedia(req, profile);
+      
+      res.status(200).json({
+        success: true,
+        data: formattedProfile
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * Get Public Profile
+   * @route GET /api/v1/users/profile/:username
+   */
+  getPublicProfile = async (req, res, next) => {
+    try {
+      const { username } = req.params;
+      const viewerId = req.user?.id; // Optional authenticated user
+
+      const profile = await this.userService.getPublicProfile(username, viewerId);
+      if (!profile) {
+        return ResponseUtil.error(res, 'Profile not found', 404);
+      }
+      
+      const formattedProfile = UrlUtil.formatUserMedia(req, profile);
+      
+      res.status(200).json({
+        success: true,
+        data: formattedProfile
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * Update Profile
+   * @route PUT /api/v1/users/profile
+   */
+  updateProfile = async (req, res, next) => {
+    try {
+      const userId = req.user.id;
+      const files = req.files || {};
+      
+      let socialLinks;
+      if (req.body.socialLinks) {
+        try {
+          socialLinks = typeof req.body.socialLinks === 'string' 
+            ? JSON.parse(req.body.socialLinks) 
+            : req.body.socialLinks;
+        } catch(e) {
+          socialLinks = req.body.socialLinks;
+        }
+      }
+
+      const updateData = {
+        name: req.body.name,
+        bio: req.body.bio,
+        country: req.body.country,
+        socialLinks: socialLinks
+      };
+
+      const updatedProfile = await this.userService.updateProfile(userId, updateData, files);
+      
+      res.status(200).json({
+        success: true,
+        message: 'Profile updated successfully',
+        data: UrlUtil.formatUserMedia(req, updatedProfile)
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 }

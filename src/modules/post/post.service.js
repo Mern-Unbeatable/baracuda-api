@@ -28,14 +28,27 @@ export class PostService {
     });
   }
 
-  async getMyPosts(userId) {
-    return prisma.photographerMessage.findMany({
-      where: { userId },
-      orderBy: { createdAt: 'desc' },
-      include: {
-        user: { select: { name: true, avatar: true } }
-      }
-    });
+  async getPosts(userId, skip = 0, limit = 10) {
+    // Determine the query
+    let whereClause = {};
+    if (userId) {
+      whereClause.userId = userId;
+    }
+
+    const [total, posts] = await Promise.all([
+      prisma.photographerMessage.count({ where: whereClause }),
+      prisma.photographerMessage.findMany({
+        where: whereClause,
+        orderBy: { createdAt: 'desc' },
+        skip,
+        take: limit,
+        include: {
+          user: { select: { name: true, avatar: true } }
+        }
+      })
+    ]);
+
+    return { total, posts };
   }
 
   async getPostById(id, userId) {

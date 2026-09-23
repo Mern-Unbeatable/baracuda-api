@@ -55,6 +55,7 @@ export class UserService {
         where: { id },
         select: {
           id: true,
+          username: true,
           name: true,
           email: true,
           phone: true,
@@ -109,5 +110,103 @@ export class UserService {
     } catch (error) {
       throw new Error('Failed to update user status: ' + error.message);
     }
+  }
+
+  /**
+   * Get public profile with aggregated stats
+   */
+  async getPublicProfile(username, viewerId) {
+    const user = await prisma.user.findUnique({
+      where: { username },
+      select: {
+        id: true,
+        username: true,
+        name: true,
+        avatar: true,
+        coverPhoto: true,
+        introVideo: true,
+        bio: true,
+        country: true,
+        socialLinks: true,
+        profileViews: true,
+        createdAt: true,
+      }
+    });
+
+    if (!user) return null;
+
+    // Increment profileViews if visitor is not the owner
+    if (viewerId !== user.id) {
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { profileViews: { increment: 1 } }
+      });
+      user.profileViews += 1;
+    }
+
+    // Aggregate stats
+    const [followersCount, followingCount, totalArtwork, competitionEntries, submissionVotesAgg, premiumLikesAgg] = await Promise.all([
+      prisma.follow.count({ where: { followingId: user.id } }),
+      prisma.follow.count({ where: { followerId: user.id } }),
+      prisma.submission.count({ where: { userId: user.id } }),
+      prisma.submission.count({ where: { userId: user.id, competitionState: 'IN_COMPETITION' } }),
+      prisma.submission.aggregate({
+        _sum: { votesCount: true },
+        where: { userId: user.id }
+      }),
+      prisma.premiumPhoto.aggregate({
+        _sum: { likesCount: true },
+        where: { userId: user.id }
+      })
+    ]);
+
+    const totalVotes = submissionVotesAgg._sum.votesCount || 0;
+    const totalPremiumLikes = premiumLikesAgg._sum.likesCount || 0;
+    const totalHearts = totalVotes + totalPremiumLikes;
+
+    return {
+      ...user,
+      stats: {
+        followers: followersCount,
+        following: followingCount,
+        profileVisitors: user.profileViews,
+        totalArtwork,
+        competitionEntries,
+        totalHearts
+      }
+    };
+  }
+
+  /**
+   * Update Profile Information
+   */
+  async updateProfile(userId, updateData, files) {
+    const data = { ...updateData };
+
+    if (files.avatar && files.avatar.length > 0) {
+      data.avatar = `/uploads/${files.avatar[0].filename}`;
+    }
+    if (files.coverPhoto && files.coverPhoto.length > 0) {
+      data.coverPhoto = `/uploads/${files.coverPhoto[0].filename}`;
+    }
+    if (files.introVideo && files.introVideo.length > 0) {
+      data.introVideo = `/uploads/${files.introVideo[0].filename}`;
+    }
+
+    return await prisma.user.update({
+      where: { id: userId },
+      data,
+      select: {
+        id: true,
+        username: true,
+        name: true,
+        avatar: true,
+        coverPhoto: true,
+        introVideo: true,
+        bio: true,
+        country: true,
+        socialLinks: true
+      }
+    });
   }
 }
