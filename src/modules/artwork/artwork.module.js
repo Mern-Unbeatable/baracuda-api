@@ -2,8 +2,9 @@ import { Router } from 'express';
 import { ArtworkController } from './artwork.controller.js';
 import { ArtworkService } from './artwork.service.js';
 import { ArtworkValidation } from './artwork.validation.js';
+import { AdminArtworkController } from './admin-artwork.controller.js';
 import { upload } from '../../utils/upload.js';
-import { requireAuth } from '../../middlewares/auth.middleware.js';
+import { requireAuth, requireAdmin } from '../../middlewares/auth.middleware.js';
 import { optionalAuth } from '../../middlewares/optionalAuth.middleware.js';
 
 /**
@@ -14,10 +15,12 @@ import { optionalAuth } from '../../middlewares/optionalAuth.middleware.js';
 export class ArtworkModule {
   constructor() {
     this.router = Router();
+    this.adminRouter = Router();
     
     // Dependency Injection
     this.artworkService = new ArtworkService();
     this.artworkController = new ArtworkController(this.artworkService);
+    this.adminArtworkController = new AdminArtworkController();
     
     this.initializeRoutes();
   }
@@ -54,5 +57,11 @@ export class ArtworkModule {
     this.router.post('/:id/save', requireAuth, this.artworkController.saveArtwork);
     this.router.post('/:id/comment', requireAuth, ArtworkValidation.validate(ArtworkValidation.commentSchema), this.artworkController.commentArtwork);
     this.router.post('/:id/report', requireAuth, ArtworkValidation.validate(ArtworkValidation.reportSchema), this.artworkController.reportArtwork);
+
+    // ADMIN ROUTES
+    this.adminRouter.use(requireAuth, requireAdmin);
+    this.adminRouter.get('/', this.adminArtworkController.getAllArtworks);
+    this.adminRouter.get('/:id', this.adminArtworkController.getArtworkDetails);
+    this.adminRouter.delete('/:id', this.adminArtworkController.deleteArtwork);
   }
 }

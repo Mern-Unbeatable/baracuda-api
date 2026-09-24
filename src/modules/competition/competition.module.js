@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import { CompetitionController } from './competition.controller.js';
 import { optionalAuth } from '../../middlewares/optionalAuth.middleware.js';
-import { requireAdmin } from '../../middlewares/auth.middleware.js';
 
 export class CompetitionModule {
   constructor() {

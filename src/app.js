@@ -85,6 +85,7 @@ class App {
 
     const artworkModule = new ArtworkModule();
     this.app.use('/api/v1/artworks', artworkModule.router);
+    this.app.use('/api/v1/admin/artworks', artworkModule.adminRouter);
 
     const competitionModule = new CompetitionModule();
     this.app.use('/api/v1/competitions', competitionModule.router);
