@@ -401,7 +401,7 @@ export class AdminReportService {
           { post: { userId } }
         ]
       },
-      select: { id: true, reason: true, createdAt: true, status: true },
+      select: { id: true, reason: true, details: true, createdAt: true, status: true },
       orderBy: { createdAt: 'desc' },
       take: 10
     });
