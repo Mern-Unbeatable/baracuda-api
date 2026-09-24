@@ -1928,194 +1928,6 @@
                     ]
                 },
                 {
-                    "name": "Admin Reports & Moderation",
-                    "item": [
-                        {
-                            "name": "Get Report Stats",
-                            "request": {
-                                "auth": {
-                                    "type": "bearer",
-                                    "bearer": [
-                                        {
-                                            "key": "token",
-                                            "value": "{{admin_token}}",
-                                            "type": "string"
-                                        }
-                                    ]
-                                },
-                                "method": "GET",
-                                "url": {
-                                    "raw": "{{base_url}}/api/v1/reports/stats",
-                                    "host": [
-                                        "{{base_url}}"
-                                    ],
-                                    "path": [
-                                        "api",
-                                        "v1",
-                                        "reports",
-                                        "stats"
-                                    ]
-                                }
-                            }
-                        },
-                        {
-                            "name": "Get All Reports",
-                            "request": {
-                                "auth": {
-                                    "type": "bearer",
-                                    "bearer": [
-                                        {
-                                            "key": "token",
-                                            "value": "{{admin_token}}",
-                                            "type": "string"
-                                        }
-                                    ]
-                                },
-                                "method": "GET",
-                                "url": {
-                                    "raw": "{{base_url}}/api/v1/reports?page=1&limit=10&status=PENDING",
-                                    "host": [
-                                        "{{base_url}}"
-                                    ],
-                                    "path": [
-                                        "api",
-                                        "v1",
-                                        "reports"
-                                    ],
-                                    "query": [
-                                        {
-                                            "key": "page",
-                                            "value": "1"
-                                        },
-                                        {
-                                            "key": "limit",
-                                            "value": "10"
-                                        },
-                                        {
-                                            "key": "status",
-                                            "value": "PENDING"
-                                        }
-                                    ]
-                                }
-                            }
-                        },
-                        {
-                            "name": "Get Report Details",
-                            "request": {
-                                "auth": {
-                                    "type": "bearer",
-                                    "bearer": [
-                                        {
-                                            "key": "token",
-                                            "value": "{{admin_token}}",
-                                            "type": "string"
-                                        }
-                                    ]
-                                },
-                                "method": "GET",
-                                "url": {
-                                    "raw": "{{base_url}}/api/v1/reports/:id",
-                                    "host": [
-                                        "{{base_url}}"
-                                    ],
-                                    "path": [
-                                        "api",
-                                        "v1",
-                                        "reports",
-                                        ":id"
-                                    ],
-                                    "variable": [
-                                        {
-                                            "key": "id",
-                                            "value": "report_id_here"
-                                        }
-                                    ]
-                                }
-                            }
-                        },
-                        {
-                            "name": "Update Report Status",
-                            "request": {
-                                "auth": {
-                                    "type": "bearer",
-                                    "bearer": [
-                                        {
-                                            "key": "token",
-                                            "value": "{{admin_token}}",
-                                            "type": "string"
-                                        }
-                                    ]
-                                },
-                                "method": "PATCH",
-                                "header": [
-                                    {
-                                        "key": "Content-Type",
-                                        "value": "application/json"
-                                    }
-                                ],
-                                "body": {
-                                    "mode": "raw",
-                                    "raw": "{\n  \"status\": \"RESOLVED\"\n}"
-                                },
-                                "url": {
-                                    "raw": "{{base_url}}/api/v1/reports/:id/status",
-                                    "host": [
-                                        "{{base_url}}"
-                                    ],
-                                    "path": [
-                                        "api",
-                                        "v1",
-                                        "reports",
-                                        ":id",
-                                        "status"
-                                    ],
-                                    "variable": [
-                                        {
-                                            "key": "id",
-                                            "value": "report_id_here"
-                                        }
-                                    ]
-                                }
-                            }
-                        },
-                        {
-                            "name": "Warn Reported User",
-                            "request": {
-                                "auth": {
-                                    "type": "bearer",
-                                    "bearer": [
-                                        {
-                                            "key": "token",
-                                            "value": "{{admin_token}}",
-                                            "type": "string"
-                                        }
-                                    ]
-                                },
-                                "method": "POST",
-                                "url": {
-                                    "raw": "{{base_url}}/api/v1/reports/:id/warn",
-                                    "host": [
-                                        "{{base_url}}"
-                                    ],
-                                    "path": [
-                                        "api",
-                                        "v1",
-                                        "reports",
-                                        ":id",
-                                        "warn"
-                                    ],
-                                    "variable": [
-                                        {
-                                            "key": "id",
-                                            "value": "report_id_here"
-                                        }
-                                    ]
-                                }
-                            }
-                        }
-                    ]
-                },
-                {
                     "name": "Reports & Moderation",
                     "item": [
                         {
@@ -2133,9 +1945,9 @@
                                 },
                                 "method": "GET",
                                 "url": {
-                                    "raw": "{{base_url}}/api/v1/admin/reports/stats",
+                                    "raw": "{{baseUrl}}/api/v1/admin/reports/stats",
                                     "host": [
-                                        "{{base_url}}"
+                                        "{{baseUrl}}"
                                     ],
                                     "path": [
                                         "api",
@@ -2162,9 +1974,9 @@
                                 },
                                 "method": "GET",
                                 "url": {
-                                    "raw": "{{base_url}}/api/v1/admin/reports?status=PENDING&page=1&limit=10",
+                                    "raw": "{{baseUrl}}/api/v1/admin/reports?status=PENDING&page=1&limit=10",
                                     "host": [
-                                        "{{base_url}}"
+                                        "{{baseUrl}}"
                                     ],
                                     "path": [
                                         "api",
@@ -2204,9 +2016,9 @@
                                 },
                                 "method": "GET",
                                 "url": {
-                                    "raw": "{{base_url}}/api/v1/admin/reports/{{report_id}}",
+                                    "raw": "{{baseUrl}}/api/v1/admin/reports/{{report_id}}",
                                     "host": [
-                                        "{{base_url}}"
+                                        "{{baseUrl}}"
                                     ],
                                     "path": [
                                         "api",
@@ -2243,9 +2055,9 @@
                                     "raw": "{\n  \"status\": \"UNDER_REVIEW\"\n}"
                                 },
                                 "url": {
-                                    "raw": "{{base_url}}/api/v1/admin/reports/{{report_id}}/status",
+                                    "raw": "{{baseUrl}}/api/v1/admin/reports/{{report_id}}/status",
                                     "host": [
-                                        "{{base_url}}"
+                                        "{{baseUrl}}"
                                     ],
                                     "path": [
                                         "api",
@@ -2283,9 +2095,9 @@
                                     "raw": "{\n  \"action\": \"WARN\"\n}"
                                 },
                                 "url": {
-                                    "raw": "{{base_url}}/api/v1/admin/reports/{{report_id}}/action",
+                                    "raw": "{{baseUrl}}/api/v1/admin/reports/{{report_id}}/action",
                                     "host": [
-                                        "{{base_url}}"
+                                        "{{baseUrl}}"
                                     ],
                                     "path": [
                                         "api",
@@ -2313,9 +2125,9 @@
                                 },
                                 "method": "GET",
                                 "url": {
-                                    "raw": "{{base_url}}/api/v1/admin/users/{{user_id}}/audit-history",
+                                    "raw": "{{baseUrl}}/api/v1/admin/users/{{user_id}}/audit-history",
                                     "host": [
-                                        "{{base_url}}"
+                                        "{{baseUrl}}"
                                     ],
                                     "path": [
                                         "api",
@@ -2333,9 +2145,9 @@
                             "request": {
                                 "method": "GET",
                                 "url": {
-                                    "raw": "{{base_url}}/api/v1/users/profile/{{username}}",
+                                    "raw": "{{baseUrl}}/api/v1/users/profile/{{username}}",
                                     "host": [
-                                        "{{base_url}}"
+                                        "{{baseUrl}}"
                                     ],
                                     "path": [
                                         "api",
@@ -2571,6 +2383,113 @@
                                             "value": "{{token}}",
                                             "type": "string"
                                         }
+                                    ]
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Premium Photos",
+                    "item": [
+                        {
+                            "name": "Get All Premium Photos",
+                            "request": {
+                                "method": "GET",
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/admin/premium-photos?page=1&limit=10",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "admin",
+                                        "premium-photos"
+                                    ],
+                                    "query": [
+                                        {
+                                            "key": "page",
+                                            "value": "1"
+                                        },
+                                        {
+                                            "key": "limit",
+                                            "value": "10"
+                                        },
+                                        {
+                                            "key": "kind",
+                                            "value": "SINGLE",
+                                            "disabled": true,
+                                            "description": "Filter by kind: SINGLE, SIX, TWELVE"
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Get Premium Photo Details",
+                            "request": {
+                                "method": "GET",
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/admin/premium-photos/{{photo_id}}",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "admin",
+                                        "premium-photos",
+                                        "{{photo_id}}"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Delete Premium Photo",
+                            "request": {
+                                "method": "DELETE",
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/admin/premium-photos/{{photo_id}}",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "admin",
+                                        "premium-photos",
+                                        "{{photo_id}}"
                                     ]
                                 }
                             }

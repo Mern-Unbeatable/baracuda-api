@@ -2,16 +2,19 @@ import { Router } from 'express';
 import { MarketplaceController } from './marketplace.controller.js';
 import { MarketplaceService } from './marketplace.service.js';
 import { MarketplaceValidation } from './marketplace.validation.js';
+import { AdminPremiumPhotoController } from './admin-premium-photo.controller.js';
 import { upload } from '../../utils/upload.js';
-import { requireAuth } from '../../middlewares/auth.middleware.js';
+import { requireAuth, requireAdmin } from '../../middlewares/auth.middleware.js';
 import { optionalAuth } from '../../middlewares/optionalAuth.middleware.js';
 
 export class MarketplaceModule {
   constructor() {
     this.router = Router();
+    this.adminRouter = Router();
     
     this.marketplaceService = new MarketplaceService();
     this.marketplaceController = new MarketplaceController(this.marketplaceService);
+    this.adminPremiumPhotoController = new AdminPremiumPhotoController();
     
     this.initializeRoutes();
   }
@@ -77,5 +80,11 @@ export class MarketplaceModule {
     this.router.post('/premium-images/:id/buy', optionalAuth, this.marketplaceController.buyPremiumPhoto);
     this.router.post('/premium-images/buy/capture', optionalAuth, this.marketplaceController.capturePurchase);
     this.router.get('/premium-images/:id/download', optionalAuth, this.marketplaceController.downloadPurchasedPhoto);
+
+    // ADMIN ROUTES
+    this.adminRouter.use(requireAuth, requireAdmin);
+    this.adminRouter.get('/', this.adminPremiumPhotoController.getAllPremiumPhotos);
+    this.adminRouter.get('/:id', this.adminPremiumPhotoController.getPremiumPhotoDetails);
+    this.adminRouter.delete('/:id', this.adminPremiumPhotoController.deletePremiumPhoto);
   }
 }

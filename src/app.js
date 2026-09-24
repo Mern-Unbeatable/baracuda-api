@@ -92,6 +92,7 @@ class App {
 
     const marketplaceModule = new MarketplaceModule();
     this.app.use('/api/v1/marketplace', marketplaceModule.router);
+    this.app.use('/api/v1/admin/premium-photos', marketplaceModule.adminRouter);
 
     const postModule = new PostModule();
     this.app.use('/api/v1/posts', postModule.router);
