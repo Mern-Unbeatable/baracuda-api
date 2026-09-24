@@ -26,6 +26,49 @@ cron.schedule('0 0 1 * *', async () => {
   }
 });
 
+// Run every hour to check for expired suspensions
+import prisma from './config/prisma.js';
+cron.schedule('0 * * * *', async () => {
+  try {
+    const expiredSuspensions = await prisma.user.findMany({
+      where: {
+        status: 'SUSPENDED',
+        suspensionEndsAt: {
+          lte: new Date()
+        }
+      },
+      select: { id: true }
+    });
+
+    if (expiredSuspensions.length > 0) {
+      const ids = expiredSuspensions.map(u => u.id);
+      await prisma.user.updateMany({
+        where: { id: { in: ids } },
+        data: {
+          status: 'ACTIVE',
+          suspensionEndsAt: null
+        }
+      });
+      
+      // Optionally create notifications for these users
+      const notifications = ids.map(id => ({
+        userId: id,
+        type: 'SYSTEM',
+        title: { en: 'Account Reactivated', bn: 'অ্যাকাউন্ট রিঅ্যাক্টিভেট' },
+        body: { 
+          en: 'Your suspension period has ended and your account is now fully active again.',
+          bn: 'আপনার অ্যাকাউন্ট সাসপেনশনের মেয়াদ শেষ হয়েছে এবং অ্যাকাউন্টটি পুনরায় অ্যাক্টিভ করা হয়েছে।'
+        }
+      }));
+      await prisma.notification.createMany({ data: notifications });
+      
+      console.log(`[CRON] Lifted suspension for ${ids.length} users.`);
+    }
+  } catch (err) {
+    console.error('[CRON] Error processing user suspensions:', err);
+  }
+});
+
 // Graceful shutdown handler
 process.on('SIGTERM', () => {
   console.log('SIGTERM signal received: closing HTTP server');

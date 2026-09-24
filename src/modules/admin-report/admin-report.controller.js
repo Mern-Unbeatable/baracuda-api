@@ -1,5 +1,6 @@
 import { ResponseUtil } from '../../utils/response.js';
 import { PaginationUtil } from '../../utils/pagination.js';
+import { UrlUtil } from '../../utils/urlUtil.js';
 
 export class AdminReportController {
   constructor(adminReportService) {
@@ -21,7 +22,14 @@ export class AdminReportController {
       const { skip, take, page, limit } = PaginationUtil.getPaginationOptions(req.query);
 
       const filters = { status };
-      const { total, data } = await this.adminReportService.getAllReports(filters, skip, take);
+      let { total, data } = await this.adminReportService.getAllReports(filters, skip, take);
+
+      data = data.map(report => {
+        if (report.reportedUser) {
+          report.reportedUser.avatar = UrlUtil.getAbsoluteUrl(req, report.reportedUser.avatar);
+        }
+        return report;
+      });
 
       return ResponseUtil.success(res, 'Reports fetched successfully', {
         data,
@@ -34,8 +42,23 @@ export class AdminReportController {
 
   getReportDetails = async (req, res) => {
     try {
-      const report = await this.adminReportService.getReportDetails(req.params.id);
+      let report = await this.adminReportService.getReportDetails(req.params.id);
       if (!report) return ResponseUtil.error(res, 'Report not found', 404);
+      
+      if (report.reporter) {
+        report.reporter.avatar = UrlUtil.getAbsoluteUrl(req, report.reporter.avatar);
+      }
+      if (report.reportedUser) {
+        report.reportedUser.avatar = UrlUtil.getAbsoluteUrl(req, report.reportedUser.avatar);
+      }
+      if (report.reportedItem && report.reportedItem.media) {
+        report.reportedItem.media = report.reportedItem.media.map(m => {
+          m.url = UrlUtil.getAbsoluteUrl(req, m.url);
+          m.thumbnailUrl = UrlUtil.getAbsoluteUrl(req, m.thumbnailUrl);
+          return m;
+        });
+      }
+
       return ResponseUtil.success(res, 'Report details fetched successfully', report);
     } catch (error) {
       return ResponseUtil.error(res, error.message, 500);

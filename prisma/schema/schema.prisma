@@ -249,6 +249,7 @@ model User {
   resetPasswordExpires DateTime?
   otpCode              String?
   otpExpires           DateTime?
+  suspensionEndsAt     DateTime?
   otpPurpose           String?
 
   advertisements Advertisement[]
