@@ -77,6 +77,20 @@ export class AuthService {
       throw new Error('Email not found');
     }
 
+    if (user.status === 'BANNED') {
+      throw new Error('Your account has been permanently banned.');
+    }
+
+    if (user.status === 'SUSPENDED') {
+      if (user.suspensionEndsAt) {
+        const daysLeft = Math.ceil((new Date(user.suspensionEndsAt) - new Date()) / (1000 * 60 * 60 * 24));
+        if (daysLeft > 0) {
+          throw new Error(`Your account is suspended. ${daysLeft} days left.`);
+        }
+      }
+      throw new Error('Your account is currently suspended.');
+    }
+
     if (user.status !== 'ACTIVE' && user.status !== 'PENDING') {
       throw new Error('Account is suspended or banned');
     }

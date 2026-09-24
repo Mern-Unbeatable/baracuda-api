@@ -169,8 +169,8 @@ export class UserPaymentService {
 
     const totalSales = allSales.reduce((sum, item) => sum + Number(item.price), 0);
     const photosSold = allSales.length;
-    const platformFee = totalSales * 0.10;
-    const yourEarnings = totalSales - platformFee;
+    const platformFee = 0; // 0% fee for photo sales, 100% goes to user
+    const yourEarnings = totalSales;
 
     const payouts = await prisma.payout.findMany({
       where: { userId, kind: 'PREMIUM' }
@@ -211,7 +211,7 @@ export class UserPaymentService {
 
     const formattedList = paginatedResult.map(item => {
       const price = Number(item.price);
-      const fee = price * 0.10;
+      const fee = 0; // 0% fee for photo sales
       
       const photoMedia = mediaItems.filter(m => m.premiumPhotoId === item.premiumPhoto.id);
       const photoUrl = photoMedia[0]?.url ? UrlUtil.getAbsoluteUrl(req, photoMedia[0].url) : null;
