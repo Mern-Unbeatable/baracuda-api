@@ -22,11 +22,11 @@ export class AuthController {
       try {
         // Validate media constraints
         if (avatarFile) {
-          await MediaValidator.validateImage(avatarFile.path, 400, 400, 'Avatar', 20);
+          // await MediaValidator.validateImage(avatarFile.path, 400, 400, 'Avatar', 20); // Dimension check disabled
           userData.avatar = `/uploads/${path.basename(avatarFile.path)}`;
         }
         if (coverPhotoFile) {
-          await MediaValidator.validateImage(coverPhotoFile.path, 1600, 600, 'Cover photo', 50);
+          // await MediaValidator.validateImage(coverPhotoFile.path, 1600, 600, 'Cover photo', 50); // Dimension check disabled
           userData.coverPhoto = `/uploads/${path.basename(coverPhotoFile.path)}`;
         }
         if (introVideoFile) {
