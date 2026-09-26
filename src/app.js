@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import { UserModule } from './modules/user/user.module.js';
 import { AuthModule } from './modules/auth/auth.module.js';
 import { CategoryModule } from './modules/category/category.module.js';
@@ -32,6 +33,12 @@ class App {
   }
 
   initializeMiddlewares() {
+    // Middleware for CORS
+    this.app.use(cors({
+      origin: ['http://localhost:5173', 'http://localhost:5174'],
+      credentials: true
+    }));
+
     // Middleware to parse JSON request bodies
     this.app.use(express.json());
     
