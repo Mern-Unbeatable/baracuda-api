@@ -36,6 +36,19 @@ export class AnnouncementController {
     }
   };
 
+  getPublic = async (req, res) => {
+    try {
+      const activeAnnouncements = await this.announcementService.getPublic();
+      return res.status(200).json({
+        success: true,
+        message: 'Active announcements fetched successfully',
+        data: activeAnnouncements
+      });
+    } catch (error) {
+      return ResponseUtil.error(res, error.message, 500);
+    }
+  };
+
   getStats = async (req, res) => {
     try {
       const stats = await this.announcementService.getStats();

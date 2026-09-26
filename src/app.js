@@ -85,6 +85,7 @@ class App {
     
     const announcementModule = new AnnouncementModule();
     this.app.use('/api/v1/admin/announcements', announcementModule.adminRouter);
+    this.app.use('/api/v1/announcements', announcementModule.publicRouter);
     
     const demoProfileModule = new DemoProfileModule();
     this.app.use('/api/v1/admin/demo-profiles', demoProfileModule.router);

@@ -56,6 +56,17 @@ export class AnnouncementService {
     return { total, data: dataWithStatus };
   }
 
+  async getPublic() {
+    const announcements = await prisma.announcement.findMany({
+      where: { activeState: 'active' },
+      orderBy: { createdAt: 'desc' }
+    });
+
+    return announcements
+      .map(ann => ({ ...ann, displayStatus: this.computeDisplayStatus(ann) }))
+      .filter(ann => ann.displayStatus === 'Active');
+  }
+
   async getStats() {
     const all = await prisma.announcement.findMany();
     

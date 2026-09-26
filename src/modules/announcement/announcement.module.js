@@ -26,6 +26,7 @@ export class AnnouncementModule {
     this.adminRouter.put('/:id', AnnouncementValidation.validate(AnnouncementValidation.createUpdateSchema), this.announcementController.update);
     this.adminRouter.delete('/:id', this.announcementController.delete);
 
-    // Public Routes could be added here if needed
+    // Public Routes
+    this.publicRouter.get('/', this.announcementController.getPublic);
   }
 }
