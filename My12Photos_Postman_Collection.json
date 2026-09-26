@@ -14,6 +14,11 @@
       "key": "token",
       "value": "",
       "type": "string"
+    },
+    {
+      "key": "admin_token",
+      "value": "",
+      "type": "string"
     }
   ],
   "item": [
@@ -262,16 +267,6 @@
                     "v1",
                     "categories"
                   ]
-                },
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
                 }
               },
               "response": []
@@ -299,16 +294,6 @@
                     "api",
                     "v1",
                     "categories"
-                  ]
-                },
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
                   ]
                 }
               },
@@ -344,9 +329,9 @@
                 "method": "GET",
                 "header": [],
                 "url": {
-                  "raw": "{{base_url}}/api/v1/advertisements/admin/all?status=IN_REVIEW&page=1&limit=10",
+                  "raw": "{{baseUrl}}/api/v1/advertisements/admin/all?status=IN_REVIEW&page=1&limit=10",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -369,16 +354,6 @@
                       "value": "10"
                     }
                   ]
-                },
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
                 }
               }
             },
@@ -388,9 +363,9 @@
                 "method": "GET",
                 "header": [],
                 "url": {
-                  "raw": "{{base_url}}/api/v1/advertisements/admin/{{advertisementId}}",
+                  "raw": "{{baseUrl}}/api/v1/advertisements/admin/{{advertisementId}}",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -398,16 +373,6 @@
                     "advertisements",
                     "admin",
                     "{{advertisementId}}"
-                  ]
-                },
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
                   ]
                 }
               }
@@ -427,9 +392,9 @@
                   "raw": "{\n  \"status\": \"ACTIVE\"\n}"
                 },
                 "url": {
-                  "raw": "{{base_url}}/api/v1/advertisements/admin/{{advertisementId}}/status",
+                  "raw": "{{baseUrl}}/api/v1/advertisements/admin/{{advertisementId}}/status",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -438,16 +403,6 @@
                     "admin",
                     "{{advertisementId}}",
                     "status"
-                  ]
-                },
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
                   ]
                 }
               }
@@ -460,22 +415,12 @@
             {
               "name": "Get All Business Links",
               "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "method": "GET",
                 "header": [],
                 "url": {
-                  "raw": "{{base_url}}/api/v1/business-links/admin?page=1&limit=10",
+                  "raw": "{{baseUrl}}/api/v1/business-links/admin?page=1&limit=10",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -500,22 +445,12 @@
             {
               "name": "Get Business Link Details",
               "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "method": "GET",
                 "header": [],
                 "url": {
-                  "raw": "{{base_url}}/api/v1/business-links/admin/{{business_album_id}}",
+                  "raw": "{{baseUrl}}/api/v1/business-links/admin/{{business_album_id}}",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -536,16 +471,6 @@
             {
               "name": "Get All Subscribers (Admin)",
               "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "method": "GET",
                 "header": [],
                 "url": {
@@ -575,16 +500,6 @@
             {
               "name": "Send Campaign (EVERYONE)",
               "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "method": "POST",
                 "header": [],
                 "body": {
@@ -644,16 +559,6 @@
             {
               "name": "Send Campaign (NEW_SUBSCRIBERS)",
               "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "method": "POST",
                 "header": [],
                 "body": {
@@ -713,16 +618,6 @@
             {
               "name": "Send Campaign (SELECTED)",
               "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "method": "POST",
                 "header": [],
                 "body": {
@@ -792,16 +687,6 @@
             {
               "name": "Get All Users",
               "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "method": "GET",
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/admin/users?page=1&limit=10&status=All",
@@ -834,16 +719,6 @@
             {
               "name": "Get User By ID",
               "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "method": "GET",
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/admin/users/{{user_id}}",
@@ -863,16 +738,6 @@
             {
               "name": "Update User Status",
               "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "method": "PATCH",
                 "header": [
                   {
@@ -925,16 +790,6 @@
             {
               "name": "Update Album Type",
               "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "method": "PATCH",
                 "header": [
                   {
@@ -963,16 +818,6 @@
             {
               "name": "Create Album Type",
               "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "method": "POST",
                 "header": [
                   {
@@ -1000,16 +845,6 @@
             {
               "name": "Delete Album Type",
               "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "method": "DELETE",
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/album-types/{{album_type_id}}",
@@ -1036,9 +871,9 @@
                 "method": "GET",
                 "header": [],
                 "url": {
-                  "raw": "{{base_url}}/api/v1/competitions?kind=ALL&year=2026&month=9&page=1&limit=10",
+                  "raw": "{{baseUrl}}/api/v1/competitions?kind=ALL&year=2026&month=9&page=1&limit=10",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -1080,21 +915,11 @@
             {
               "name": "View Winner Details",
               "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "method": "GET",
                 "url": {
-                  "raw": "{{base_url}}/api/v1/artworks/{{submissionId}}",
+                  "raw": "{{baseUrl}}/api/v1/artworks/{{submissionId}}",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -1114,21 +939,11 @@
             {
               "name": "Get Pending Tickets",
               "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "method": "GET",
                 "url": {
-                  "raw": "{{base_url}}/api/v1/support/admin/pending?page=1&limit=10",
+                  "raw": "{{baseUrl}}/api/v1/support/admin/pending?page=1&limit=10",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -1143,21 +958,11 @@
             {
               "name": "Get Answered Tickets",
               "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "method": "GET",
                 "url": {
-                  "raw": "{{base_url}}/api/v1/support/admin/answered?page=1&limit=10",
+                  "raw": "{{baseUrl}}/api/v1/support/admin/answered?page=1&limit=10",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -1172,16 +977,6 @@
             {
               "name": "Reply to Ticket",
               "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "method": "PATCH",
                 "header": [
                   {
@@ -1194,9 +989,9 @@
                   "raw": "{\n  \"answer\": \"<p>We are looking into this issue. <strong>Thanks!</strong></p>\"\n}"
                 },
                 "url": {
-                  "raw": "{{base_url}}/api/v1/support/admin/{{ticket_id}}/reply",
+                  "raw": "{{baseUrl}}/api/v1/support/admin/{{ticket_id}}/reply",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -1212,21 +1007,11 @@
             {
               "name": "Get Admin Ticket Details",
               "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "method": "GET",
                 "url": {
-                  "raw": "{{base_url}}/api/v1/support/admin/{{ticket_id}}",
+                  "raw": "{{baseUrl}}/api/v1/support/admin/{{ticket_id}}",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -1246,21 +1031,11 @@
             {
               "name": "Get All Comments",
               "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "method": "GET",
                 "url": {
-                  "raw": "{{base_url}}/api/v1/admin/comments?status=PENDING&page=1&limit=10",
+                  "raw": "{{baseUrl}}/api/v1/admin/comments?status=PENDING&page=1&limit=10",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -1288,21 +1063,11 @@
             {
               "name": "Get Comment Details",
               "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "method": "GET",
                 "url": {
-                  "raw": "{{base_url}}/api/v1/admin/comments/{{comment_public_code}}",
+                  "raw": "{{baseUrl}}/api/v1/admin/comments/{{comment_public_code}}",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -1317,16 +1082,6 @@
             {
               "name": "Bulk Update Comment Status",
               "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "method": "PATCH",
                 "header": [
                   {
@@ -1339,9 +1094,9 @@
                   "raw": "{\n  \"commentIds\": [\n    \"CMT-0001\",\n    \"CMT-0002\"\n  ],\n  \"status\": \"APPROVED\"\n}"
                 },
                 "url": {
-                  "raw": "{{base_url}}/api/v1/admin/comments/bulk-status",
+                  "raw": "{{baseUrl}}/api/v1/admin/comments/bulk-status",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -1361,16 +1116,6 @@
             {
               "name": "Create Demo Profile",
               "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "method": "POST",
                 "header": [],
                 "body": {
@@ -1429,9 +1174,9 @@
                   ]
                 },
                 "url": {
-                  "raw": "{{base_url}}/api/v1/admin/demo-profiles",
+                  "raw": "{{baseUrl}}/api/v1/admin/demo-profiles",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -1445,21 +1190,11 @@
             {
               "name": "Get Demo Profile Stats",
               "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "method": "GET",
                 "url": {
-                  "raw": "{{base_url}}/api/v1/admin/demo-profiles/stats",
+                  "raw": "{{baseUrl}}/api/v1/admin/demo-profiles/stats",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -1474,21 +1209,11 @@
             {
               "name": "Get All Demo Profiles",
               "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "method": "GET",
                 "url": {
-                  "raw": "{{base_url}}/api/v1/admin/demo-profiles?isActive=true&page=1&limit=10",
+                  "raw": "{{baseUrl}}/api/v1/admin/demo-profiles?isActive=true&page=1&limit=10",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -1516,21 +1241,11 @@
             {
               "name": "Get Demo Profile Details",
               "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "method": "GET",
                 "url": {
-                  "raw": "{{base_url}}/api/v1/admin/demo-profiles/{{profile_id}}",
+                  "raw": "{{baseUrl}}/api/v1/admin/demo-profiles/{{profile_id}}",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -1545,16 +1260,6 @@
             {
               "name": "Update Demo Profile Status",
               "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "method": "PATCH",
                 "header": [
                   {
@@ -1567,9 +1272,9 @@
                   "raw": "{\n  \"isActive\": false\n}"
                 },
                 "url": {
-                  "raw": "{{base_url}}/api/v1/admin/demo-profiles/{{profile_id}}/status",
+                  "raw": "{{baseUrl}}/api/v1/admin/demo-profiles/{{profile_id}}/status",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -1605,16 +1310,6 @@
                     "payouts",
                     "prize-money"
                   ]
-                },
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
                 }
               },
               "response": []
@@ -1637,16 +1332,6 @@
                     "payouts",
                     "donations"
                   ]
-                },
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
                 }
               },
               "response": []
@@ -1668,16 +1353,6 @@
                     "admin",
                     "payouts",
                     "photo-sales"
-                  ]
-                },
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
                   ]
                 }
               },
@@ -1711,16 +1386,6 @@
                     "REPLACE_WITH_PAYOUT_ID",
                     "status"
                   ]
-                },
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
                 }
               },
               "response": []
@@ -1736,25 +1401,15 @@
                 "method": "POST",
                 "header": [],
                 "url": {
-                  "raw": "{{base_url}}/api/v1/campaigns/links",
+                  "raw": "{{baseUrl}}/api/v1/campaigns/links",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
                     "v1",
                     "campaigns",
                     "links"
-                  ]
-                },
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{admin_token}}",
-                      "type": "string"
-                    }
                   ]
                 }
               }
@@ -1765,25 +1420,15 @@
                 "method": "GET",
                 "header": [],
                 "url": {
-                  "raw": "{{base_url}}/api/v1/campaigns/stats",
+                  "raw": "{{baseUrl}}/api/v1/campaigns/stats",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
                     "v1",
                     "campaigns",
                     "stats"
-                  ]
-                },
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{admin_token}}",
-                      "type": "string"
-                    }
                   ]
                 }
               }
@@ -1794,9 +1439,9 @@
                 "method": "GET",
                 "header": [],
                 "url": {
-                  "raw": "{{base_url}}/api/v1/campaigns/links?status=ALL&dateCreated=ALL&requirements=ALL&rewardStatus=ALL&page=1&limit=10",
+                  "raw": "{{baseUrl}}/api/v1/campaigns/links?status=ALL&dateCreated=ALL&requirements=ALL&rewardStatus=ALL&page=1&limit=10",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -1830,16 +1475,6 @@
                       "value": "10"
                     }
                   ]
-                },
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{admin_token}}",
-                      "type": "string"
-                    }
-                  ]
                 }
               }
             },
@@ -1849,9 +1484,9 @@
                 "method": "GET",
                 "header": [],
                 "url": {
-                  "raw": "{{base_url}}/api/v1/campaigns/links/:id",
+                  "raw": "{{baseUrl}}/api/v1/campaigns/links/:id",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -1864,16 +1499,6 @@
                     {
                       "key": "id",
                       "value": "REPLACE_ME"
-                    }
-                  ]
-                },
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{admin_token}}",
-                      "type": "string"
                     }
                   ]
                 }
@@ -1894,9 +1519,9 @@
                   "raw": "{\n  \"status\": \"PAID\"\n}"
                 },
                 "url": {
-                  "raw": "{{base_url}}/api/v1/campaigns/links/:id/reward",
+                  "raw": "{{baseUrl}}/api/v1/campaigns/links/:id/reward",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -1912,16 +1537,6 @@
                       "value": "REPLACE_ME"
                     }
                   ]
-                },
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{admin_token}}",
-                      "type": "string"
-                    }
-                  ]
                 }
               }
             }
@@ -1933,16 +1548,6 @@
             {
               "name": "Get Report Stats",
               "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{admin_token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "method": "GET",
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/admin/reports/stats",
@@ -1962,16 +1567,6 @@
             {
               "name": "Get All Reports (Filtered)",
               "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{admin_token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "method": "GET",
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/admin/reports?status=PENDING&page=1&limit=10",
@@ -2004,16 +1599,6 @@
             {
               "name": "Get Report Details",
               "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{admin_token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "method": "GET",
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/admin/reports/{{report_id}}",
@@ -2033,16 +1618,6 @@
             {
               "name": "Update Report Status",
               "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{admin_token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "method": "PATCH",
                 "header": [
                   {
@@ -2073,16 +1648,6 @@
             {
               "name": "Execute Moderation Action",
               "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{admin_token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "method": "POST",
                 "header": [
                   {
@@ -2113,16 +1678,6 @@
             {
               "name": "Get User Audit History",
               "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{admin_token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "method": "GET",
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/admin/users/{{user_id}}/audit-history",
@@ -2200,16 +1755,6 @@
                       "disabled": true
                     }
                   ]
-                },
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
                 }
               }
             },
@@ -2230,16 +1775,6 @@
                     "artworks",
                     "{{artwork_id}}"
                   ]
-                },
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
                 }
               }
             },
@@ -2259,16 +1794,6 @@
                     "admin",
                     "artworks",
                     "{{artwork_id}}"
-                  ]
-                },
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
                   ]
                 }
               }
@@ -2314,16 +1839,6 @@
                       "disabled": true
                     }
                   ]
-                },
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
                 }
               }
             },
@@ -2343,16 +1858,6 @@
                     "admin",
                     "artworks",
                     "{{artwork_id}}"
-                  ]
-                },
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
                   ]
                 }
               }
@@ -2374,16 +1879,6 @@
                     "artworks",
                     "{{artwork_id}}"
                   ]
-                },
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
                 }
               }
             }
@@ -2396,16 +1891,6 @@
               "name": "Get All Premium Photos",
               "request": {
                 "method": "GET",
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/admin/premium-photos?page=1&limit=10",
                   "host": [
@@ -2440,16 +1925,6 @@
               "name": "Get Premium Photo Details",
               "request": {
                 "method": "GET",
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/admin/premium-photos/{{photo_id}}",
                   "host": [
@@ -2469,16 +1944,6 @@
               "name": "Delete Premium Photo",
               "request": {
                 "method": "DELETE",
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/admin/premium-photos/{{photo_id}}",
                   "host": [
@@ -2514,25 +1979,15 @@
                   }
                 },
                 "url": {
-                  "raw": "{{base_url}}/api/v1/admin/announcements",
+                  "raw": "{{baseUrl}}/api/v1/admin/announcements",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
                     "v1",
                     "admin",
                     "announcements"
-                  ]
-                },
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{admin_token}}",
-                      "type": "string"
-                    }
                   ]
                 }
               }
@@ -2543,9 +1998,9 @@
                 "method": "GET",
                 "header": [],
                 "url": {
-                  "raw": "{{base_url}}/api/v1/admin/announcements?page=1&limit=10",
+                  "raw": "{{baseUrl}}/api/v1/admin/announcements?page=1&limit=10",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -2563,16 +2018,6 @@
                       "value": "10"
                     }
                   ]
-                },
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{admin_token}}",
-                      "type": "string"
-                    }
-                  ]
                 }
               }
             },
@@ -2582,9 +2027,9 @@
                 "method": "GET",
                 "header": [],
                 "url": {
-                  "raw": "{{base_url}}/api/v1/admin/announcements/stats",
+                  "raw": "{{baseUrl}}/api/v1/admin/announcements/stats",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -2592,16 +2037,6 @@
                     "admin",
                     "announcements",
                     "stats"
-                  ]
-                },
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{admin_token}}",
-                      "type": "string"
-                    }
                   ]
                 }
               }
@@ -2612,9 +2047,9 @@
                 "method": "GET",
                 "header": [],
                 "url": {
-                  "raw": "{{base_url}}/api/v1/admin/announcements/{{announcement_id}}",
+                  "raw": "{{baseUrl}}/api/v1/admin/announcements/{{announcement_id}}",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -2622,16 +2057,6 @@
                     "admin",
                     "announcements",
                     "{{announcement_id}}"
-                  ]
-                },
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{admin_token}}",
-                      "type": "string"
-                    }
                   ]
                 }
               }
@@ -2651,9 +2076,9 @@
                   }
                 },
                 "url": {
-                  "raw": "{{base_url}}/api/v1/admin/announcements/{{announcement_id}}",
+                  "raw": "{{baseUrl}}/api/v1/admin/announcements/{{announcement_id}}",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -2661,16 +2086,6 @@
                     "admin",
                     "announcements",
                     "{{announcement_id}}"
-                  ]
-                },
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{admin_token}}",
-                      "type": "string"
-                    }
                   ]
                 }
               }
@@ -2681,9 +2096,9 @@
                 "method": "DELETE",
                 "header": [],
                 "url": {
-                  "raw": "{{base_url}}/api/v1/admin/announcements/{{announcement_id}}",
+                  "raw": "{{baseUrl}}/api/v1/admin/announcements/{{announcement_id}}",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -2692,22 +2107,22 @@
                     "announcements",
                     "{{announcement_id}}"
                   ]
-                },
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{admin_token}}",
-                      "type": "string"
-                    }
-                  ]
                 }
               }
             }
           ]
         }
-      ]
+      ],
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "{{admin_token}}",
+            "type": "string"
+          }
+        ]
+      }
     },
     {
       "name": "User",
@@ -2721,9 +2136,9 @@
                 "method": "GET",
                 "header": [],
                 "url": {
-                  "raw": "{{base_url}}/api/v1/categories",
+                  "raw": "{{baseUrl}}/api/v1/categories",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -2817,16 +2232,6 @@
                     "api",
                     "v1",
                     "artworks"
-                  ]
-                },
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
                   ]
                 }
               },
@@ -2934,16 +2339,6 @@
                     "api",
                     "v1",
                     "artworks"
-                  ]
-                },
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
                   ]
                 }
               },
@@ -3081,16 +2476,6 @@
                     "v1",
                     "artworks"
                   ]
-                },
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
                 }
               },
               "response": []
@@ -3122,16 +2507,6 @@
                     {
                       "key": "sort",
                       "value": "newest"
-                    }
-                  ]
-                },
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
                     }
                   ]
                 }
@@ -3169,16 +2544,6 @@
                       "value": "PUBLIC_ID_HERE"
                     }
                   ]
-                },
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
                 }
               },
               "response": []
@@ -3205,16 +2570,6 @@
                       "value": "PUBLIC_ID_HERE"
                     }
                   ]
-                },
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
                 }
               },
               "response": []
@@ -3229,9 +2584,9 @@
                   "raw": "{\n  \"durationDays\": 7\n}"
                 },
                 "url": {
-                  "raw": "{{base_url}}/api/v1/artworks/YOUR_SUBMISSION_ID_HERE/promote",
+                  "raw": "{{baseUrl}}/api/v1/artworks/YOUR_SUBMISSION_ID_HERE/promote",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -3239,16 +2594,6 @@
                     "artworks",
                     "YOUR_SUBMISSION_ID_HERE",
                     "promote"
-                  ]
-                },
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
                   ]
                 }
               },
@@ -3284,16 +2629,6 @@
                     {
                       "key": "id",
                       "value": "PUBLIC_ID_HERE"
-                    }
-                  ]
-                },
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
                     }
                   ]
                 }
@@ -3332,16 +2667,6 @@
                       "value": "PUBLIC_ID_HERE"
                     }
                   ]
-                },
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
                 }
               },
               "response": []
@@ -3361,9 +2686,9 @@
                   "raw": "{\n  \"paymentId\": \"YOUR_PAYPAL_ORDER_ID_HERE\"\n}"
                 },
                 "url": {
-                  "raw": "{{base_url}}/api/v1/artworks/promote/capture",
+                  "raw": "{{baseUrl}}/api/v1/artworks/promote/capture",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -3450,9 +2775,9 @@
                   ]
                 },
                 "url": {
-                  "raw": "{{base_url}}/api/v1/marketplace/premium-photos",
+                  "raw": "{{baseUrl}}/api/v1/marketplace/premium-photos",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -3461,17 +2786,7 @@
                     "premium-photos"
                   ]
                 },
-                "description": "Create a premium photo for sale. Same as Create Artwork but no story/competitionState. Price is required.",
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                }
+                "description": "Create a premium photo for sale. Same as Create Artwork but no story/competitionState. Price is required."
               },
               "response": []
             },
@@ -3566,9 +2881,9 @@
                   ]
                 },
                 "url": {
-                  "raw": "{{base_url}}/api/v1/marketplace/premium-photos",
+                  "raw": "{{baseUrl}}/api/v1/marketplace/premium-photos",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -3577,17 +2892,7 @@
                     "premium-photos"
                   ]
                 },
-                "description": "Create a premium photo for sale. Same as Create Artwork but no story/competitionState. Price is required.",
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                }
+                "description": "Create a premium photo for sale. Same as Create Artwork but no story/competitionState. Price is required."
               },
               "response": []
             },
@@ -3710,9 +3015,9 @@
                   ]
                 },
                 "url": {
-                  "raw": "{{base_url}}/api/v1/marketplace/premium-photos",
+                  "raw": "{{baseUrl}}/api/v1/marketplace/premium-photos",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -3721,17 +3026,7 @@
                     "premium-photos"
                   ]
                 },
-                "description": "Create a premium photo for sale. Same as Create Artwork but no story/competitionState. Price is required.",
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                }
+                "description": "Create a premium photo for sale. Same as Create Artwork but no story/competitionState. Price is required."
               },
               "response": []
             },
@@ -3741,9 +3036,9 @@
                 "method": "GET",
                 "header": [],
                 "url": {
-                  "raw": "{{base_url}}/api/v1/marketplace/premium-images/:id",
+                  "raw": "{{baseUrl}}/api/v1/marketplace/premium-images/:id",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -3782,9 +3077,9 @@
                   }
                 },
                 "url": {
-                  "raw": "{{base_url}}/api/v1/marketplace/premium-images/:id",
+                  "raw": "{{baseUrl}}/api/v1/marketplace/premium-images/:id",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -3797,16 +3092,6 @@
                     {
                       "key": "id",
                       "value": ""
-                    }
-                  ]
-                },
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
                     }
                   ]
                 }
@@ -3819,9 +3104,9 @@
                 "method": "DELETE",
                 "header": [],
                 "url": {
-                  "raw": "{{base_url}}/api/v1/marketplace/premium-images/:id",
+                  "raw": "{{baseUrl}}/api/v1/marketplace/premium-images/:id",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -3834,16 +3119,6 @@
                     {
                       "key": "id",
                       "value": ""
-                    }
-                  ]
-                },
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
                     }
                   ]
                 }
@@ -3870,9 +3145,9 @@
                   }
                 },
                 "url": {
-                  "raw": "{{base_url}}/api/v1/marketplace/premium-images/:id/promote",
+                  "raw": "{{baseUrl}}/api/v1/marketplace/premium-images/:id/promote",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -3886,16 +3161,6 @@
                     {
                       "key": "id",
                       "value": ""
-                    }
-                  ]
-                },
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
                     }
                   ]
                 }
@@ -3922,9 +3187,9 @@
                   }
                 },
                 "url": {
-                  "raw": "{{base_url}}/api/v1/marketplace/premium-images/promote/capture",
+                  "raw": "{{baseUrl}}/api/v1/marketplace/premium-images/promote/capture",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -3933,16 +3198,6 @@
                     "premium-images",
                     "promote",
                     "capture"
-                  ]
-                },
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
                   ]
                 }
               },
@@ -3956,22 +3211,12 @@
             {
               "name": "My Purchase Stats",
               "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "method": "GET",
                 "header": [],
                 "url": {
-                  "raw": "{{base_url}}/api/v1/marketplace/my-purchases/stats",
+                  "raw": "{{baseUrl}}/api/v1/marketplace/my-purchases/stats",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -3987,22 +3232,12 @@
             {
               "name": "My Purchases List",
               "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "method": "GET",
                 "header": [],
                 "url": {
-                  "raw": "{{base_url}}/api/v1/marketplace/my-purchases?page=1&limit=6",
+                  "raw": "{{baseUrl}}/api/v1/marketplace/my-purchases?page=1&limit=6",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -4027,22 +3262,12 @@
             {
               "name": "Download Purchased Photo",
               "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "method": "GET",
                 "header": [],
                 "url": {
-                  "raw": "{{base_url}}/api/v1/marketplace/premium-images/{{premiumPhotoId}}/download",
+                  "raw": "{{baseUrl}}/api/v1/marketplace/premium-images/{{premiumPhotoId}}/download",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -4064,16 +3289,6 @@
             {
               "name": "Create Post",
               "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "method": "POST",
                 "header": [],
                 "body": {
@@ -4096,9 +3311,9 @@
                   ]
                 },
                 "url": {
-                  "raw": "{{base_url}}/api/v1/posts",
+                  "raw": "{{baseUrl}}/api/v1/posts",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -4112,22 +3327,12 @@
             {
               "name": "Get All My Posts",
               "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "method": "GET",
                 "header": [],
                 "url": {
-                  "raw": "{{base_url}}/api/v1/posts",
+                  "raw": "{{baseUrl}}/api/v1/posts",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -4141,22 +3346,12 @@
             {
               "name": "Get Single Post",
               "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "method": "GET",
                 "header": [],
                 "url": {
-                  "raw": "{{base_url}}/api/v1/posts/{{postId}}",
+                  "raw": "{{baseUrl}}/api/v1/posts/{{postId}}",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -4171,16 +3366,6 @@
             {
               "name": "Update Post",
               "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "method": "PUT",
                 "header": [],
                 "body": {
@@ -4203,9 +3388,9 @@
                   ]
                 },
                 "url": {
-                  "raw": "{{base_url}}/api/v1/posts/{{postId}}",
+                  "raw": "{{baseUrl}}/api/v1/posts/{{postId}}",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -4220,22 +3405,12 @@
             {
               "name": "Delete Post",
               "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "method": "DELETE",
                 "header": [],
                 "url": {
-                  "raw": "{{base_url}}/api/v1/posts/{{postId}}",
+                  "raw": "{{baseUrl}}/api/v1/posts/{{postId}}",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -4255,16 +3430,6 @@
             {
               "name": "Upload Business Link (User)",
               "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "method": "POST",
                 "header": [],
                 "body": {
@@ -4287,13 +3452,13 @@
                     },
                     {
                       "key": "categoryId",
-                      "value": "{{category_id}}",
+                      "value": "{{categoryId}}",
                       "type": "text",
                       "disabled": true
                     },
                     {
                       "key": "subcategoryId",
-                      "value": "{{subcategory_id}}",
+                      "value": "{{subcategoryId}}",
                       "type": "text",
                       "disabled": true
                     },
@@ -4358,9 +3523,9 @@
                   ]
                 },
                 "url": {
-                  "raw": "{{base_url}}/api/v1/business-links",
+                  "raw": "{{baseUrl}}/api/v1/business-links",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -4379,16 +3544,6 @@
             {
               "name": "Create Support Ticket",
               "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "method": "POST",
                 "header": [
                   {
@@ -4401,9 +3556,9 @@
                   "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"subject\": \"App is crashing\",\n  \"message\": \"I cannot open the app.\"\n}"
                 },
                 "url": {
-                  "raw": "{{base_url}}/api/v1/support",
+                  "raw": "{{baseUrl}}/api/v1/support",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -4416,21 +3571,11 @@
             {
               "name": "Get My Tickets",
               "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "method": "GET",
                 "url": {
-                  "raw": "{{base_url}}/api/v1/support/my-tickets?status=PENDING&page=1&limit=10",
+                  "raw": "{{baseUrl}}/api/v1/support/my-tickets?status=PENDING&page=1&limit=10",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -4458,21 +3603,11 @@
             {
               "name": "Get My Ticket Details",
               "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "method": "GET",
                 "url": {
-                  "raw": "{{base_url}}/api/v1/support/my-tickets/{{ticket_id}}",
+                  "raw": "{{baseUrl}}/api/v1/support/my-tickets/{{ticket_id}}",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -4516,16 +3651,6 @@
                       "value": "10"
                     }
                   ]
-                },
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
                 }
               }
             },
@@ -4554,16 +3679,6 @@
                     {
                       "key": "limit",
                       "value": "10"
-                    }
-                  ]
-                },
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
                     }
                   ]
                 }
@@ -4600,16 +3715,6 @@
                       "value": ""
                     }
                   ]
-                },
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
                 }
               }
             },
@@ -4637,16 +3742,6 @@
                       "value": ""
                     }
                   ]
-                },
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
                 }
               }
             },
@@ -4667,16 +3762,6 @@
                     "public",
                     "premium-images",
                     "REPLACE_WITH_PREMIUM_PHOTO_ID"
-                  ]
-                },
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
                   ]
                 }
               }
@@ -4706,16 +3791,6 @@
                     {
                       "key": "limit",
                       "value": "10"
-                    }
-                  ]
-                },
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
                     }
                   ]
                 }
@@ -4753,16 +3828,6 @@
                     "user",
                     "request-payout"
                   ]
-                },
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
                 }
               }
             }
@@ -4774,21 +3839,11 @@
             {
               "name": "Get My Profile",
               "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{auth_token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "method": "GET",
                 "url": {
-                  "raw": "{{base_url}}/api/v1/users/profile/me",
+                  "raw": "{{baseUrl}}/api/v1/users/profile/me",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -4803,21 +3858,11 @@
             {
               "name": "Get Public Profile",
               "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{auth_token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "method": "GET",
                 "url": {
-                  "raw": "{{base_url}}/api/v1/users/profile/{{username}}",
+                  "raw": "{{baseUrl}}/api/v1/users/profile/{{username}}",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -4832,16 +3877,6 @@
             {
               "name": "Edit Profile",
               "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{auth_token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "method": "PUT",
                 "body": {
                   "mode": "formdata",
@@ -4884,9 +3919,9 @@
                   ]
                 },
                 "url": {
-                  "raw": "{{base_url}}/api/v1/users/profile",
+                  "raw": "{{baseUrl}}/api/v1/users/profile",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -4902,9 +3937,9 @@
               "request": {
                 "method": "GET",
                 "url": {
-                  "raw": "{{base_url}}/api/v1/artworks?kind=SINGLE&status=all&sort=newest&username={{username}}",
+                  "raw": "{{baseUrl}}/api/v1/artworks?kind=SINGLE&status=all&sort=newest&username={{username}}",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -4935,21 +3970,11 @@
             {
               "name": "Get Artwork Details",
               "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{auth_token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "method": "GET",
                 "url": {
-                  "raw": "{{base_url}}/api/v1/artworks/{{artwork_id}}",
+                  "raw": "{{baseUrl}}/api/v1/artworks/{{artwork_id}}",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -4965,9 +3990,9 @@
               "request": {
                 "method": "GET",
                 "url": {
-                  "raw": "{{base_url}}/api/v1/marketplace/premium-photos?kind=ALL&page=1&limit=10&username={{username}}",
+                  "raw": "{{baseUrl}}/api/v1/marketplace/premium-photos?kind=ALL&page=1&limit=10&username={{username}}",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -5001,9 +4026,9 @@
               "request": {
                 "method": "GET",
                 "url": {
-                  "raw": "{{base_url}}/api/v1/marketplace/premium-images/{{photo_id}}",
+                  "raw": "{{baseUrl}}/api/v1/marketplace/premium-images/{{photo_id}}",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -5018,21 +4043,11 @@
             {
               "name": "Get Posts (Paginated/Public)",
               "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{auth_token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "method": "GET",
                 "url": {
-                  "raw": "{{base_url}}/api/v1/posts?page=1&limit=10&username={{username}}",
+                  "raw": "{{baseUrl}}/api/v1/posts?page=1&limit=10&username={{username}}",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -5058,7 +4073,17 @@
             }
           ]
         }
-      ]
+      ],
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "{{token}}",
+            "type": "string"
+          }
+        ]
+      }
     },
     {
       "name": "Website",
@@ -5072,7 +4097,7 @@
                 "method": "GET",
                 "header": [],
                 "url": {
-                  "raw": "{{base_url}}/api/v1/artworks/public/all?status=IN_COMPETITION&categoryId={{categoryId}}&subcategoryId={{subcategoryId}}&page=1&limit=10",
+                  "raw": "{{baseUrl}}/api/v1/artworks/public/all?status=IN_COMPETITION&categoryId={{categoryId}}&subcategoryId={{subcategoryId}}&page=1&limit=10",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -5111,16 +4136,6 @@
             {
               "name": "Get Details",
               "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "method": "GET",
                 "header": [],
                 "url": {
@@ -5174,16 +4189,6 @@
             {
               "name": "Vote",
               "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "method": "POST",
                 "header": [],
                 "url": {
@@ -5210,16 +4215,6 @@
             {
               "name": "Save Artwork",
               "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "method": "POST",
                 "header": [],
                 "url": {
@@ -5246,16 +4241,6 @@
             {
               "name": "Add Comment",
               "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "method": "POST",
                 "header": [
                   {
@@ -5291,16 +4276,6 @@
             {
               "name": "Report Artwork",
               "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "method": "POST",
                 "header": [
                   {
@@ -5406,7 +4381,7 @@
                 "method": "GET",
                 "header": [],
                 "url": {
-                  "raw": "{{base_url}}/api/v1/artworks/public/all?status=PROFILE_ONLY&categoryId={{categoryId}}&subcategoryId={{subcategoryId}}&page=1&limit=10",
+                  "raw": "{{baseUrl}}/api/v1/artworks/public/all?status=PROFILE_ONLY&categoryId={{categoryId}}&subcategoryId={{subcategoryId}}&page=1&limit=10",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -5445,16 +4420,6 @@
             {
               "name": "Get Details",
               "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "method": "GET",
                 "header": [],
                 "url": {
@@ -5508,16 +4473,6 @@
             {
               "name": "Like",
               "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "method": "POST",
                 "header": [],
                 "url": {
@@ -5544,16 +4499,6 @@
             {
               "name": "Save Artwork",
               "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "method": "POST",
                 "header": [],
                 "url": {
@@ -5580,16 +4525,6 @@
             {
               "name": "Add Comment",
               "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "method": "POST",
                 "header": [
                   {
@@ -5625,16 +4560,6 @@
             {
               "name": "Report Artwork",
               "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "method": "POST",
                 "header": [
                   {
@@ -5740,9 +4665,9 @@
                 "method": "GET",
                 "header": [],
                 "url": {
-                  "raw": "{{base_url}}/api/v1/competitions?kind=ALL&year=2026&month=9&page=1&limit=10",
+                  "raw": "{{baseUrl}}/api/v1/competitions?kind=ALL&year=2026&month=9&page=1&limit=10",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -5792,9 +4717,9 @@
                 "method": "GET",
                 "header": [],
                 "url": {
-                  "raw": "{{base_url}}/api/v1/competitions/winners?kind=ALL&year=2026&month=9&page=1&limit=10",
+                  "raw": "{{baseUrl}}/api/v1/competitions/winners?kind=ALL&year=2026&month=9&page=1&limit=10",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -5845,9 +4770,9 @@
                 "method": "GET",
                 "header": [],
                 "url": {
-                  "raw": "{{base_url}}/api/v1/marketplace/public/premium-images?kind=SINGLE&page=1&limit=10",
+                  "raw": "{{baseUrl}}/api/v1/marketplace/public/premium-images?kind=SINGLE&page=1&limit=10",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -5897,9 +4822,9 @@
                 "method": "GET",
                 "header": [],
                 "url": {
-                  "raw": "{{base_url}}/api/v1/marketplace/public/premium-images/{{premiumPhotoId}}",
+                  "raw": "{{baseUrl}}/api/v1/marketplace/public/premium-images/{{premiumPhotoId}}",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -5918,9 +4843,9 @@
                 "method": "POST",
                 "header": [],
                 "url": {
-                  "raw": "{{base_url}}/api/v1/marketplace/premium-images/{{premiumPhotoId}}/like",
+                  "raw": "{{baseUrl}}/api/v1/marketplace/premium-images/{{premiumPhotoId}}/like",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -5929,16 +4854,6 @@
                     "premium-images",
                     "{{premiumPhotoId}}",
                     "like"
-                  ]
-                },
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
                   ]
                 }
               }
@@ -5963,9 +4878,9 @@
                   }
                 },
                 "url": {
-                  "raw": "{{base_url}}/api/v1/marketplace/premium-images/{{premiumPhotoId}}/buy",
+                  "raw": "{{baseUrl}}/api/v1/marketplace/premium-images/{{premiumPhotoId}}/buy",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -5974,16 +4889,6 @@
                     "premium-images",
                     "{{premiumPhotoId}}",
                     "buy"
-                  ]
-                },
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
                   ]
                 }
               }
@@ -6008,9 +4913,9 @@
                   }
                 },
                 "url": {
-                  "raw": "{{base_url}}/api/v1/marketplace/premium-images/buy/capture",
+                  "raw": "{{baseUrl}}/api/v1/marketplace/premium-images/buy/capture",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -6029,9 +4934,9 @@
                 "method": "GET",
                 "header": [],
                 "url": {
-                  "raw": "{{base_url}}/api/v1/marketplace/premium-images/{{premiumPhotoId}}/download?orderId={{orderId}}",
+                  "raw": "{{baseUrl}}/api/v1/marketplace/premium-images/{{premiumPhotoId}}/download?orderId={{orderId}}",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -6053,29 +4958,19 @@
             {
               "name": "Save Photo",
               "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "method": "POST",
                 "header": [],
                 "url": {
-                  "raw": "{{base_url}}/api/v1/marketplace/premium-images/{{premium_photo_id}}/save",
+                  "raw": "{{baseUrl}}/api/v1/marketplace/premium-images/{{premiumPhotoId}}/save",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
                     "v1",
                     "marketplace",
                     "premium-images",
-                    "{{premium_photo_id}}",
+                    "{{premiumPhotoId}}",
                     "save"
                   ]
                 }
@@ -6085,16 +4980,6 @@
             {
               "name": "Report Premium Photo",
               "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{auth_token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "method": "POST",
                 "header": [
                   {
@@ -6107,9 +4992,9 @@
                   "raw": "{\n  \"reason\": \"Copyright Infringement\",\n  \"details\": \"This photo belongs to me.\"\n}"
                 },
                 "url": {
-                  "raw": "{{base_url}}/api/v1/marketplace/premium-images/:id/report",
+                  "raw": "{{baseUrl}}/api/v1/marketplace/premium-images/:id/report",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -6194,9 +5079,9 @@
                   ]
                 },
                 "url": {
-                  "raw": "{{base_url}}/api/v1/advertisements",
+                  "raw": "{{baseUrl}}/api/v1/advertisements",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -6272,9 +5157,9 @@
                   ]
                 },
                 "url": {
-                  "raw": "{{base_url}}/api/v1/advertisements",
+                  "raw": "{{baseUrl}}/api/v1/advertisements",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -6300,9 +5185,9 @@
                   "raw": "{\n    \"paymentId\": \"PAYPAL_ORDER_ID_HERE\"\n}"
                 },
                 "url": {
-                  "raw": "{{base_url}}/api/v1/advertisements/capture",
+                  "raw": "{{baseUrl}}/api/v1/advertisements/capture",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -6320,9 +5205,9 @@
                 "method": "GET",
                 "header": [],
                 "url": {
-                  "raw": "{{base_url}}/api/v1/advertisements/{{advertisementId}}/invoice",
+                  "raw": "{{baseUrl}}/api/v1/advertisements/{{advertisementId}}/invoice",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -6711,9 +5596,9 @@
                   ]
                 },
                 "url": {
-                  "raw": "{{base_url}}/api/v1/campaigns/submit/:token",
+                  "raw": "{{baseUrl}}/api/v1/campaigns/submit/:token",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
@@ -6742,9 +5627,9 @@
                 "method": "GET",
                 "header": [],
                 "url": {
-                  "raw": "{{base_url}}/api/v1/announcements",
+                  "raw": "{{baseUrl}}/api/v1/announcements",
                   "host": [
-                    "{{base_url}}"
+                    "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
