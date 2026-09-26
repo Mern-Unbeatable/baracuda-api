@@ -247,10 +247,16 @@
                             "name": "Create Category",
                             "request": {
                                 "method": "POST",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "Accept-Language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n  \"name\": {\"en\": \"Nature\"},\n  \"slug\": \"nature\"\n}",
+                                    "raw": "{\n  \"name\": \"Nature Photography\",\n  \"slug\": \"nature-photography-test\"\n}",
                                     "options": {
                                         "raw": {
                                             "language": "json"
@@ -275,10 +281,16 @@
                             "name": "Create Subcategory",
                             "request": {
                                 "method": "POST",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "Accept-Language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n  \"name\": {\"en\": \"Forest\"},\n  \"slug\": \"forest\",\n  \"parentId\": \"REPLACE_WITH_PARENT_UUID\"\n}",
+                                    "raw": "{\n  \"name\": \"Forest\",\n  \"slug\": \"forest-test\",\n  \"parentId\": \"REPLACE_WITH_PARENT_UUID\"\n}",
                                     "options": {
                                         "raw": {
                                             "language": "json"
