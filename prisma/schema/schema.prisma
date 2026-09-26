@@ -119,25 +119,27 @@ enum CommentStatus {
 }
 
 enum AnnouncementType {
-  WINNER
-  COMPETITION
-  PROMOTION
-  GENERAL
-  IMPORTANT
+  competition_announcement
+  winner_announcement
+  important_notice
+  competition_reminder
+  new_feature
+  event_announcement
+  promotion
+  website_update
+  community_news
+  general_announcement
 }
 
 enum AnnouncementPriority {
-  HIGH
-  MEDIUM
-  LOW
+  low
+  medium
+  high
 }
 
-enum AnnouncementStatus {
-  DRAFT
-  SCHEDULED
-  ACTIVE
-  INACTIVE
-  EXPIRED
+enum AnnouncementActiveState {
+  active
+  inactive
 }
 
 enum SupportStatus {
@@ -695,28 +697,22 @@ model DemoProfile {
 // ============================================================
 
 model Announcement {
-  id             String               @id @default(uuid())
-  publicCode     String               @unique
-  title          Json?
-  message        Json
-  useRainbow     Boolean              @default(true)
-  blackLabel     Json?
-  icon           String?
-  emoji          String?
-  type           AnnouncementType     @default(GENERAL)
-  linkUrl        String?
-  showOnHome     Boolean              @default(true)
-  showOnUpload   Boolean              @default(true)
-  showOnDownload Boolean              @default(true)
-  startAt        DateTime?
-  endAt          DateTime?
-  noEndDate      Boolean              @default(false)
-  status         AnnouncementStatus   @default(DRAFT)
-  priority       AnnouncementPriority @default(MEDIUM)
-  createdAt      DateTime             @default(now())
-  updatedAt      DateTime             @updatedAt
+  id           String                   @id @default(uuid())
+  message      String                   @db.VarChar(120)
+  icon         String?
+  type         AnnouncementType
+  link         Json?
+  startDate    DateTime                 @db.Date
+  startTime    String
+  endDate      DateTime?                @db.Date
+  endTime      String?
+  noEndDate    Boolean                  @default(false)
+  activeState  AnnouncementActiveState
+  priority     AnnouncementPriority
 
-  @@index([status, priority, startAt])
+  createdAt    DateTime                 @default(now())
+  updatedAt    DateTime                 @updatedAt
+
   @@map("announcements")
 }
 

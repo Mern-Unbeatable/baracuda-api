@@ -17,6 +17,7 @@ import { DemoProfileModule } from './modules/demo-profile/demo-profile.module.js
 import paymentRouter from './modules/payment/payment.module.js';
 import { CampaignModule } from './modules/campaign/campaign.module.js';
 import { AdminReportModule } from './modules/admin-report/admin-report.module.js';
+import { AnnouncementModule } from './modules/announcement/announcement.module.js';
 import config from './config/env.js';
 
 /**
@@ -81,6 +82,9 @@ class App {
     const adminReportModule = new AdminReportModule();
     this.app.use('/api/v1/admin/reports', adminReportModule.router);
     this.app.use('/api/v1/admin/users', adminReportModule.userAuditRouter);
+    
+    const announcementModule = new AnnouncementModule();
+    this.app.use('/api/v1/admin/announcements', announcementModule.adminRouter);
     
     const demoProfileModule = new DemoProfileModule();
     this.app.use('/api/v1/admin/demo-profiles', demoProfileModule.router);
@@ -151,3 +155,9 @@ class App {
 
 // Export the raw express instance for the server
 export default new App().app;
+
+// nodemon restart trigger
+
+// nodemon restart trigger for db push
+
+// force restart again
