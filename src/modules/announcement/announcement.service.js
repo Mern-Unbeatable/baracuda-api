@@ -1,4 +1,5 @@
 import prisma from '../../config/prisma.js';
+import { TranslateUtil } from '../../utils/translate.js';
 
 export class AnnouncementService {
   computeDisplayStatus(announcement) {
@@ -30,7 +31,16 @@ export class AnnouncementService {
     return 'Active';
   }
 
-  async create(data) {
+  async create(data, sourceLang = 'en') {
+    if (data.message) {
+      if (sourceLang === 'pl') {
+        data.message_pl = data.message;
+        data.message = await TranslateUtil.translateText(data.message, 'en', 'pl');
+      } else {
+        data.message_pl = await TranslateUtil.translateText(data.message, 'pl', 'en');
+      }
+    }
+
     return await prisma.announcement.create({
       data: {
         ...data,
@@ -97,7 +107,16 @@ export class AnnouncementService {
     };
   }
 
-  async update(id, data) {
+  async update(id, data, sourceLang = 'en') {
+    if (data.message) {
+      if (sourceLang === 'pl') {
+        data.message_pl = data.message;
+        data.message = await TranslateUtil.translateText(data.message, 'en', 'pl');
+      } else {
+        data.message_pl = await TranslateUtil.translateText(data.message, 'pl', 'en');
+      }
+    }
+
     return await prisma.announcement.update({
       where: { id },
       data: {

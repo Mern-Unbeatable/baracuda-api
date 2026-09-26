@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import { translationMiddleware } from './middlewares/translation.middleware.js';
 import { UserModule } from './modules/user/user.module.js';
 import { AuthModule } from './modules/auth/auth.module.js';
 import { CategoryModule } from './modules/category/category.module.js';
@@ -45,6 +46,7 @@ class App {
     
     // Middleware to parse URL-encoded request bodies
     this.app.use(express.urlencoded({ extended: true }));
+    this.app.use(translationMiddleware);
 
     // Serve uploaded files statically
     this.app.use('/uploads', express.static('uploads'));
@@ -69,6 +71,18 @@ class App {
         message: 'Server is running',
         timestamp: new Date().toISOString()
       });
+    });
+
+    // TRANSLATION TEST ROUTE
+    this.app.post('/api/v1/translate/test', async (req, res) => {
+      try {
+        const { text, targetLang, sourceLang } = req.body;
+        const { TranslateUtil } = await import('./utils/translate.js');
+        const translated = await TranslateUtil.translateText(text, targetLang || 'pl', sourceLang || 'auto');
+        res.json({ original: text, translated });
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
     });
 
     // Feature Modules
@@ -162,3 +176,7 @@ export default new App().app;
 // nodemon restart trigger for db push
 
 // force restart again
+
+// nodemon restart trigger
+
+// nodemon restart trigger for category

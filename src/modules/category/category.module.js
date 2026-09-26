@@ -38,6 +38,13 @@ router.post(
   categoryController.createCategory
 );
 
+router.delete(
+  '/:id',
+  requireAuth,
+  requireAdmin,
+  categoryController.deleteCategory
+);
+
 export const CategoryModule = {
   router
 };

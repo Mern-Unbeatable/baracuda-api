@@ -321,9 +321,11 @@ model Follow {
 
 model Category {
   id          String   @id @default(uuid())
-  name        Json
-  slug        String   @unique
-  description Json?
+  name          String
+  name_pl       String?
+  slug          String   @unique
+  description   String?
+  description_pl String?
   isActive    Boolean  @default(true)
   sortOrder   Int      @default(0)
   parentId    String?
@@ -699,6 +701,7 @@ model DemoProfile {
 model Announcement {
   id           String                   @id @default(uuid())
   message      String                   @db.VarChar(120)
+  message_pl   String?                  @db.VarChar(120)
   icon         String?
   type         AnnouncementType
   link         Json?

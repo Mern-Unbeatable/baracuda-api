@@ -9,7 +9,8 @@ export class AnnouncementController {
   create = async (req, res) => {
     try {
       const data = req.body;
-      const announcement = await this.announcementService.create(data);
+      const sourceLang = req.headers['accept-language']?.split(',')[0]?.split('-')[0] || req.headers['x-lang'] || 'en';
+      const announcement = await this.announcementService.create(data, sourceLang);
       return ResponseUtil.success(res, 'Announcement created successfully', announcement, 201);
     } catch (error) {
       return ResponseUtil.error(res, error.message, 500);
@@ -75,13 +76,14 @@ export class AnnouncementController {
     try {
       const { id } = req.params;
       const data = req.body;
+      const sourceLang = req.headers['accept-language']?.split(',')[0]?.split('-')[0] || req.headers['x-lang'] || 'en';
       
       const exists = await this.announcementService.getDetails(id);
       if (!exists) {
         return ResponseUtil.error(res, 'Announcement not found', 404);
       }
 
-      const announcement = await this.announcementService.update(id, data);
+      const announcement = await this.announcementService.update(id, data, sourceLang);
       return ResponseUtil.success(res, 'Announcement updated successfully', announcement);
     } catch (error) {
       return ResponseUtil.error(res, error.message, 500);
