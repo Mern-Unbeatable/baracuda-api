@@ -5,15 +5,32 @@ export class SupportService {
   /**
    * Create a new support ticket
    */
-  async createTicket(userId, data) {
+  async createTicket(userId, data, sourceLang = 'en') {
     try {
+      let title = data.subject;
+      let title_pl = data.subject;
+      let message = data.message;
+      let message_pl = data.message;
+      
+      const { TranslateUtil } = await import('../../utils/translate.js');
+
+      if (sourceLang === 'pl') {
+        title = title ? await TranslateUtil.translateText(title, 'pl', 'en') : title;
+        message = message ? await TranslateUtil.translateText(message, 'pl', 'en') : message;
+      } else {
+        title_pl = title ? await TranslateUtil.translateText(title, 'en', 'pl') : title_pl;
+        message_pl = message ? await TranslateUtil.translateText(message, 'en', 'pl') : message_pl;
+      }
+
       return await prisma.supportTicket.create({
         data: {
           userId,
           name: data.name,
           email: data.email,
-          title: { en: data.subject },
-          message: { en: data.message },
+          title,
+          title_pl,
+          message,
+          message_pl,
           status: 'PENDING'
         }
       });
@@ -132,16 +149,28 @@ export class SupportService {
   /**
    * Admin replies to a support ticket
    */
-  async replyToTicket(id, answerText) {
+  async replyToTicket(id, answerText, sourceLang = 'en') {
     const ticket = await prisma.supportTicket.findUnique({ where: { id } });
     if (!ticket) {
       throw new Error('Support ticket not found');
+    }
+    
+    let answer = answerText;
+    let answer_pl = answerText;
+
+    const { TranslateUtil } = await import('../../utils/translate.js');
+
+    if (sourceLang === 'pl') {
+      answer = answerText ? await TranslateUtil.translateText(answerText, 'pl', 'en') : answerText;
+    } else {
+      answer_pl = answerText ? await TranslateUtil.translateText(answerText, 'en', 'pl') : answerText;
     }
 
     const updated = await prisma.supportTicket.update({
       where: { id },
       data: {
-        answer: { en: answerText },
+        answer,
+        answer_pl,
         status: 'ANSWERED',
         answeredAt: new Date()
       }

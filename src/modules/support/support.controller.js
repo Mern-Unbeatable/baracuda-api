@@ -12,8 +12,9 @@ export class SupportController {
   createTicket = async (req, res, next) => {
     try {
       const userId = req.user.id;
+      const sourceLang = req.headers['accept-language']?.split(',')[0]?.split('-')[0] || req.headers['x-lang'] || 'en';
       
-      const ticket = await this.supportService.createTicket(userId, req.body);
+      const ticket = await this.supportService.createTicket(userId, req.body, sourceLang);
 
       res.status(201).json({
         success: true,
@@ -134,8 +135,9 @@ export class SupportController {
     try {
       const { id } = req.params;
       const { answer } = req.body;
+      const sourceLang = req.headers['accept-language']?.split(',')[0]?.split('-')[0] || req.headers['x-lang'] || 'en';
 
-      const updatedTicket = await this.supportService.replyToTicket(id, answer);
+      const updatedTicket = await this.supportService.replyToTicket(id, answer, sourceLang);
 
       res.status(200).json({
         success: true,
