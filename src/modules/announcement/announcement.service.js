@@ -37,7 +37,15 @@ export class AnnouncementService {
         data.message_pl = data.message;
         data.message = await TranslateUtil.translateText(data.message, 'en', 'pl');
       } else {
-        data.message_pl = await TranslateUtil.translateText(data.message, 'pl', 'en');
+      }
+    }
+
+    if (data.link && data.link.buttonName) {
+      if (sourceLang === 'pl') {
+        data.link.buttonName_pl = data.link.buttonName;
+        data.link.buttonName = await TranslateUtil.translateText(data.link.buttonName, 'en', 'pl');
+      } else {
+        data.link.buttonName_pl = await TranslateUtil.translateText(data.link.buttonName, 'pl', 'en');
       }
     }
 
@@ -113,7 +121,15 @@ export class AnnouncementService {
         data.message_pl = data.message;
         data.message = await TranslateUtil.translateText(data.message, 'en', 'pl');
       } else {
-        data.message_pl = await TranslateUtil.translateText(data.message, 'pl', 'en');
+      }
+    }
+
+    if (data.link && data.link.buttonName) {
+      if (sourceLang === 'pl') {
+        data.link.buttonName_pl = data.link.buttonName;
+        data.link.buttonName = await TranslateUtil.translateText(data.link.buttonName, 'en', 'pl');
+      } else {
+        data.link.buttonName_pl = await TranslateUtil.translateText(data.link.buttonName, 'pl', 'en');
       }
     }
 
