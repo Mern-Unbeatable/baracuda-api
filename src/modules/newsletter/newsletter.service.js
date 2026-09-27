@@ -30,7 +30,7 @@ export class NewsletterService {
   }
 
   async sendCampaign(data, bannerFile) {
-    const { subject, subject_pl, title, title_pl, content, content_pl, ctaText, ctaUrl, target, selectedIds } = data;
+    const { subject, subject_pl, title, title_pl, content, content_pl, ctaText, ctaText_pl, ctaUrl, target, selectedIds } = data;
     
     // Construct base URL from env
     const baseUrl = config.app.backendUrl ? config.app.backendUrl.replace(/\/$/, '') : 'http://localhost:3000';
@@ -49,6 +49,7 @@ export class NewsletterService {
         content_pl: content_pl || null,
         bannerUrl,
         ctaText,
+        ctaText_pl: ctaText_pl || null,
         ctaUrl,
         target,
         selectedIds: selectedIds ? selectedIds.split(',').map(s => s.trim()) : [],

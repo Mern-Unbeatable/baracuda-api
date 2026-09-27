@@ -50,16 +50,46 @@ export class NewsletterController {
 
   sendCampaign = async (req, res, next) => {
     try {
-      const { subject, title, content } = req.validatedBody;
-      const subject_pl = subject ? await TranslateUtil.translateText(subject, 'pl', 'en') : null;
-      const title_pl = title ? await TranslateUtil.translateText(title, 'pl', 'en') : null;
-      const content_pl = content ? await TranslateUtil.translateText(content, 'pl', 'en') : null;
+      let { subject, title, content, ctaText } = req.validatedBody;
+      
+      const sourceLang = req.headers['accept-language']?.split(',')[0]?.split('-')[0] || req.headers['x-lang'] || 'en';
+      
+      let subject_pl = subject;
+      let title_pl = title;
+      let content_pl = content;
+      let ctaText_pl = ctaText || null;
+
+      if (sourceLang === 'pl') {
+        subject_pl = subject;
+        subject = subject ? await TranslateUtil.translateText(subject, 'pl', 'en') : subject;
+        
+        title_pl = title;
+        title = title ? await TranslateUtil.translateText(title, 'pl', 'en') : title;
+        
+        content_pl = content;
+        content = content ? await TranslateUtil.translateText(content, 'pl', 'en') : content;
+        
+        if (ctaText) {
+          ctaText_pl = ctaText;
+          ctaText = await TranslateUtil.translateText(ctaText, 'pl', 'en');
+        }
+      } else {
+        subject_pl = subject ? await TranslateUtil.translateText(subject, 'en', 'pl') : null;
+        title_pl = title ? await TranslateUtil.translateText(title, 'en', 'pl') : null;
+        content_pl = content ? await TranslateUtil.translateText(content, 'en', 'pl') : null;
+        ctaText_pl = ctaText ? await TranslateUtil.translateText(ctaText, 'en', 'pl') : null;
+      }
       
       const payload = {
         ...req.validatedBody,
+        subject,
+        title,
+        content,
+        ctaText,
         subject_pl,
         title_pl,
-        content_pl
+        content_pl,
+        ctaText_pl
       };
 
       const campaign = await this.newsletterService.sendCampaign(payload, req.file);

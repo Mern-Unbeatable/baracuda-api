@@ -9,38 +9,14 @@ export const NewsletterValidation = {
   }),
 
   sendCampaign: Joi.object({
-    subject: Joi.string().required().custom((value, helpers) => {
-      try {
-        const parsed = JSON.parse(value);
-        if (!parsed.en) throw new Error();
-        return value;
-      } catch (err) {
-        return helpers.error('any.invalid');
-      }
-    }).messages({
-      'any.invalid': 'Subject must be a valid JSON string with an "en" key'
+    subject: Joi.string().required().messages({
+      'any.required': 'Subject is required'
     }),
-    title: Joi.string().required().custom((value, helpers) => {
-      try {
-        const parsed = JSON.parse(value);
-        if (!parsed.en) throw new Error();
-        return value;
-      } catch (err) {
-        return helpers.error('any.invalid');
-      }
-    }).messages({
-      'any.invalid': 'Title must be a valid JSON string with an "en" key'
+    title: Joi.string().required().messages({
+      'any.required': 'Title is required'
     }),
-    content: Joi.string().required().custom((value, helpers) => {
-      try {
-        const parsed = JSON.parse(value);
-        if (!parsed.en) throw new Error();
-        return value;
-      } catch (err) {
-        return helpers.error('any.invalid');
-      }
-    }).messages({
-      'any.invalid': 'Content must be a valid JSON string with an "en" key'
+    content: Joi.string().required().messages({
+      'any.required': 'Content is required'
     }),
     ctaText: Joi.string().optional(),
     ctaUrl: Joi.string().uri().optional(),
