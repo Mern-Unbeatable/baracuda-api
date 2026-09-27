@@ -25,6 +25,15 @@ export class ArtworkService {
         data.story_pl = await TranslateUtil.translateText(data.story, 'pl', 'en');
       }
     }
+
+    if (data.tags && Array.isArray(data.tags) && data.tags.length > 0) {
+      if (sourceLang === 'pl') {
+        data.tags_pl = [...data.tags];
+        data.tags = await Promise.all(data.tags.map(t => TranslateUtil.translateText(t, 'en', 'pl')));
+      } else {
+        data.tags_pl = await Promise.all(data.tags.map(t => TranslateUtil.translateText(t, 'pl', 'en')));
+      }
+    }
     const albumTypePromise = prisma.albumType.findUnique({
       where: { kind: data.kind }
     });
@@ -291,6 +300,20 @@ export class ArtworkService {
           data.story = await TranslateUtil.translateText(data.story, 'en', 'pl');
         } else {
           data.story_pl = await TranslateUtil.translateText(data.story, 'pl', 'en');
+        }
+      }
+    }
+
+    if (data.tags !== undefined) {
+      if (!data.tags || (Array.isArray(data.tags) && data.tags.length === 0)) {
+        data.tags = [];
+        data.tags_pl = [];
+      } else if (Array.isArray(data.tags) && data.tags.length > 0) {
+        if (sourceLang === 'pl') {
+          data.tags_pl = [...data.tags];
+          data.tags = await Promise.all(data.tags.map(t => TranslateUtil.translateText(t, 'en', 'pl')));
+        } else {
+          data.tags_pl = await Promise.all(data.tags.map(t => TranslateUtil.translateText(t, 'pl', 'en')));
         }
       }
     }

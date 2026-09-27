@@ -208,6 +208,14 @@ export class ArtworkController {
       const data = req.validatedBody || req.body;
       const sourceLang = req.headers['accept-language']?.split(',')[0]?.split('-')[0] || req.headers['x-lang'] || 'en';
       
+      if (data.tags && typeof data.tags === 'string') {
+        try {
+          data.tags = JSON.parse(data.tags);
+        } catch (e) {
+          data.tags = [];
+        }
+      }
+      
       const result = await this.artworkService.updateArtwork(id, userId, data, sourceLang);
       res.status(200).json({ success: true, data: result });
     } catch (error) {

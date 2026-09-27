@@ -75,7 +75,10 @@ export class AuthController {
       data.user = UrlUtil.formatUserMedia(req, data.user);
       return ResponseUtil.success(res, 'Login successful', data);
     } catch (err) {
-      if (err.message === 'Email not found' || err.message === "Password doesn't match" || err.message === 'Account is suspended or banned') {
+      if (err.message === 'Email not found' || 
+          err.message === "Password doesn't match" || 
+          err.message.includes('suspended') || 
+          err.message.includes('banned')) {
         return ResponseUtil.error(res, err.message, 401);
       }
       next(err);

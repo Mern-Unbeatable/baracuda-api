@@ -86,9 +86,17 @@ export class AuthService {
         const daysLeft = Math.ceil((new Date(user.suspensionEndsAt) - new Date()) / (1000 * 60 * 60 * 24));
         if (daysLeft > 0) {
           throw new Error(`Your account is suspended. ${daysLeft} days left.`);
+        } else {
+          // Suspension ended, restore account
+          await this.prisma.user.update({
+            where: { id: user.id },
+            data: { status: 'ACTIVE', suspensionEndsAt: null }
+          });
+          user.status = 'ACTIVE';
         }
+      } else {
+        throw new Error('Your account is currently suspended.');
       }
-      throw new Error('Your account is currently suspended.');
     }
 
     if (user.status !== 'ACTIVE' && user.status !== 'PENDING') {
