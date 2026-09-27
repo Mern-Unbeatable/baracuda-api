@@ -63,8 +63,29 @@ export class BusinessController {
       const videoFiles = req.files && req.files['video'] ? req.files['video'] : [];
       const mediaFiles = [...imageFiles, ...videoFiles];
 
-      const title_pl = title ? await TranslateUtil.translateText(title, 'pl', 'en') : null;
-      const story_pl = story ? await TranslateUtil.translateText(story, 'pl', 'en') : null;
+      const sourceLang = req.headers['accept-language']?.split(',')[0]?.split('-')[0] || req.headers['x-lang'] || 'en';
+      
+      let finalTitle = title;
+      let finalTitlePl = null;
+      if (title) {
+        if (sourceLang === 'pl') {
+          finalTitlePl = title;
+          finalTitle = await TranslateUtil.translateText(title, 'en', 'pl');
+        } else {
+          finalTitlePl = await TranslateUtil.translateText(title, 'pl', 'en');
+        }
+      }
+
+      let finalStory = story;
+      let finalStoryPl = null;
+      if (story) {
+        if (sourceLang === 'pl') {
+          finalStoryPl = story;
+          finalStory = await TranslateUtil.translateText(story, 'en', 'pl');
+        } else {
+          finalStoryPl = await TranslateUtil.translateText(story, 'pl', 'en');
+        }
+      }
 
       const data = {
         kind,
@@ -73,10 +94,10 @@ export class BusinessController {
         zodiacSigns,
         categoryId,
         subcategoryId,
-        title,
-        title_pl,
-        story,
-        story_pl,
+        title: finalTitle,
+        title_pl: finalTitlePl,
+        story: finalStory,
+        story_pl: finalStoryPl,
         isAiGenerated,
         copyrightConfirmed
       };
