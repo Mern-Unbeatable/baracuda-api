@@ -1,5 +1,6 @@
 import prisma from '../../config/prisma.js';
 import { PaginationUtil } from '../../utils/pagination.js';
+import { TranslateUtil } from '../../utils/translate.js';
 
 export class CompetitionService {
   /**
@@ -27,9 +28,8 @@ export class CompetitionService {
 
       competition = await prisma.competition.create({
         data: {
-          title: {
-            en: `${monthName} ${year} Competition`
-          },
+          title: `${monthName} ${year} Competition`,
+          title_pl: await TranslateUtil.translateText(`${monthName} ${year} Competition`, 'en', 'pl'),
           year,
           month,
           status: 'OPEN',
@@ -165,7 +165,7 @@ export class CompetitionService {
             user: { select: { id: true, name: true, avatar: true, country: true } },
             submission: {
               select: {
-                id: true, title: true, featuredImage: true,
+                id: true, title: true, title_pl: true, featuredImage: true,
                 media: { where: { slotIndex: 0 }, take: 1 }
               }
             }
@@ -203,6 +203,7 @@ export class CompetitionService {
           submission: {
             id: sub.id,
             title: sub.title,
+            title_pl: sub.title_pl,
             featuredImage: sub.featuredImage,
             media: sub.media
           }
@@ -268,11 +269,11 @@ export class CompetitionService {
           user: { select: { id: true, name: true, avatar: true, country: true } },
           submission: {
             select: {
-              id: true, title: true, featuredImage: true,
+              id: true, title: true, title_pl: true, featuredImage: true,
               media: { where: { slotIndex: 0 }, take: 1 }
             }
           },
-          competition: { select: { id: true, title: true, year: true, month: true } }
+          competition: { select: { id: true, title: true, title_pl: true, year: true, month: true } }
         }
       }),
       prisma.winner.count({ where })

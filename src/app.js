@@ -182,3 +182,11 @@ export default new App().app;
 // nodemon restart trigger for category
 
 // nodemon restart trigger for artwork
+
+// nodemon restart trigger for competition
+
+// nodemon restart trigger for competition bugfix
+
+// nodemon restart trigger for competition artwork query
+
+// nodemon restart trigger for competition leaderboard bugfix

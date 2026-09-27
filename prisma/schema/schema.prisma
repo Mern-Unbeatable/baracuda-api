@@ -368,7 +368,8 @@ model AlbumType {
 
 model Competition {
   id        String            @id @default(uuid())
-  title     Json
+  title     String
+  title_pl  String?
   year      Int
   month     Int
   status    CompetitionStatus @default(UPCOMING)

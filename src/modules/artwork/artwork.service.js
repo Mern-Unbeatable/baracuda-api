@@ -149,7 +149,7 @@ export class ArtworkService {
           select: { name: true, name_pl: true }
         },
         competition: {
-          select: { title: true, status: true, endsAt: true }
+          select: { title: true, title_pl: true, status: true, endsAt: true }
         },
         promotion: {
           select: { endsAt: true }
