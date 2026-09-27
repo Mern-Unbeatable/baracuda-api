@@ -180,3 +180,5 @@ export default new App().app;
 // nodemon restart trigger
 
 // nodemon restart trigger for category
+
+// nodemon restart trigger for artwork

@@ -14,8 +14,8 @@ export const ArtworkValidation = {
   }),
 
   updateSchema: Joi.object({
-    title: Joi.any().optional(),
-    story: Joi.any().optional().allow(null, ''),
+    title: Joi.string().optional(),
+    story: Joi.string().optional().allow(null, ''),
     tags: Joi.any().optional().allow(null, ''),
     camera: Joi.string().optional().allow(null, ''),
     resolution: Joi.string().optional().allow(null, ''),

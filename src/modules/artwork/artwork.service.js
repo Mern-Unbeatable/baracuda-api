@@ -3,8 +3,28 @@ import { ZipArchive } from 'archiver';
 import fs from 'fs';
 import path from 'path';
 
+import { TranslateUtil } from '../../utils/translate.js';
+
 export class ArtworkService {
-  async createArtwork(userId, data, mediaFiles) {
+  async createArtwork(userId, data, mediaFiles, sourceLang = 'en') {
+    // TRANSLATION LOGIC FOR STRING FIELDS
+    if (data.title) {
+      if (sourceLang === 'pl') {
+        data.title_pl = data.title;
+        data.title = await TranslateUtil.translateText(data.title, 'en', 'pl');
+      } else {
+        data.title_pl = await TranslateUtil.translateText(data.title, 'pl', 'en');
+      }
+    }
+
+    if (data.story) {
+      if (sourceLang === 'pl') {
+        data.story_pl = data.story;
+        data.story = await TranslateUtil.translateText(data.story, 'en', 'pl');
+      } else {
+        data.story_pl = await TranslateUtil.translateText(data.story, 'pl', 'en');
+      }
+    }
     const albumTypePromise = prisma.albumType.findUnique({
       where: { kind: data.kind }
     });
@@ -115,7 +135,9 @@ export class ArtworkService {
         kind: true,
         competitionState: true,
         title: true,
+        title_pl: true,
         story: true,
+        story_pl: true,
         viewsCount: true,
         likesCount: true,
         votesCount: true,
@@ -124,7 +146,7 @@ export class ArtworkService {
         createdAt: true,
         updatedAt: true,
         category: {
-          select: { name: true }
+          select: { name: true, name_pl: true }
         },
         competition: {
           select: { title: true, status: true, endsAt: true }
@@ -244,11 +266,35 @@ export class ArtworkService {
     });
   }
 
-  async updateArtwork(id, userId, data) {
+  async updateArtwork(id, userId, data, sourceLang = 'en') {
     const submission = await prisma.submission.findUnique({ where: { id } });
     if (!submission || submission.userId !== userId) {
       throw new Error('Artwork not found or unauthorized');
     }
+
+    if (data.title) {
+      if (sourceLang === 'pl') {
+        data.title_pl = data.title;
+        data.title = await TranslateUtil.translateText(data.title, 'en', 'pl');
+      } else {
+        data.title_pl = await TranslateUtil.translateText(data.title, 'pl', 'en');
+      }
+    }
+
+    if (data.story !== undefined) {
+      if (data.story === null || data.story === '') {
+        data.story = null;
+        data.story_pl = null;
+      } else {
+        if (sourceLang === 'pl') {
+          data.story_pl = data.story;
+          data.story = await TranslateUtil.translateText(data.story, 'en', 'pl');
+        } else {
+          data.story_pl = await TranslateUtil.translateText(data.story, 'pl', 'en');
+        }
+      }
+    }
+
     return prisma.submission.update({
       where: { id },
       data
@@ -356,7 +402,9 @@ export class ArtworkService {
       status: 'PENDING',
       competitionState: 'IN_COMPETITION',
       title: submission.title,
+      title_pl: submission.title_pl,
       story: submission.story,
+      story_pl: submission.story_pl,
       tags: submission.tags,
       camera: submission.camera,
       resolution: submission.resolution,
@@ -426,7 +474,9 @@ export class ArtworkService {
       id: true,
       kind: true,
       title: true,
+      title_pl: true,
       story: true,
+      story_pl: true,
       viewsCount: true,
       likesCount: true,
       votesCount: true,
@@ -439,7 +489,7 @@ export class ArtworkService {
         take: 1
       },
       user: { select: { id: true, name: true, avatar: true } },
-      category: { select: { name: true } },
+      category: { select: { name: true, name_pl: true } },
       ...(viewerId && { saves: { where: { userId: viewerId }, select: { id: true } } })
     };
 
@@ -490,7 +540,7 @@ export class ArtworkService {
       include: {
         media: { orderBy: { slotIndex: 'asc' } },
         user: { select: { id: true, name: true, avatar: true } },
-        category: { select: { id: true, name: true } },
+        category: { select: { id: true, name: true, name_pl: true } },
         comments: {
           include: { user: { select: { id: true, name: true, avatar: true } } },
           orderBy: { createdAt: 'desc' }

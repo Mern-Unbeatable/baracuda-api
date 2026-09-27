@@ -86,8 +86,7 @@ export class ArtworkController {
       const videoFiles = req.files && req.files['video'] ? req.files['video'] : [];
       const mediaFiles = [...imageFiles, ...videoFiles];
 
-      const parsedTitle = typeof title === 'string' ? JSON.parse(title) : title;
-      const parsedStory = typeof story === 'string' ? JSON.parse(story) : story;
+      const sourceLang = req.headers['accept-language']?.split(',')[0]?.split('-')[0] || req.headers['x-lang'] || 'en';
 
       const data = {
         kind,
@@ -97,8 +96,8 @@ export class ArtworkController {
         competitionState: competitionState || 'PROFILE_ONLY',
         categoryId: categoryId || null,
         subcategoryId: subcategoryId || null,
-        title: parsedTitle,
-        story: parsedStory || null,
+        title: title,
+        story: story || null,
         tags: tags ? (Array.isArray(tags) ? tags : JSON.parse(tags)) : [],
         camera: camera || null,
         resolution: resolution || null,
@@ -109,7 +108,7 @@ export class ArtworkController {
         zodiacSigns: zodiacSigns ? (Array.isArray(zodiacSigns) ? zodiacSigns : JSON.parse(zodiacSigns)) : null
       };
 
-      const result = await this.artworkService.createArtwork(userId, data, mediaFiles);
+      const result = await this.artworkService.createArtwork(userId, data, mediaFiles, sourceLang);
       ResponseUtil.actionSuccess(res, 'Artwork created successfully', result.id, 201);
       
       // Run watermark asynchronously so response isn't blocked
@@ -206,7 +205,9 @@ export class ArtworkController {
       const userId = req.user?.id || 'TEST_USER_ID';
       const { id } = req.params;
       const data = req.validatedBody || req.body;
-      const result = await this.artworkService.updateArtwork(id, userId, data);
+      const sourceLang = req.headers['accept-language']?.split(',')[0]?.split('-')[0] || req.headers['x-lang'] || 'en';
+      
+      const result = await this.artworkService.updateArtwork(id, userId, data, sourceLang);
       res.status(200).json({ success: true, data: result });
     } catch (error) {
       res.status(400).json({ success: false, error: error.message });
