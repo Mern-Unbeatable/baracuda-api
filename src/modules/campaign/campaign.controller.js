@@ -76,7 +76,8 @@ export class CampaignController {
   static async submitCampaign(req, res, next) {
     try {
       const { token } = req.params;
-      const result = await CampaignService.submitCampaign(token, req.body, req.files);
+      const sourceLang = req.headers['accept-language']?.split(',')[0]?.split('-')[0] || req.headers['x-lang'] || 'en';
+      const result = await CampaignService.submitCampaign(token, req.body, req.files, sourceLang);
       res.status(201).json({
         success: true,
         statusCode: 201,

@@ -6,7 +6,7 @@ import path from 'path';
 import { TranslateUtil } from '../../utils/translate.js';
 
 export class ArtworkService {
-  async createArtwork(userId, data, mediaFiles, sourceLang = 'en') {
+  async createArtwork(userId, data, mediaFiles, sourceLang = 'en', tx = prisma) {
     // TRANSLATION LOGIC FOR STRING FIELDS
     if (data.title) {
       if (sourceLang === 'pl') {
@@ -34,12 +34,12 @@ export class ArtworkService {
         data.tags_pl = await Promise.all(data.tags.map(t => TranslateUtil.translateText(t, 'pl', 'en')));
       }
     }
-    const albumTypePromise = prisma.albumType.findUnique({
+    const albumTypePromise = tx.albumType.findUnique({
       where: { kind: data.kind }
     });
 
     const activeCompPromise = data.competitionState === 'IN_COMPETITION'
-      ? prisma.competition.findFirst({
+      ? tx.competition.findFirst({
           where: { status: 'OPEN' },
           orderBy: { startsAt: 'desc' }
         })
@@ -80,7 +80,7 @@ export class ArtworkService {
     const videos = mediaFiles.filter(f => f.mimetype.startsWith('video'));
 
     // Create submission and media in a transaction
-    const submission = await prisma.submission.create({
+    const submission = await tx.submission.create({
       data: {
         ...data,
         albumTypeId: albumType.id,

@@ -1,6 +1,7 @@
 import prisma from '../../config/prisma.js';
 import { HashUtil } from '../../utils/hash.js';
 import config from '../../config/env.js';
+import { ArtworkService } from '../artwork/artwork.service.js';
 
 export class CampaignService {
   static async generateLink() {
@@ -105,7 +106,7 @@ export class CampaignService {
     if (requirements && requirements !== 'ALL') {
       if (requirements === 'COMPLETED') {
         where.submission = {
-          completedRequirements: { equals: prisma.campaignSubmission.fields.totalRequirements } // Requires raw or different logic in prisma, but usually Prisma doesn't support comparing two fields directly in standard API, so we might need a workaround. Assuming we can query if rewardStatus is NOT_ELIGIBLE (since we set it during creation)
+          rewardStatus: { in: ['UNDER_REVIEW', 'PAID'] }
         };
       } else if (requirements === 'INCOMPLETE') {
         where.submission = {
@@ -220,7 +221,7 @@ export class CampaignService {
     return updated;
   }
 
-  static async submitCampaign(token, body, files = {}) {
+  static async submitCampaign(token, body, files = {}, sourceLang = 'en') {
     return await prisma.$transaction(async (tx) => {
       // 1. Verify token
       const link = await tx.campaignLink.findUnique({ where: { token } });
@@ -300,8 +301,8 @@ export class CampaignService {
         }
       }
 
-      // Status is always UNDER_REVIEW by default so Admin can decide based on the checklist
-      const rewardStatus = 'UNDER_REVIEW';
+      // Set rewardStatus based on checklist completion
+      const rewardStatus = completedRequirements === totalRequirements ? 'UNDER_REVIEW' : 'NOT_ELIGIBLE';
 
       // 5. Create Submission Record
       const submission = await tx.campaignSubmission.create({
@@ -321,8 +322,71 @@ export class CampaignService {
         data: { status: 'USED' }
       });
 
-      // (Artwork/Submissions for Single, Six, Twelve can be created here using tx.submission.create...)
-      // For brevity and focus on Campaign module logic, we've linked the files via user model & we can create submissions here if needed.
+      // 7. Create Submissions (Artworks) for Single, Six, Twelve if uploaded
+      const artworkService = new ArtworkService();
+      
+      if (checklist.singleArtwork.status) {
+        const singleData = {
+          kind: 'SINGLE',
+          title: body.singleTitle,
+          story: body.singleStory,
+          quality: body.singleQuality,
+          resolution: body.singleResolution,
+          categoryId: body.singleCategoryId,
+          subcategoryId: body.singleSubcategoryId,
+          zodiacSign: body.singleZodiacSign,
+          isAiGenerated: body.isAiGenerated === 'true' || body.isAiGenerated === true,
+          copyrightConfirmed: body.copyrightConfirmed === 'true' || body.copyrightConfirmed === true,
+          competitionState: 'IN_COMPETITION'
+        };
+        const singleFiles = [
+          ...(files.singlePhoto || []),
+          ...(files.singleVideo || [])
+        ];
+        await artworkService.createArtwork(user.id, singleData, singleFiles, sourceLang, tx);
+      }
+
+      if (checklist.sixSeriesArtwork.status) {
+        const sixData = {
+          kind: 'SIX',
+          theme: body.sixTheme,
+          title: body.sixTitle,
+          story: body.sixStory,
+          quality: body.sixQuality,
+          resolution: body.sixResolution,
+          categoryId: body.sixCategoryId,
+          subcategoryId: body.sixSubcategoryId,
+          isAiGenerated: body.isAiGenerated === 'true' || body.isAiGenerated === true,
+          copyrightConfirmed: body.copyrightConfirmed === 'true' || body.copyrightConfirmed === true,
+          competitionState: 'IN_COMPETITION'
+        };
+        const sixFiles = [
+          ...(files.sixPhotos || []),
+          ...(files.sixVideo || [])
+        ];
+        await artworkService.createArtwork(user.id, sixData, sixFiles, sourceLang, tx);
+      }
+
+      if (checklist.twelveSeriesArtwork.status) {
+        const twelveData = {
+          kind: 'TWELVE',
+          theme: body.twelveTheme,
+          title: body.twelveTitle,
+          story: body.twelveStory,
+          quality: body.twelveQuality,
+          resolution: body.twelveResolution,
+          categoryId: body.twelveCategoryId,
+          subcategoryId: body.twelveSubcategoryId,
+          isAiGenerated: body.isAiGenerated === 'true' || body.isAiGenerated === true,
+          copyrightConfirmed: body.copyrightConfirmed === 'true' || body.copyrightConfirmed === true,
+          competitionState: 'IN_COMPETITION'
+        };
+        const twelveFiles = [
+          ...(files.twelvePhotos || []),
+          ...(files.twelveVideo || [])
+        ];
+        await artworkService.createArtwork(user.id, twelveData, twelveFiles, sourceLang, tx);
+      }
 
       return {
         user: { id: user.id, email: user.email, username: user.username },
