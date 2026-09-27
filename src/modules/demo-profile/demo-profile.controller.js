@@ -26,7 +26,13 @@ export class DemoProfileController {
       }
 
       if (req.body.bio) {
-        req.body.bio_pl = await TranslateUtil.translateText(req.body.bio, 'pl', 'en');
+        const sourceLang = req.headers['accept-language']?.split(',')[0]?.split('-')[0] || req.headers['x-lang'] || 'en';
+        if (sourceLang === 'pl') {
+          req.body.bio_pl = req.body.bio;
+          req.body.bio = await TranslateUtil.translateText(req.body.bio, 'pl', 'en');
+        } else {
+          req.body.bio_pl = await TranslateUtil.translateText(req.body.bio, 'en', 'pl');
+        }
       }
 
       const profile = await this.demoProfileService.createProfile(req.body, adminId);
