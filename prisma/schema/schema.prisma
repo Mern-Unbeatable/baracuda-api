@@ -239,9 +239,12 @@ model User {
   coverPhoto    String?
   introVideo    String?
   bio           String?         @db.VarChar(250)
+  bio_pl        String?         @db.VarChar(250)
   phone         String?
   city          String?
+  city_pl       String?
   country       String?
+  country_pl    String?
   website       String?
   paypalAccount String?
   language      SupportedLocale @default(en)
@@ -345,9 +348,12 @@ model Category {
 model AlbumType {
   id          String    @id @default(uuid())
   kind        AlbumKind @unique
-  name        Json
-  description Json?
-  features    Json      @default("{\"en\":[],\"cy\":[]}")
+  name        String
+  name_pl     String?
+  description String?
+  description_pl String?
+  features    String[]  @default([])
+  features_pl String[]  @default([])
   iconKey     String?
   entryFee    Decimal   @default(0) @db.Decimal(10, 2)
   prizeMoney  Decimal   @default(0) @db.Decimal(10, 2)
@@ -405,7 +411,8 @@ model Submission {
   title_pl   String?
   story      String?
   story_pl   String?
-  tags  String[]
+  tags        String[]
+  tags_pl     String[]
 
   camera        String?
   resolution    String?
@@ -510,6 +517,7 @@ model Comment {
   submissionId String
   userId       String
   body         String        @db.Text
+  body_pl      String?       @db.Text
   kind         AlbumKind?
   isPinned     Boolean       @default(false)
   status       CommentStatus @default(PENDING)
@@ -564,8 +572,10 @@ model BusinessAlbum {
   kind               AlbumKind   @default(TWELVE)
   theme              AlbumTheme?
   zodiacSign         ZodiacSign?
-  title              Json
-  story              Json?
+  title              String
+  title_pl           String?
+  story              String?
+  story_pl           String?
   resolution         String?
   quality            String?
   isAiGenerated      Boolean     @default(false)
@@ -573,8 +583,9 @@ model BusinessAlbum {
 
   // From User profile at time of creation, per admin requirements
   email   String
-  phone   String?
-  country String?
+  phone      String?
+  country    String?
+  country_pl String?
 
   businessLink String?   @unique
   isPublished  Boolean   @default(false)
@@ -618,6 +629,7 @@ model PhotographerMessage {
   id                 String   @id @default(uuid())
   userId             String
   body               String   @db.Text
+  body_pl            String?  @db.Text
   mediaUrl           String?
   mediaType          String? // e.g., 'IMAGE' or 'VIDEO'
   copyrightConfirmed Boolean  @default(false)
@@ -683,7 +695,8 @@ model DemoProfile {
   phone        String
   email        String   @unique
   password     String
-  bio          Json
+  bio          String   @db.Text
+  bio_pl       String?  @db.Text
   socialLinks  String[]
   profilePhoto String?
   coverPhoto   String?
@@ -773,11 +786,15 @@ model NewsletterSubscriber {
 
 model NewsletterCampaign {
   id          String           @id @default(uuid())
-  subject     Json
-  title       Json
-  content     Json
+  subject     String
+  subject_pl  String?
+  title       String
+  title_pl    String?
+  content     String           @db.Text
+  content_pl  String?          @db.Text
   bannerUrl   String?
   ctaText     String?
+  ctaText_pl  String?
   ctaUrl      String?
   target      NewsletterTarget @default(EVERYONE)
   selectedIds String[]
@@ -798,9 +815,12 @@ model SupportTicket {
   name        String?
   email       String
   category    SupportCategory?
-  title       Json
-  message     Json
-  answer      Json?
+  title       String
+  title_pl    String?
+  message     String           @db.Text
+  message_pl  String?          @db.Text
+  answer      String?          @db.Text
+  answer_pl   String?          @db.Text
   attachments String[]         @default([])
   status      SupportStatus    @default(PENDING)
   answeredAt  DateTime?
@@ -818,9 +838,11 @@ model Notification {
   id        String           @id @default(uuid())
   userId    String
   type      NotificationType @default(PLATFORM)
-  title     Json
-  body      Json
-  icon      String?
+  title      String
+  title_pl   String?
+  body       String
+  body_pl    String?
+  icon       String?
   avatar    String?
   isRead    Boolean          @default(false)
   linkUrl   String?
@@ -934,8 +956,10 @@ model PremiumPhoto {
   kind               AlbumKind?
   theme              AlbumTheme?
   zodiacSign         ZodiacSign?
-  title              Json
-  story              Json?
+  title              String
+  title_pl           String?
+  story              String?
+  story_pl           String?
   price              Decimal     @db.Decimal(10, 2)
   camera             String?
   resolution         String?
@@ -1131,7 +1155,9 @@ model Advertisement {
   selectPage    String
   websiteUrl    String?
   description   String              @db.VarChar(200)
-  location      String
+  description_pl String?            @db.VarChar(200)
+  location       String
+  location_pl    String?
   businessImage String
   durationDays  Int
   amount        Decimal             @db.Decimal(10, 2)

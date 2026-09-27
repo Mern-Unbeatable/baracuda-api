@@ -1,5 +1,6 @@
 import { ResponseUtil } from '../../utils/response.js';
 import { UrlUtil } from '../../utils/urlUtil.js';
+import { TranslateUtil } from '../../utils/translate.js';
 
 export class DemoProfileController {
   constructor(demoProfileService) {
@@ -22,6 +23,10 @@ export class DemoProfileController {
         if (req.files.coverPhoto && req.files.coverPhoto.length > 0) {
           req.body.coverPhoto = `/uploads/${req.files.coverPhoto[0].filename}`;
         }
+      }
+
+      if (req.body.bio) {
+        req.body.bio_pl = await TranslateUtil.translateText(req.body.bio, 'pl', 'en');
       }
 
       const profile = await this.demoProfileService.createProfile(req.body, adminId);

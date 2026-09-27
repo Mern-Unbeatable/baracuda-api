@@ -1,4 +1,5 @@
 import config from '../../config/env.js';
+import { TranslateUtil } from '../../utils/translate.js';
 
 export class NewsletterController {
   constructor(newsletterService) {
@@ -49,7 +50,19 @@ export class NewsletterController {
 
   sendCampaign = async (req, res, next) => {
     try {
-      const campaign = await this.newsletterService.sendCampaign(req.validatedBody, req.file);
+      const { subject, title, content } = req.validatedBody;
+      const subject_pl = subject ? await TranslateUtil.translateText(subject, 'pl', 'en') : null;
+      const title_pl = title ? await TranslateUtil.translateText(title, 'pl', 'en') : null;
+      const content_pl = content ? await TranslateUtil.translateText(content, 'pl', 'en') : null;
+      
+      const payload = {
+        ...req.validatedBody,
+        subject_pl,
+        title_pl,
+        content_pl
+      };
+
+      const campaign = await this.newsletterService.sendCampaign(payload, req.file);
       
       res.status(201).json({
         success: true,

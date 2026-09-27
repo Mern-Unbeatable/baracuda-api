@@ -54,28 +54,32 @@ export class AdminReportService {
       let itemType = 'Unknown';
       let itemId = null;
 
+      let itemTitle_pl = null;
+
       if (report.submission) {
         reportedUser = report.submission.user;
-        itemTitle = report.submission.body || 'No description';
+        itemTitle = report.submission.story || report.submission.title || 'No description';
+        itemTitle_pl = report.submission.story_pl || report.submission.title_pl || null;
         itemType = report.submission.kind === 'SINGLE' ? 'single photo' : (report.submission.kind === 'SIX' ? '6 photos' : '12 photos zodiac story');
         itemId = report.submission.id;
       } else if (report.premiumPhoto) {
         reportedUser = report.premiumPhoto.user;
-        itemTitle = report.premiumPhoto.description || 'No description';
+        itemTitle = report.premiumPhoto.story || report.premiumPhoto.title || 'No description';
+        itemTitle_pl = report.premiumPhoto.story_pl || report.premiumPhoto.title_pl || null;
         itemType = report.premiumPhoto.kind === 'SINGLE' ? 'single premium photo' : (report.premiumPhoto.kind === 'SIX' ? '6 premium photos' : '12 premium photos');
         itemId = report.premiumPhoto.id;
       } else if (report.post) {
         reportedUser = report.post.user;
         itemTitle = report.post.body || 'No description';
+        itemTitle_pl = report.post.body_pl || null;
         itemType = 'post';
         itemId = report.post.id;
       }
 
-      if (itemTitle.length > 30) {
-        itemTitle = itemTitle.substring(0, 27) + '...';
-      }
+      if (itemTitle.length > 30) itemTitle = itemTitle.substring(0, 27) + '...';
+      if (itemTitle_pl && itemTitle_pl.length > 30) itemTitle_pl = itemTitle_pl.substring(0, 27) + '...';
 
-      return { reportedUser, itemTitle, itemType, itemId };
+      return { reportedUser, itemTitle, itemTitle_pl, itemType, itemId };
     });
 
     const uniqueUsers = [...new Map(extractedData.filter(d => d.reportedUser).map(d => [d.reportedUser.id, d.reportedUser])).values()];
@@ -96,12 +100,13 @@ export class AdminReportService {
     const countMap = Object.fromEntries(countsArray.map(c => [c.userId, c.count]));
 
     const formattedData = data.map((report, index) => {
-      const { reportedUser, itemTitle, itemType, itemId } = extractedData[index];
+      const { reportedUser, itemTitle, itemTitle_pl, itemType, itemId } = extractedData[index];
       
       return {
         id: report.id,
         reportedBy: report.user.name,
         reportedItem: itemTitle,
+        reportedItem_pl: itemTitle_pl,
         type: itemType,
         reason: report.reason,
         reportedUser: reportedUser ? {
@@ -159,8 +164,11 @@ export class AdminReportService {
       itemDetails = {
         id: report.submission.id,
         title: report.submission.title,
+        title_pl: report.submission.title_pl,
         body: report.submission.story,
+        body_pl: report.submission.story_pl,
         category: report.submission.category ? report.submission.category.name : null,
+        category_pl: report.submission.category ? report.submission.category.name_pl : null,
         kind: report.submission.kind,
         resolution: report.submission.resolution,
         quality: report.submission.quality,
@@ -175,8 +183,11 @@ export class AdminReportService {
       itemDetails = {
         id: report.premiumPhoto.id,
         title: report.premiumPhoto.title,
+        title_pl: report.premiumPhoto.title_pl,
         body: report.premiumPhoto.story,
+        body_pl: report.premiumPhoto.story_pl,
         category: report.premiumPhoto.category ? report.premiumPhoto.category.name : null,
+        category_pl: report.premiumPhoto.category ? report.premiumPhoto.category.name_pl : null,
         kind: report.premiumPhoto.kind,
         resolution: report.premiumPhoto.resolution,
         quality: report.premiumPhoto.quality,
@@ -190,9 +201,12 @@ export class AdminReportService {
       reportedUser = report.post.user;
       itemDetails = {
         id: report.post.id,
-        title: { en: 'Post', bn: 'পোস্ট' },
+        title: 'Post',
+        title_pl: 'Post',
         body: report.post.body,
+        body_pl: report.post.body_pl,
         category: 'General',
+        category_pl: 'Ogólny',
         kind: 'POST',
         resolution: null,
         quality: null,
@@ -303,11 +317,10 @@ export class AdminReportService {
             data: {
               userId: targetUserId,
               type: 'SYSTEM',
-              title: { en: 'Content Removed', bn: 'কন্টেন্ট রিমুভ করা হয়েছে' },
-              body: { 
-                en: 'Your content was removed due to a violation of our community guidelines.',
-                bn: 'আমাদের কমিউনিটি গাইডলাইন ভঙ্গের কারণে আপনার কন্টেন্ট রিমুভ করা হয়েছে।'
-              }
+              title: 'Content Removed',
+              title_pl: 'Treść usunięta',
+              body: 'Your content was removed due to a violation of our community guidelines.',
+              body_pl: 'Twoje treści zostały usunięte z powodu naruszenia naszych wytycznych dla społeczności.'
             }
           });
           break;
@@ -317,11 +330,10 @@ export class AdminReportService {
             data: {
               userId: targetUserId,
               type: 'SYSTEM',
-              title: { en: 'Official Warning', bn: 'অফিসিয়াল সতর্কবার্তা' },
-              body: { 
-                en: 'You have received an official warning for violating our community guidelines. Further violations may result in account suspension.',
-                bn: 'কমিউনিটি গাইডলাইন ভঙ্গের কারণে আপনাকে সতর্ক করা হচ্ছে। পরবর্তীতে অ্যাকাউন্ট সাসপেন্ড হতে পারে।'
-              }
+              title: 'Official Warning',
+              title_pl: 'Oficjalne ostrzeżenie',
+              body: 'You have received an official warning for violating our community guidelines. Further violations may result in account suspension.',
+              body_pl: 'Otrzymałeś oficjalne ostrzeżenie za naruszenie naszych wytycznych. Dalsze naruszenia mogą skutkować zawieszeniem konta.'
             }
           });
           break;
@@ -341,11 +353,10 @@ export class AdminReportService {
             data: {
               userId: targetUserId,
               type: 'SYSTEM',
-              title: { en: 'Account Suspended', bn: 'অ্যাকাউন্ট সাসপেন্ড' },
-              body: { 
-                en: 'Your account has been suspended for 30 days due to community guideline violations.',
-                bn: 'কমিউনিটি গাইডলাইন ভঙ্গের কারণে আপনার অ্যাকাউন্ট ৩০ দিনের জন্য সাসপেন্ড করা হয়েছে।'
-              }
+              title: 'Account Suspended',
+              title_pl: 'Konto zawieszone',
+              body: 'Your account has been suspended for 30 days due to community guideline violations.',
+              body_pl: 'Twoje konto zostało zawieszone na 30 dni z powodu naruszenia wytycznych dla społeczności.'
             }
           });
           break;

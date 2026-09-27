@@ -131,6 +131,9 @@ export class MarketplaceService {
           id: true,
           kind: true,
           title: true,
+          title_pl: true,
+          story: true,
+          story_pl: true,
           price: true,
           likesCount: true,
           viewsCount: true,
@@ -217,8 +220,10 @@ export class MarketplaceService {
     
     if (filters.search) {
       where.OR = [
-        { title: { path: ['en'], string_contains: filters.search } },
-        { story: { path: ['en'], string_contains: filters.search } }
+        { title: { contains: filters.search, mode: 'insensitive' } },
+        { title_pl: { contains: filters.search, mode: 'insensitive' } },
+        { story: { contains: filters.search, mode: 'insensitive' } },
+        { story_pl: { contains: filters.search, mode: 'insensitive' } }
       ];
     }
 
@@ -240,6 +245,9 @@ export class MarketplaceService {
       id: true,
       kind: true,
       title: true,
+      title_pl: true,
+      story: true,
+      story_pl: true,
       price: true,
       likesCount: true,
       viewsCount: true,
@@ -486,6 +494,7 @@ export class MarketplaceService {
               select: {
                 id: true,
                 title: true,
+                title_pl: true,
                 media: { orderBy: { slotIndex: 'asc' }, take: 1, select: { url: true, format: true } }
               }
             }
@@ -591,6 +600,7 @@ export class MarketplaceService {
             select: {
               id: true,
               title: true,
+              title_pl: true,
               price: true,
               license: true,
               user: { select: { name: true, avatar: true } },

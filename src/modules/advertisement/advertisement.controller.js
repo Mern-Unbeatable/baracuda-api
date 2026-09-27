@@ -1,4 +1,6 @@
 import { ResponseUtil } from '../../utils/response.js';
+import { TranslateUtil } from '../../utils/translate.js';
+import { UrlUtil } from '../../utils/urlUtil.js';
 
 export class AdvertisementController {
   constructor(advertisementService) {
@@ -13,6 +15,13 @@ export class AdvertisementController {
       // Make sure durationDays is parsed as integer
       if (req.body.durationDays) {
         req.body.durationDays = parseInt(req.body.durationDays, 10);
+      }
+
+      if (req.body.description) {
+        req.body.description_pl = await TranslateUtil.translateText(req.body.description, 'pl', 'en');
+      }
+      if (req.body.location) {
+        req.body.location_pl = await TranslateUtil.translateText(req.body.location, 'pl', 'en');
       }
 
       const result = await this.advertisementService.createAdvertisement(req.body, req.file, userId);
@@ -55,7 +64,8 @@ export class AdvertisementController {
         return ResponseUtil.error(res, 'Advertisement ID is required', 400);
       }
 
-      const pdfBuffer = await this.advertisementService.generateInvoicePdf(id);
+      const lang = req.headers['accept-language']?.includes('pl') ? 'pl' : 'en';
+      const pdfBuffer = await this.advertisementService.generateInvoicePdf(id, lang);
       
       res.setHeader('Content-Type', 'application/pdf');
       res.setHeader('Content-Disposition', `attachment; filename="invoice-${id}.pdf"`);
@@ -82,6 +92,12 @@ export class AdvertisementController {
   getAllAdvertisements = async (req, res) => {
     try {
       const result = await this.advertisementService.getAllAdvertisements(req.query);
+      if (result.data) {
+        result.data = result.data.map(ad => {
+          if (ad.businessImage) ad.businessImage = UrlUtil.getAbsoluteUrl(req, ad.businessImage);
+          return ad;
+        });
+      }
       return ResponseUtil.success(res, 'Advertisements retrieved successfully', result);
     } catch (error) {
       return ResponseUtil.error(res, error.message, 500);
@@ -92,6 +108,9 @@ export class AdvertisementController {
     try {
       const { id } = req.params;
       const result = await this.advertisementService.getAdvertisementById(id);
+      if (result && result.businessImage) {
+        result.businessImage = UrlUtil.getAbsoluteUrl(req, result.businessImage);
+      }
       return ResponseUtil.success(res, 'Advertisement retrieved successfully', result);
     } catch (error) {
       return ResponseUtil.error(res, error.message, 500);
@@ -106,6 +125,9 @@ export class AdvertisementController {
         return ResponseUtil.error(res, 'Status is required', 400);
       }
       const result = await this.advertisementService.updateStatus(id, status);
+      if (result && result.businessImage) {
+        result.businessImage = UrlUtil.getAbsoluteUrl(req, result.businessImage);
+      }
       return ResponseUtil.success(res, 'Advertisement status updated successfully', result);
     } catch (error) {
       return ResponseUtil.error(res, error.message, 500);

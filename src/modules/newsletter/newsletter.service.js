@@ -30,7 +30,7 @@ export class NewsletterService {
   }
 
   async sendCampaign(data, bannerFile) {
-    const { subject, title, content, ctaText, ctaUrl, target, selectedIds } = data;
+    const { subject, subject_pl, title, title_pl, content, content_pl, ctaText, ctaUrl, target, selectedIds } = data;
     
     // Construct base URL from env
     const baseUrl = config.app.backendUrl ? config.app.backendUrl.replace(/\/$/, '') : 'http://localhost:3000';
@@ -41,9 +41,12 @@ export class NewsletterService {
     // Create Campaign Record
     const campaign = await prisma.newsletterCampaign.create({
       data: {
-        subject: JSON.parse(subject),
-        title: JSON.parse(title),
-        content: JSON.parse(content),
+        subject: subject,
+        subject_pl: subject_pl || null,
+        title: title,
+        title_pl: title_pl || null,
+        content: content,
+        content_pl: content_pl || null,
         bannerUrl,
         ctaText,
         ctaUrl,

@@ -1,6 +1,7 @@
 import { UrlUtil } from '../../utils/urlUtil.js';
 import { userValidation } from './user.validation.js';
 import { ResponseUtil } from '../../utils/response.js';
+import { TranslateUtil } from '../../utils/translate.js';
 
 export class UserController {
   constructor(userService) {
@@ -158,10 +159,27 @@ export class UserController {
         }
       }
 
+      let bio_pl = null;
+      let city_pl = null;
+      let country_pl = null;
+      if (req.body.bio) {
+        bio_pl = await TranslateUtil.translateText(req.body.bio, 'pl', 'en');
+      }
+      if (req.body.city) {
+        city_pl = await TranslateUtil.translateText(req.body.city, 'pl', 'en');
+      }
+      if (req.body.country) {
+        country_pl = await TranslateUtil.translateText(req.body.country, 'pl', 'en');
+      }
+
       const updateData = {
         name: req.body.name,
         bio: req.body.bio,
+        bio_pl,
+        city: req.body.city,
+        city_pl,
         country: req.body.country,
+        country_pl,
         socialLinks: socialLinks
       };
 

@@ -1,5 +1,6 @@
 import { ResponseUtil } from '../../utils/response.js';
 import prisma from '../../config/prisma.js';
+import { TranslateUtil } from '../../utils/translate.js';
 
 export class PostController {
   constructor(postService) {
@@ -22,9 +23,10 @@ export class PostController {
   createPost = async (req, res) => {
     try {
       const { body, copyrightConfirmed } = req.body;
+      const body_pl = body ? await TranslateUtil.translateText(body, 'pl', 'en') : null;
       const mediaFile = req.file;
 
-      let post = await this.postService.createPost(req.user.id, body, mediaFile, copyrightConfirmed);
+      let post = await this.postService.createPost(req.user.id, body, body_pl, mediaFile, copyrightConfirmed);
       post = this.formatPost(req, post);
       return ResponseUtil.success(res, 'Post created successfully', post);
     } catch (error) {
@@ -80,6 +82,9 @@ export class PostController {
 
   updatePost = async (req, res) => {
     try {
+      if (req.body.body) {
+        req.body.body_pl = await TranslateUtil.translateText(req.body.body, 'pl', 'en');
+      }
       let post = await this.postService.updatePost(req.params.id, req.user.id, req.body, req.file);
       post = this.formatPost(req, post);
       return ResponseUtil.success(res, 'Post updated successfully', post);

@@ -26,19 +26,25 @@ export class AlbumTypeService {
       const createData = {
         kind: data.kind,
         prizeMoney: data.prizeMoney,
-        name: { en: data.name },
+        name: data.name,
+        name_pl: data.name_pl || null,
         photoCount
       };
       
       if (data.description !== undefined) {
-        createData.description = { en: data.description };
+        createData.description = data.description;
+        createData.description_pl = data.description_pl || null;
       }
 
       if (data.features !== undefined) {
         const featureList = data.features
           ? data.features.split('\\n').map(f => f.trim()).filter(f => f.length > 0)
           : [];
-        createData.features = { en: featureList, cy: [] };
+        const featureListPl = data.features_pl
+          ? data.features_pl.split('\\n').map(f => f.trim()).filter(f => f.length > 0)
+          : [];
+        createData.features = featureList;
+        createData.features_pl = featureListPl;
       }
 
       return await prisma.albumType.create({
@@ -66,20 +72,26 @@ export class AlbumTypeService {
       };
 
       if (data.name) {
-        updateData.name = { en: data.name };
+        updateData.name = data.name;
+        updateData.name_pl = data.name_pl || null;
       }
       
       if (data.description !== undefined) {
-        updateData.description = { en: data.description };
+        updateData.description = data.description;
+        updateData.description_pl = data.description_pl || null;
       }
 
-      // 'features' in the DB is usually {"en": ["feature 1", "feature 2"]}
+      // 'features' in the DB is now String[]
       // If the client sends a multi-line string, we can split it by newline
       if (data.features !== undefined) {
         const featureList = data.features
           ? data.features.split('\\n').map(f => f.trim()).filter(f => f.length > 0)
           : [];
-        updateData.features = { en: featureList, cy: [] };
+        const featureListPl = data.features_pl
+          ? data.features_pl.split('\\n').map(f => f.trim()).filter(f => f.length > 0)
+          : [];
+        updateData.features = featureList;
+        updateData.features_pl = featureListPl;
       }
 
       return await prisma.albumType.update({

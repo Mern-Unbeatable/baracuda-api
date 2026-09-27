@@ -1,6 +1,7 @@
 import { ResponseUtil } from '../../utils/response.js';
 import { PaginationUtil } from '../../utils/pagination.js';
 import { UrlUtil } from '../../utils/urlUtil.js';
+import { TranslateUtil } from '../../utils/translate.js';
 
 export class BusinessController {
   constructor(businessService) {
@@ -62,6 +63,9 @@ export class BusinessController {
       const videoFiles = req.files && req.files['video'] ? req.files['video'] : [];
       const mediaFiles = [...imageFiles, ...videoFiles];
 
+      const title_pl = title ? await TranslateUtil.translateText(title, 'pl', 'en') : null;
+      const story_pl = story ? await TranslateUtil.translateText(story, 'pl', 'en') : null;
+
       const data = {
         kind,
         theme,
@@ -70,7 +74,9 @@ export class BusinessController {
         categoryId,
         subcategoryId,
         title,
+        title_pl,
         story,
+        story_pl,
         isAiGenerated,
         copyrightConfirmed
       };

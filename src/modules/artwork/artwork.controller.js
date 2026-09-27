@@ -3,6 +3,7 @@ import { PaginationUtil } from '../../utils/pagination.js';
 import { ResponseUtil } from '../../utils/response.js';
 import { watermarkService } from './watermark.service.js';
 import prisma from '../../config/prisma.js';
+import { TranslateUtil } from '../../utils/translate.js';
 
 export class ArtworkController {
   constructor(artworkService) {
@@ -348,7 +349,8 @@ export class ArtworkController {
       const { id } = req.params;
       const userId = req.user.id;
       const { body, parentId } = req.validatedBody;
-      const comment = await this.artworkService.addComment(id, userId, body, parentId);
+      const body_pl = await TranslateUtil.translateText(body, 'pl', 'en');
+      const comment = await this.artworkService.addComment(id, userId, body, body_pl, parentId);
       return ResponseUtil.success(res, 'Comment added successfully', comment, 201);
     } catch (err) {
       next(err);

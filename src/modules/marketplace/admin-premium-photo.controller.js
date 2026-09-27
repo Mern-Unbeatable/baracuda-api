@@ -11,6 +11,9 @@ export class AdminPremiumPhotoController {
   formatMediaUrls = (req, item) => {
     if (!item) return item;
     const formatted = { ...item };
+    if (formatted.price) {
+      formatted.price = parseFloat(formatted.price);
+    }
     
     if (formatted.user && formatted.user.avatar && !formatted.user.avatar.startsWith('http')) {
       formatted.user.avatar = UrlUtil.getAbsoluteUrl(req, formatted.user.avatar);
@@ -38,15 +41,7 @@ export class AdminPremiumPhotoController {
       const formattedData = data.map(item => {
         const formatted = this.formatMediaUrls(req, item);
         
-        let titleStr = formatted.title;
-        if (typeof titleStr === 'object' && titleStr !== null) {
-          titleStr = titleStr.en || titleStr[Object.keys(titleStr)[0]] || '';
-        }
-        
-        let storyStr = formatted.story;
-        if (typeof storyStr === 'object' && storyStr !== null) {
-          storyStr = storyStr.en || storyStr[Object.keys(storyStr)[0]] || '';
-        }
+
 
         let coverImage = null;
         let additionalPhotos = 0;
@@ -66,8 +61,10 @@ export class AdminPremiumPhotoController {
         return {
           id: formatted.id,
           kind: formatted.kind,
-          title: titleStr,
-          story: storyStr,
+          title: formatted.title,
+          title_pl: formatted.title_pl,
+          story: formatted.story,
+          story_pl: formatted.story_pl,
           createdAt: formatted.createdAt,
           viewsCount: formatted.viewsCount,
           likesCount: formatted.likesCount,
@@ -99,15 +96,7 @@ export class AdminPremiumPhotoController {
       const formatted = this.formatMediaUrls(req, details);
       
       // Parse JSON fields
-      let titleStr = formatted.title;
-      if (typeof titleStr === 'object' && titleStr !== null) {
-        titleStr = titleStr.en || titleStr[Object.keys(titleStr)[0]] || '';
-      }
-      
-      let storyStr = formatted.story;
-      if (typeof storyStr === 'object' && storyStr !== null) {
-        storyStr = storyStr.en || storyStr[Object.keys(storyStr)[0]] || '';
-      }
+
 
       let categoryName = 'Uncategorized';
       if (formatted.category && formatted.category.name) {
@@ -137,8 +126,10 @@ export class AdminPremiumPhotoController {
       const responseData = {
         id: formatted.id,
         kind: formatted.kind,
-        title: titleStr,
-        story: storyStr,
+        title: formatted.title,
+        title_pl: formatted.title_pl,
+        story: formatted.story,
+        story_pl: formatted.story_pl,
         price: formatted.price,
         likesCount: formatted.likesCount,
         viewsCount: formatted.viewsCount,

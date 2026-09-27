@@ -6,7 +6,7 @@ export class DemoProfileService {
    * Create a new demo profile
    */
   async createProfile(data, adminId) {
-    const { bio, ...rest } = data;
+    const { bio, bio_pl, ...rest } = data;
     
     // Check username and email exist in DemoProfile or User table
     const [existingDemoUsername, existingUserUsername, existingDemoEmail, existingUserEmail] = await Promise.all([
@@ -27,7 +27,8 @@ export class DemoProfileService {
     const newProfile = await prisma.demoProfile.create({
       data: {
         ...rest,
-        bio: bio ? { en: bio } : {}, // Storing as Json
+        bio: bio || null,
+        bio_pl: bio_pl || null,
         socialLinks: rest.socialLinks || [],
         createdById: adminId
       }
@@ -118,9 +119,6 @@ export class DemoProfileService {
       throw new Error('Demo profile not found');
     }
 
-    const bioObj = profile.bio || {};
-    const bioText = bioObj.en || bioObj[Object.keys(bioObj)[0]] || '';
-
     return {
       id: profile.id,
       name: profile.fullName,
@@ -130,7 +128,7 @@ export class DemoProfileService {
         phoneNumber: profile.phone,
         email: profile.email
       },
-      about: bioText,
+      about: profile.bio || '',
       socialMedia: profile.socialLinks,
       profilePhoto: profile.profilePhoto,
       coverPhoto: profile.coverPhoto,

@@ -1,5 +1,6 @@
 import { albumTypeValidation } from './album-type.validation.js';
 import { ResponseUtil } from '../../utils/response.js';
+import { TranslateUtil } from '../../utils/translate.js';
 
 export class AlbumTypeController {
   constructor(albumTypeService) {
@@ -17,13 +18,21 @@ export class AlbumTypeController {
         return ResponseUtil.error(res, error.details[0].message, 400);
       }
 
+      if (value.name) {
+        value.name_pl = await TranslateUtil.translateText(value.name, 'pl', 'en');
+      }
+      if (value.description) {
+        value.description_pl = await TranslateUtil.translateText(value.description, 'pl', 'en');
+      }
+      if (value.features) {
+        value.features_pl = await TranslateUtil.translateText(value.features, 'pl', 'en');
+      }
+
       const created = await this.albumTypeService.createAlbumType(value);
       
       const formatted = {
         ...created,
-        name: created.name?.en || created.name,
-        description: created.description?.en || created.description,
-        features: Array.isArray(created.features?.en) ? created.features.en.join('\\n') : created.features
+        features: Array.isArray(created.features) ? created.features.join('\\n') : created.features
       };
 
       res.status(201).json({
@@ -54,9 +63,7 @@ export class AlbumTypeController {
       // but since they might be fetching it directly, let's format it.
       const formatted = albumTypes.map(at => ({
         ...at,
-        name: at.name?.en || at.name,
-        description: at.description?.en || at.description,
-        features: Array.isArray(at.features?.en) ? at.features.en.join('\\n') : at.features
+        features: Array.isArray(at.features) ? at.features.join('\\n') : at.features
       })).sort((a, b) => (order[a.kind] || 99) - (order[b.kind] || 99));
 
       res.status(200).json({
@@ -81,13 +88,21 @@ export class AlbumTypeController {
         return ResponseUtil.error(res, error.details[0].message, 400);
       }
 
+      if (value.name) {
+        value.name_pl = await TranslateUtil.translateText(value.name, 'pl', 'en');
+      }
+      if (value.description) {
+        value.description_pl = await TranslateUtil.translateText(value.description, 'pl', 'en');
+      }
+      if (value.features) {
+        value.features_pl = await TranslateUtil.translateText(value.features, 'pl', 'en');
+      }
+
       const updated = await this.albumTypeService.updateAlbumType(id, value);
       
       const formatted = {
         ...updated,
-        name: updated.name?.en || updated.name,
-        description: updated.description?.en || updated.description,
-        features: Array.isArray(updated.features?.en) ? updated.features.en.join('\\n') : updated.features
+        features: Array.isArray(updated.features) ? updated.features.join('\\n') : updated.features
       };
 
       res.status(200).json({

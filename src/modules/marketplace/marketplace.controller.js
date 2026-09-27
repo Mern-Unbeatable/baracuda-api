@@ -4,6 +4,7 @@ import { UrlUtil } from '../../utils/urlUtil.js';
 import paymentService from '../payment/payment.service.js';
 import { watermarkService } from '../artwork/watermark.service.js';
 import prisma from '../../config/prisma.js';
+import { TranslateUtil } from '../../utils/translate.js';
 
 export class MarketplaceController {
   constructor(marketplaceService) {
@@ -14,6 +15,9 @@ export class MarketplaceController {
   formatMediaUrls(req, photo) {
     if (!photo) return photo;
     const formatted = { ...photo };
+    if (formatted.price) {
+      formatted.price = parseFloat(formatted.price);
+    }
 
     // Format all user avatars
     const formatAvatars = (obj) => {
@@ -78,7 +82,34 @@ export class MarketplaceController {
       const videoFiles = req.files && req.files['video'] ? req.files['video'] : [];
       const mediaFiles = [...imageFiles, ...videoFiles];
 
-      const parsedTitle = typeof title === 'string' ? JSON.parse(title) : title;
+      let finalTitle = title;
+      if (typeof title === 'string') {
+        try {
+          const parsed = JSON.parse(title);
+          finalTitle = parsed.en || parsed[Object.keys(parsed)[0]] || title;
+        } catch(e) {}
+      } else if (typeof title === 'object' && title !== null) {
+          finalTitle = title.en || title[Object.keys(title)[0]] || '';
+      }
+      
+      const title_pl = await TranslateUtil.translateText(finalTitle, 'pl', 'en');
+      
+      let finalStory = null;
+      let story_pl = null;
+      const rawStory = req.validatedBody?.story || req.body.story;
+      if (rawStory) {
+        finalStory = rawStory;
+        if (typeof rawStory === 'string') {
+          try {
+            const parsed = JSON.parse(rawStory);
+            finalStory = parsed.en || parsed[Object.keys(parsed)[0]] || rawStory;
+          } catch(e) {}
+        } else if (typeof rawStory === 'object' && rawStory !== null) {
+            finalStory = rawStory.en || rawStory[Object.keys(rawStory)[0]] || '';
+        }
+        story_pl = await TranslateUtil.translateText(finalStory, 'pl', 'en');
+      }
+
       const aiGenerated = isAiGenerated === 'true' || isAiGenerated === true;
 
       const data = {
@@ -88,7 +119,10 @@ export class MarketplaceController {
         zodiacSigns,
         categoryId: categoryId || null,
         subcategoryId: subcategoryId || null,
-        title: parsedTitle,
+        title: finalTitle,
+        title_pl: title_pl,
+        story: finalStory,
+        story_pl: story_pl,
         price: parseFloat(price),
         resolution: resolution || null,
         quality: quality || null,
@@ -156,17 +190,40 @@ export class MarketplaceController {
       const userId = req.user?.id || 'TEST_USER_ID';
       
       const { title, story, price } = req.validatedBody || req.body;
-      const parsedTitle = typeof title === 'string' ? JSON.parse(title) : title;
-      const parsedStory = typeof story === 'string' ? JSON.parse(story) : story;
-
       const updateData = {
-        title: parsedTitle || undefined,
-        story: parsedStory !== undefined ? parsedStory : undefined,
         price: price ? parseFloat(price) : undefined,
         camera: req.body.camera,
         resolution: req.body.resolution,
         license: req.body.license,
       };
+
+      if (title) {
+        let finalTitle = title;
+        if (typeof title === 'string') {
+          try {
+            const parsed = JSON.parse(title);
+            finalTitle = parsed.en || parsed[Object.keys(parsed)[0]] || title;
+          } catch(e) {}
+        } else if (typeof title === 'object' && title !== null) {
+          finalTitle = title.en || title[Object.keys(title)[0]] || '';
+        }
+        updateData.title = finalTitle;
+        updateData.title_pl = await TranslateUtil.translateText(finalTitle, 'pl', 'en');
+      }
+      
+      if (story !== undefined) {
+        let finalStory = story;
+        if (typeof story === 'string') {
+          try {
+            const parsed = JSON.parse(story);
+            finalStory = parsed.en || parsed[Object.keys(parsed)[0]] || story;
+          } catch(e) {}
+        } else if (typeof story === 'object' && story !== null) {
+          finalStory = story.en || story[Object.keys(story)[0]] || '';
+        }
+        updateData.story = finalStory;
+        updateData.story_pl = finalStory ? await TranslateUtil.translateText(finalStory, 'pl', 'en') : null;
+      }
 
       // Remove undefined keys
       Object.keys(updateData).forEach(key => updateData[key] === undefined && delete updateData[key]);

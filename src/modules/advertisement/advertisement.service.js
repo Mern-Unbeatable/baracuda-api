@@ -40,7 +40,9 @@ export class AdvertisementService {
         selectPage: data.selectPage,
         websiteUrl: data.businessType === 'ONLINE' ? data.websiteUrl : null,
         description: data.description,
+        description_pl: data.description_pl || null,
         location: data.location,
+        location_pl: data.location_pl || null,
         businessImage,
         durationDays: data.durationDays,
         amount,
@@ -66,7 +68,7 @@ export class AdvertisementService {
     };
   }
 
-  async generateInvoicePdf(id) {
+  async generateInvoicePdf(id, lang = 'en') {
     const advertisement = await prisma.advertisement.findUnique({
       where: { id }
     });
@@ -80,7 +82,7 @@ export class AdvertisementService {
     }
 
     const { InvoicePdfGenerator } = await import('./advertisement.pdf.js');
-    return InvoicePdfGenerator.generate(advertisement);
+    return InvoicePdfGenerator.generate(advertisement, lang);
   }
 
   // --- PUBLIC APIs ---
@@ -88,7 +90,10 @@ export class AdvertisementService {
   async getPublicAds(req, pageName) {
     const { UrlUtil } = await import('../../utils/urlUtil.js');
 
-    const where = { status: 'ACTIVE' };
+    const where = { 
+      status: 'ACTIVE',
+      endsAt: { gt: new Date() }
+    };
     if (pageName) {
       where.selectPage = { equals: pageName, mode: 'insensitive' };
     }
@@ -101,13 +106,16 @@ export class AdvertisementService {
     return ads.map(ad => {
       const baseResponse = {
         id: ad.id,
+        businessName: ad.businessName,
         businessType: ad.businessType,
         description: ad.description,
+        description_pl: ad.description_pl,
         media: UrlUtil.getAbsoluteUrl(req, ad.businessImage)
       };
 
       if (ad.businessType === 'LOCAL') {
         baseResponse.location = ad.location;
+        baseResponse.location_pl = ad.location_pl;
       } else if (ad.businessType === 'ONLINE') {
         baseResponse.websiteUrl = ad.websiteUrl;
       }
@@ -129,6 +137,14 @@ export class AdvertisementService {
       // Map admin's query statuses to DB statuses
       if (query.status === 'PENDING') {
         where.status = 'IN_REVIEW';
+      } else if (query.status === 'EXPIRED') {
+        where.OR = [
+          { status: 'EXPIRED' },
+          { status: 'ACTIVE', endsAt: { lt: new Date() } }
+        ];
+      } else if (query.status === 'ACTIVE') {
+        where.status = 'ACTIVE';
+        where.endsAt = { gt: new Date() };
       } else {
         where.status = query.status;
       }
@@ -152,6 +168,7 @@ export class AdvertisementService {
     const mappedData = data.map(ad => {
       let mappedStatus = ad.status;
       if (ad.status === 'IN_REVIEW') mappedStatus = 'PENDING';
+      if (ad.status === 'ACTIVE' && ad.endsAt && ad.endsAt < new Date()) mappedStatus = 'EXPIRED';
       
       return { ...ad, status: mappedStatus };
     });
@@ -178,6 +195,7 @@ export class AdvertisementService {
     // Map status for Admin
     let mappedStatus = advertisement.status;
     if (advertisement.status === 'IN_REVIEW') mappedStatus = 'PENDING';
+    if (advertisement.status === 'ACTIVE' && advertisement.endsAt && advertisement.endsAt < new Date()) mappedStatus = 'EXPIRED';
 
     return { ...advertisement, status: mappedStatus };
   }

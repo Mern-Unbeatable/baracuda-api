@@ -673,7 +673,7 @@ export class ArtworkService {
     }
   }
 
-  async addComment(id, userId, body, parentId) {
+  async addComment(id, userId, body, body_pl, parentId) {
     const submission = await prisma.submission.findUnique({ where: { id } });
     if (!submission) throw new Error('Artwork not found');
 
@@ -689,6 +689,7 @@ export class ArtworkService {
         submissionId: id,
         userId,
         body,
+        body_pl,
         parentId,
         status
       },

@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 
 export class PostService {
-  async createPost(userId, body, mediaFile, copyrightConfirmed) {
+  async createPost(userId, body, body_pl, mediaFile, copyrightConfirmed) {
     let mediaUrl = null;
     let mediaType = null;
 
@@ -16,6 +16,7 @@ export class PostService {
       data: {
         userId,
         body,
+        body_pl,
         mediaUrl,
         mediaType,
         copyrightConfirmed

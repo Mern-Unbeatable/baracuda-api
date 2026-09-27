@@ -2750,6 +2750,42 @@
                     "name": "Sell Photos",
                     "item": [
                         {
+                            "name": "Get All Premium Photos",
+                            "request": {
+                                "method": "GET",
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/marketplace/premium-photos?kind=ALL&page=1&limit=10&username={{username}}",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "marketplace",
+                                        "premium-photos"
+                                    ],
+                                    "query": [
+                                        {
+                                            "key": "kind",
+                                            "value": "ALL"
+                                        },
+                                        {
+                                            "key": "page",
+                                            "value": "1"
+                                        },
+                                        {
+                                            "key": "limit",
+                                            "value": "10"
+                                        },
+                                        {
+                                            "key": "username",
+                                            "value": "{{username}}"
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        {
                             "name": "Create Premium Photo (SINGLE)",
                             "request": {
                                 "method": "POST",

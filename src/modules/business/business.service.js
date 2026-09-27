@@ -11,7 +11,9 @@ export class BusinessService {
       categoryId,
       subcategoryId,
       title,
+      title_pl,
       story,
+      story_pl,
       isAiGenerated,
       copyrightConfirmed
     } = data;
@@ -23,6 +25,7 @@ export class BusinessService {
     const albumEmail = user.email;
     const albumPhone = user.phone;
     const albumCountry = user.country;
+    const albumCountryPl = user.country_pl;
 
     // Generate a unique frontend link ID
     const albumId = `ALB-${Math.floor(10000 + Math.random() * 90000)}`;
@@ -94,14 +97,17 @@ export class BusinessService {
         email: albumEmail,
         phone: albumPhone,
         country: albumCountry,
+        country_pl: albumCountryPl,
         businessLink,
         kind,
         theme: theme || null,
         zodiacSign: zodiacSign || null,
         categoryId: categoryId || null,
         subcategoryId: subcategoryId || null,
-        title: typeof title === 'string' ? JSON.parse(title) : title,
-        story: typeof story === 'string' ? JSON.parse(story) : story,
+        title: title,
+        title_pl: title_pl || null,
+        story: story || null,
+        story_pl: story_pl || null,
         isAiGenerated: isAiGenerated || false,
         copyrightConfirmed: copyrightConfirmed || false,
         media: {
@@ -127,6 +133,7 @@ export class BusinessService {
           email: true,
           phone: true,
           country: true,
+          country_pl: true,
           createdAt: true,
           user: {
             select: { name: true }
