@@ -5,7 +5,7 @@ import path from 'path';
 import fs from 'fs';
 
 export class MarketplaceService {
-  async createPremiumPhoto(userId, data, mediaFiles) {
+  async createPremiumPhoto(userId, data, mediaFiles, sourceLang = 'en') {
     const {
       kind,
       theme,
@@ -13,13 +13,33 @@ export class MarketplaceService {
       zodiacSigns,
       categoryId,
       subcategoryId,
-      title,
       price,
       resolution,
       quality,
       isAiGenerated,
       copyrightConfirmed,
     } = data;
+
+    let title = data.title;
+    let title_pl = data.title;
+    let story = data.story;
+    let story_pl = data.story;
+
+    if (title) {
+      if (sourceLang === 'pl') {
+        title = await TranslateUtil.translateText(data.title, 'pl', 'en');
+      } else {
+        title_pl = await TranslateUtil.translateText(data.title, 'en', 'pl');
+      }
+    }
+    
+    if (story) {
+      if (sourceLang === 'pl') {
+        story = await TranslateUtil.translateText(data.story, 'pl', 'en');
+      } else {
+        story_pl = await TranslateUtil.translateText(data.story, 'en', 'pl');
+      }
+    }
 
     // Map images and videos like artwork
     let imageMedias = [];
@@ -90,6 +110,9 @@ export class MarketplaceService {
           zodiacSign: zodiacSign || null,
           categoryId: categoryId || null,
           title,
+          title_pl,
+          story,
+          story_pl,
           price,
           resolution: resolution || null,
           quality: quality || null,
@@ -166,10 +189,32 @@ export class MarketplaceService {
     });
   }
 
-  async updatePremiumPhoto(id, userId, data) {
+  async updatePremiumPhoto(id, userId, data, sourceLang = 'en') {
     const photo = await prisma.premiumPhoto.findUnique({ where: { id } });
     if (!photo) throw new Error('Photo not found');
     if (photo.userId !== userId) throw new Error('Unauthorized');
+
+    if (data.title) {
+      if (sourceLang === 'pl') {
+        data.title_pl = data.title;
+        data.title = await TranslateUtil.translateText(data.title, 'pl', 'en');
+      } else {
+        data.title_pl = await TranslateUtil.translateText(data.title, 'en', 'pl');
+      }
+    }
+
+    if (data.story !== undefined) {
+      if (data.story === null || data.story === '') {
+        data.story_pl = null;
+      } else {
+        if (sourceLang === 'pl') {
+          data.story_pl = data.story;
+          data.story = await TranslateUtil.translateText(data.story, 'pl', 'en');
+        } else {
+          data.story_pl = await TranslateUtil.translateText(data.story, 'en', 'pl');
+        }
+      }
+    }
 
     return prisma.premiumPhoto.update({
       where: { id },

@@ -82,34 +82,7 @@ export class MarketplaceController {
       const videoFiles = req.files && req.files['video'] ? req.files['video'] : [];
       const mediaFiles = [...imageFiles, ...videoFiles];
 
-      let finalTitle = title;
-      if (typeof title === 'string') {
-        try {
-          const parsed = JSON.parse(title);
-          finalTitle = parsed.en || parsed[Object.keys(parsed)[0]] || title;
-        } catch(e) {}
-      } else if (typeof title === 'object' && title !== null) {
-          finalTitle = title.en || title[Object.keys(title)[0]] || '';
-      }
-      
-      const title_pl = await TranslateUtil.translateText(finalTitle, 'pl', 'en');
-      
-      let finalStory = null;
-      let story_pl = null;
-      const rawStory = req.validatedBody?.story || req.body.story;
-      if (rawStory) {
-        finalStory = rawStory;
-        if (typeof rawStory === 'string') {
-          try {
-            const parsed = JSON.parse(rawStory);
-            finalStory = parsed.en || parsed[Object.keys(parsed)[0]] || rawStory;
-          } catch(e) {}
-        } else if (typeof rawStory === 'object' && rawStory !== null) {
-            finalStory = rawStory.en || rawStory[Object.keys(rawStory)[0]] || '';
-        }
-        story_pl = await TranslateUtil.translateText(finalStory, 'pl', 'en');
-      }
-
+      const sourceLang = req.headers['accept-language']?.split(',')[0]?.split('-')[0] || req.headers['x-lang'] || 'en';
       const aiGenerated = isAiGenerated === 'true' || isAiGenerated === true;
 
       const data = {
@@ -119,10 +92,8 @@ export class MarketplaceController {
         zodiacSigns,
         categoryId: categoryId || null,
         subcategoryId: subcategoryId || null,
-        title: finalTitle,
-        title_pl: title_pl,
-        story: finalStory,
-        story_pl: story_pl,
+        title: title || '',
+        story: req.validatedBody?.story || req.body.story || null,
         price: parseFloat(price),
         resolution: resolution || null,
         quality: quality || null,
@@ -130,7 +101,7 @@ export class MarketplaceController {
         copyrightConfirmed: copyrightConfirmed === 'true' || copyrightConfirmed === true,
       };
 
-      const photo = await this.marketplaceService.createPremiumPhoto(userId, data, mediaFiles);
+      const photo = await this.marketplaceService.createPremiumPhoto(userId, data, mediaFiles, sourceLang);
       
       // Apply AI watermark in background if needed
       if (aiGenerated) {
@@ -197,38 +168,20 @@ export class MarketplaceController {
         license: req.body.license,
       };
 
-      if (title) {
-        let finalTitle = title;
-        if (typeof title === 'string') {
-          try {
-            const parsed = JSON.parse(title);
-            finalTitle = parsed.en || parsed[Object.keys(parsed)[0]] || title;
-          } catch(e) {}
-        } else if (typeof title === 'object' && title !== null) {
-          finalTitle = title.en || title[Object.keys(title)[0]] || '';
-        }
-        updateData.title = finalTitle;
-        updateData.title_pl = await TranslateUtil.translateText(finalTitle, 'pl', 'en');
+      const sourceLang = req.headers['accept-language']?.split(',')[0]?.split('-')[0] || req.headers['x-lang'] || 'en';
+
+      if (title !== undefined) {
+        updateData.title = title || '';
       }
       
       if (story !== undefined) {
-        let finalStory = story;
-        if (typeof story === 'string') {
-          try {
-            const parsed = JSON.parse(story);
-            finalStory = parsed.en || parsed[Object.keys(parsed)[0]] || story;
-          } catch(e) {}
-        } else if (typeof story === 'object' && story !== null) {
-          finalStory = story.en || story[Object.keys(story)[0]] || '';
-        }
-        updateData.story = finalStory;
-        updateData.story_pl = finalStory ? await TranslateUtil.translateText(finalStory, 'pl', 'en') : null;
+        updateData.story = story || null;
       }
 
       // Remove undefined keys
       Object.keys(updateData).forEach(key => updateData[key] === undefined && delete updateData[key]);
 
-      const photo = await this.marketplaceService.updatePremiumPhoto(req.params.id, userId, updateData);
+      const photo = await this.marketplaceService.updatePremiumPhoto(req.params.id, userId, updateData, sourceLang);
       return ResponseUtil.success(res, 'Premium photo updated successfully', { id: photo.id });
     } catch (error) {
       return ResponseUtil.error(res, error.message, 400);
