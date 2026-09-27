@@ -14,6 +14,14 @@ export class PostValidation {
     copyrightConfirmed: Joi.boolean().truthy('1', 1, 'true').falsy('0', 0, 'false').optional()
   });
 
+  static reportSchema = Joi.object({
+    reason: Joi.string().required().messages({
+      'string.empty': 'Reason is required',
+      'any.required': 'Reason is required'
+    }),
+    details: Joi.string().allow('').optional()
+  });
+
   static validate(schema) {
     return (req, res, next) => {
       const { error, value } = schema.validate(req.body, { abortEarly: false, allowUnknown: true });

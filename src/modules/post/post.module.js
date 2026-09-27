@@ -35,5 +35,12 @@ export class PostModule {
     );
 
     this.router.delete('/:id', requireAuth, this.postController.deletePost);
+
+    this.router.post(
+      '/:id/report',
+      requireAuth,
+      PostValidation.validate(PostValidation.reportSchema),
+      this.postController.reportPost
+    );
   }
 }

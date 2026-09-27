@@ -413,7 +413,7 @@ export class MarketplaceService {
   }
 
   async reportPremiumPhoto(id, userId, reason, details) {
-    const photo = await prisma.submission.findUnique({
+    const photo = await prisma.premiumPhoto.findUnique({
       where: { id }
     });
     if (!photo) {
@@ -425,7 +425,7 @@ export class MarketplaceService {
 
     return prisma.report.create({
       data: {
-        submissionId: id,
+        premiumPhotoId: id,
         userId,
         reason,
         details

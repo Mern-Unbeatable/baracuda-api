@@ -101,4 +101,14 @@ export class PostController {
       return ResponseUtil.error(res, error.message, (error.message === 'Post not found') ? 404 : 500);
     }
   }
+
+  reportPost = async (req, res) => {
+    try {
+      const { reason, details } = req.body;
+      const report = await this.postService.reportPost(req.params.id, req.user.id, reason, details);
+      return ResponseUtil.success(res, 'Post reported successfully', report);
+    } catch (error) {
+      return ResponseUtil.error(res, error.message, (error.message === 'Post not found') ? 404 : 400);
+    }
+  }
 }

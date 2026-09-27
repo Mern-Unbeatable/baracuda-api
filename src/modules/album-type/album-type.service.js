@@ -31,6 +31,11 @@ export class AlbumTypeService {
         photoCount
       };
       
+      if (data.entryFee !== undefined) createData.entryFee = data.entryFee;
+      if (data.isActive !== undefined) createData.isActive = data.isActive;
+      if (data.sortOrder !== undefined) createData.sortOrder = data.sortOrder;
+      if (data.iconKey !== undefined) createData.iconKey = data.iconKey;
+
       if (data.description !== undefined) {
         createData.description = data.description;
         createData.description_pl = data.description_pl || null;
@@ -65,11 +70,14 @@ export class AlbumTypeService {
   async updateAlbumType(id, data) {
     try {
       // Data contains strings for name, description, and features from the API.
-      // We need to convert them to JSON format like {"en": "string"}
-      
       const updateData = {
         prizeMoney: data.prizeMoney
       };
+
+      if (data.entryFee !== undefined) updateData.entryFee = data.entryFee;
+      if (data.isActive !== undefined) updateData.isActive = data.isActive;
+      if (data.sortOrder !== undefined) updateData.sortOrder = data.sortOrder;
+      if (data.iconKey !== undefined) updateData.iconKey = data.iconKey;
 
       if (data.name) {
         updateData.name = data.name;

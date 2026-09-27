@@ -104,4 +104,25 @@ export class PostService {
       where: { id }
     });
   }
+
+  async reportPost(id, userId, reason, details) {
+    const post = await prisma.photographerMessage.findUnique({
+      where: { id }
+    });
+    if (!post) {
+      throw new Error('Post not found');
+    }
+    if (post.userId === userId) {
+      throw new Error('You cannot report your own post');
+    }
+
+    return prisma.report.create({
+      data: {
+        postId: id,
+        userId,
+        reason,
+        details
+      }
+    });
+  }
 }

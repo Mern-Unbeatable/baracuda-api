@@ -28,6 +28,9 @@ export class AdminReportController {
         if (report.reportedUser) {
           report.reportedUser.avatar = UrlUtil.getAbsoluteUrl(req, report.reportedUser.avatar);
         }
+        if (report.reporter) {
+          report.reporter.avatar = UrlUtil.getAbsoluteUrl(req, report.reporter.avatar);
+        }
         return report;
       });
 

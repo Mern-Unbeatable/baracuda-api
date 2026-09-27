@@ -32,7 +32,8 @@ export class AlbumTypeController {
       
       const formatted = {
         ...created,
-        features: Array.isArray(created.features) ? created.features.join('\\n') : created.features
+        features: Array.isArray(created.features) ? created.features.join('\\n') : created.features,
+        features_pl: Array.isArray(created.features_pl) ? created.features_pl.join('\\n') : created.features_pl
       };
 
       res.status(201).json({
@@ -56,15 +57,19 @@ export class AlbumTypeController {
     try {
       const albumTypes = await this.albumTypeService.getAllAlbumTypes();
       
-      // Sort order definition
+      // Fallback sort order definition if DB sortOrder is equal
       const order = { 'SINGLE': 1, 'SIX': 2, 'TWELVE': 3 };
 
       // We might want to flatten the JSON for the frontend if they expect strings, 
       // but since they might be fetching it directly, let's format it.
       const formatted = albumTypes.map(at => ({
         ...at,
-        features: Array.isArray(at.features) ? at.features.join('\\n') : at.features
-      })).sort((a, b) => (order[a.kind] || 99) - (order[b.kind] || 99));
+        features: Array.isArray(at.features) ? at.features.join('\\n') : at.features,
+        features_pl: Array.isArray(at.features_pl) ? at.features_pl.join('\\n') : at.features_pl
+      })).sort((a, b) => {
+        if (a.sortOrder !== b.sortOrder) return a.sortOrder - b.sortOrder;
+        return (order[a.kind] || 99) - (order[b.kind] || 99);
+      });
 
       res.status(200).json({
         success: true,
@@ -102,7 +107,8 @@ export class AlbumTypeController {
       
       const formatted = {
         ...updated,
-        features: Array.isArray(updated.features) ? updated.features.join('\\n') : updated.features
+        features: Array.isArray(updated.features) ? updated.features.join('\\n') : updated.features,
+        features_pl: Array.isArray(updated.features_pl) ? updated.features_pl.join('\\n') : updated.features_pl
       };
 
       res.status(200).json({
