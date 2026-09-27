@@ -357,8 +357,18 @@ export class ArtworkController {
       const { id } = req.params;
       const userId = req.user.id;
       const { body, parentId } = req.validatedBody;
-      const body_pl = await TranslateUtil.translateText(body, 'pl', 'en');
-      const comment = await this.artworkService.addComment(id, userId, body, body_pl, parentId);
+      
+      const sourceLang = req.headers['accept-language']?.split(',')[0]?.split('-')[0] || req.headers['x-lang'] || 'en';
+      let finalBody = body;
+      let finalBody_pl = body;
+      
+      if (sourceLang === 'pl') {
+        finalBody = await TranslateUtil.translateText(body, 'pl', 'en');
+      } else {
+        finalBody_pl = await TranslateUtil.translateText(body, 'en', 'pl');
+      }
+      
+      const comment = await this.artworkService.addComment(id, userId, finalBody, finalBody_pl, parentId);
       return ResponseUtil.success(res, 'Comment added successfully', comment, 201);
     } catch (err) {
       next(err);

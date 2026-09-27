@@ -54,12 +54,9 @@ export class CommentService {
 
     // Format the response slightly to match frontend expectations if needed
     const formattedComments = comments.map(comment => {
-      // Find the title based on locale if it's a JSON field, default to english
-      const titleObj = comment.submission?.title || {};
-      const title = titleObj.en || titleObj[Object.keys(titleObj)[0]] || 'Untitled';
-      
-      const typeObj = comment.submission?.albumType?.name || comment.submission?.category?.name || {};
-      const type = typeObj.en || typeObj[Object.keys(typeObj)[0]] || 'Unknown';
+      // Since title and name are strings now, just take them directly
+      const title = comment.submission?.title || 'Untitled';
+      const type = comment.submission?.albumType?.name || comment.submission?.category?.name || 'Unknown';
 
       return {
         commentId: comment.publicCode,
@@ -122,10 +119,8 @@ export class CommentService {
       })
     ]);
 
-    const titleObj = comment.submission?.title || {};
-    const title = titleObj.en || titleObj[Object.keys(titleObj)[0]] || 'Untitled';
-    const typeObj = comment.submission?.albumType?.name || comment.submission?.category?.name || {};
-    const type = typeObj.en || typeObj[Object.keys(typeObj)[0]] || 'Unknown';
+    const title = comment.submission?.title || 'Untitled';
+    const type = comment.submission?.albumType?.name || comment.submission?.category?.name || 'Unknown';
 
     return {
       commentId: comment.publicCode,
