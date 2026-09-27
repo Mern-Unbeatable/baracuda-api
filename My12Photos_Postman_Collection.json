@@ -29,7 +29,13 @@
                     "name": "Register",
                     "request": {
                         "method": "POST",
-                        "header": [],
+                        "header": [
+                            {
+                                "key": "accept-language",
+                                "value": "en",
+                                "type": "text"
+                            }
+                        ],
                         "body": {
                             "mode": "formdata",
                             "formdata": [
@@ -123,7 +129,13 @@
                     ],
                     "request": {
                         "method": "POST",
-                        "header": [],
+                        "header": [
+                            {
+                                "key": "accept-language",
+                                "value": "en",
+                                "type": "text"
+                            }
+                        ],
                         "body": {
                             "mode": "raw",
                             "raw": "{\n  \"email\": \"shanjid.maktech@gmail.com\",\n  \"password\": \"password123\"\n  \n  // ADMIN CREDENTIALS:\n  // \"email\": \"admin@my12photos.com\",\n  // \"password\": \"admin123\"\n}",
@@ -152,10 +164,16 @@
                     "name": "Forgot Password",
                     "request": {
                         "method": "POST",
-                        "header": [],
+                        "header": [
+                            {
+                                "key": "accept-language",
+                                "value": "en",
+                                "type": "text"
+                            }
+                        ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\r\n  \"email\": \"shanjid.maktech@gmail.com\"\r\n}",
+                            "raw": "{\n    \"email\": \"shanjid.maktech@gmail.com\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -181,10 +199,16 @@
                     "name": "Verify OTP",
                     "request": {
                         "method": "POST",
-                        "header": [],
+                        "header": [
+                            {
+                                "key": "accept-language",
+                                "value": "en",
+                                "type": "text"
+                            }
+                        ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\r\n  \"email\": \"shanjid.maktech@gmail.com\",\r\n  \"otp\": \"1234\"\r\n}",
+                            "raw": "{\n    \"email\": \"shanjid.maktech@gmail.com\",\n    \"otp\": \"1234\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -210,10 +234,16 @@
                     "name": "Reset Password",
                     "request": {
                         "method": "POST",
-                        "header": [],
+                        "header": [
+                            {
+                                "key": "accept-language",
+                                "value": "en",
+                                "type": "text"
+                            }
+                        ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\r\n  \"token\": \"PLACE_RESET_TOKEN_HERE\",\r\n  \"newPassword\": \"newSecurePassword123\"\r\n}",
+                            "raw": "{\n    \"token\": \"PLACE_RESET_TOKEN_HERE\",\n    \"newPassword\": \"newSecurePassword123\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -256,7 +286,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n  \"name\": \"Nature Photography\",\n  \"slug\": \"nature-photography-test\"\n}",
+                                    "raw": "{\n    \"name\": \"Nature Photography\",\n    \"slug\": \"nature-photography-test\"\n}",
                                     "options": {
                                         "raw": {
                                             "language": "json"
@@ -290,7 +320,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n  \"name\": \"Forest\",\n  \"slug\": \"forest-test\",\n  \"parentId\": \"REPLACE_WITH_PARENT_UUID\"\n}",
+                                    "raw": "{\n    \"name\": \"Forest\",\n    \"slug\": \"forest-test\",\n    \"parentId\": \"REPLACE_WITH_PARENT_UUID\"\n}",
                                     "options": {
                                         "raw": {
                                             "language": "json"
@@ -315,7 +345,13 @@
                             "name": "Get All Categories",
                             "request": {
                                 "method": "GET",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/categories",
                                     "host": [
@@ -338,6 +374,11 @@
                                     {
                                         "key": "Authorization",
                                         "value": "Bearer {{admin_token}}",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
                                         "type": "text"
                                     }
                                 ],
@@ -371,7 +412,13 @@
                             "name": "Get All Advertisements",
                             "request": {
                                 "method": "GET",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/advertisements/admin/all?status=IN_REVIEW&page=1&limit=10",
                                     "host": [
@@ -405,7 +452,13 @@
                             "name": "Get Advertisement Details",
                             "request": {
                                 "method": "GET",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/advertisements/admin/{{advertisementId}}",
                                     "host": [
@@ -429,11 +482,16 @@
                                     {
                                         "key": "Content-Type",
                                         "value": "application/json"
+                                    },
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
                                     }
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n  \"status\": \"ACTIVE\"\n}"
+                                    "raw": "{\n    \"status\": \"ACTIVE\"\n}"
                                 },
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/advertisements/admin/{{advertisementId}}/status",
@@ -460,7 +518,13 @@
                             "name": "Get All Business Links",
                             "request": {
                                 "method": "GET",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/business-links/admin?page=1&limit=10",
                                     "host": [
@@ -490,7 +554,13 @@
                             "name": "Get Business Link Details",
                             "request": {
                                 "method": "GET",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/business-links/admin/{{business_album_id}}",
                                     "host": [
@@ -516,7 +586,13 @@
                             "name": "Get All Subscribers (Admin)",
                             "request": {
                                 "method": "GET",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/newsletter/subscribers?page=1&limit=10",
                                     "host": [
@@ -545,7 +621,13 @@
                             "name": "Send Campaign (EVERYONE)",
                             "request": {
                                 "method": "POST",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "body": {
                                     "mode": "formdata",
                                     "formdata": [
@@ -556,17 +638,17 @@
                                         },
                                         {
                                             "key": "subject",
-                                            "value": "{\"en\":\"Big Update from My12Photos!\"}",
+                                            "value": "Big Update from My12Photos!",
                                             "type": "text"
                                         },
                                         {
                                             "key": "title",
-                                            "value": "{\"en\":\"Welcome to our new platform\"}",
+                                            "value": "Welcome to our new platform",
                                             "type": "text"
                                         },
                                         {
                                             "key": "content",
-                                            "value": "{\"en\":\"<p>Hello everyone,</p><p>We are very excited to announce the launch of our new features.</p>\"}",
+                                            "value": "<p>Hello everyone,</p><p>We are very excited to announce the launch of our new features.</p>",
                                             "type": "text"
                                         },
                                         {
@@ -604,7 +686,13 @@
                             "name": "Send Campaign (NEW_SUBSCRIBERS)",
                             "request": {
                                 "method": "POST",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "body": {
                                     "mode": "formdata",
                                     "formdata": [
@@ -615,17 +703,17 @@
                                         },
                                         {
                                             "key": "subject",
-                                            "value": "{\"en\":\"Big Update from My12Photos!\"}",
+                                            "value": "Big Update from My12Photos!",
                                             "type": "text"
                                         },
                                         {
                                             "key": "title",
-                                            "value": "{\"en\":\"Welcome to our new platform\"}",
+                                            "value": "Welcome to our new platform",
                                             "type": "text"
                                         },
                                         {
                                             "key": "content",
-                                            "value": "{\"en\":\"<p>Hello everyone,</p><p>We are very excited to announce the launch of our new features.</p>\"}",
+                                            "value": "<p>Hello everyone,</p><p>We are very excited to announce the launch of our new features.</p>",
                                             "type": "text"
                                         },
                                         {
@@ -663,7 +751,13 @@
                             "name": "Send Campaign (SELECTED)",
                             "request": {
                                 "method": "POST",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "body": {
                                     "mode": "formdata",
                                     "formdata": [
@@ -674,17 +768,17 @@
                                         },
                                         {
                                             "key": "subject",
-                                            "value": "{\"en\":\"Big Update from My12Photos!\"}",
+                                            "value": "Big Update from My12Photos!",
                                             "type": "text"
                                         },
                                         {
                                             "key": "title",
-                                            "value": "{\"en\":\"Welcome to our new platform\"}",
+                                            "value": "Welcome to our new platform",
                                             "type": "text"
                                         },
                                         {
                                             "key": "content",
-                                            "value": "{\"en\":\"<p>Hello everyone,</p><p>We are very excited to announce the launch of our new features.</p>\"}",
+                                            "value": "<p>Hello everyone,</p><p>We are very excited to announce the launch of our new features.</p>",
                                             "type": "text"
                                         },
                                         {
@@ -757,7 +851,14 @@
                                             "value": "All"
                                         }
                                     ]
-                                }
+                                },
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ]
                             }
                         },
                         {
@@ -776,7 +877,14 @@
                                         "users",
                                         "{{user_id}}"
                                     ]
-                                }
+                                },
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ]
                             }
                         },
                         {
@@ -787,11 +895,16 @@
                                     {
                                         "key": "Content-Type",
                                         "value": "application/json"
+                                    },
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
                                     }
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n  \"status\": \"SUSPENDED\",\n  \"reason\": \"Violation of terms\"\n}"
+                                    "raw": "{\n    \"status\": \"SUSPENDED\",\n    \"reason\": \"Violation of terms\"\n}"
                                 },
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/admin/users/{{user_id}}/status",
@@ -828,7 +941,14 @@
                                         "v1",
                                         "album-types"
                                     ]
-                                }
+                                },
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ]
                             }
                         },
                         {
@@ -839,11 +959,16 @@
                                     {
                                         "key": "Content-Type",
                                         "value": "application/json"
+                                    },
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
                                     }
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n  \"name\": \"Single Photo\",\n  \"prizeMoney\": 1500,\n  \"description\": \"Submit one outstanding photograph.\",\n  \"features\": \"Monthly competition\\\\nPublic community voting\"\n}"
+                                    "raw": "{\n    \"name\": \"Single Photo\",\n    \"prizeMoney\": 1500,\n    \"description\": \"Submit one outstanding photograph.\",\n    \"features\": \"Monthly competition\\\\nPublic community voting\"\n}"
                                 },
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/album-types/{{album_type_id}}",
@@ -867,11 +992,16 @@
                                     {
                                         "key": "Content-Type",
                                         "value": "application/json"
+                                    },
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
                                     }
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n  \"kind\": \"SINGLE\",\n  \"name\": \"Single Photo\",\n  \"prizeMoney\": 1500,\n  \"description\": \"Submit one outstanding photograph.\",\n  \"features\": \"Monthly competition\\\\nPublic community voting\"\n}"
+                                    "raw": "{\n    \"kind\": \"SINGLE\",\n    \"name\": \"Single Photo\",\n    \"prizeMoney\": 1500,\n    \"description\": \"Submit one outstanding photograph.\",\n    \"features\": \"Monthly competition\\\\nPublic community voting\"\n}"
                                 },
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/album-types",
@@ -901,7 +1031,14 @@
                                         "album-types",
                                         "{{album_type_id}}"
                                     ]
-                                }
+                                },
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ]
                             }
                         }
                     ]
@@ -913,7 +1050,13 @@
                             "name": "Winners",
                             "request": {
                                 "method": "GET",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/competitions?kind=ALL&year=2026&month=9&page=1&limit=10",
                                     "host": [
@@ -972,7 +1115,14 @@
                                         "{{submissionId}}"
                                     ]
                                 },
-                                "description": "Fetch the artwork details of a specific winner using the submissionId"
+                                "description": "Fetch the artwork details of a specific winner using the submissionId",
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ]
                             }
                         }
                     ]
@@ -996,7 +1146,14 @@
                                         "admin",
                                         "pending"
                                     ]
-                                }
+                                },
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ]
                             }
                         },
                         {
@@ -1015,7 +1172,14 @@
                                         "admin",
                                         "answered"
                                     ]
-                                }
+                                },
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ]
                             }
                         },
                         {
@@ -1026,11 +1190,16 @@
                                     {
                                         "key": "Content-Type",
                                         "value": "application/json"
+                                    },
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
                                     }
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n  \"answer\": \"<p>We are looking into this issue. <strong>Thanks!</strong></p>\"\n}"
+                                    "raw": "{\n    \"answer\": \"<p>We are looking into this issue. <strong>Thanks!</strong></p>\"\n}"
                                 },
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/support/admin/{{ticket_id}}/reply",
@@ -1064,7 +1233,14 @@
                                         "admin",
                                         "{{ticket_id}}"
                                     ]
-                                }
+                                },
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ]
                             }
                         }
                     ]
@@ -1101,7 +1277,14 @@
                                             "value": "10"
                                         }
                                     ]
-                                }
+                                },
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ]
                             }
                         },
                         {
@@ -1120,7 +1303,14 @@
                                         "comments",
                                         "{{comment_public_code}}"
                                     ]
-                                }
+                                },
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ]
                             }
                         },
                         {
@@ -1131,11 +1321,16 @@
                                     {
                                         "key": "Content-Type",
                                         "value": "application/json"
+                                    },
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
                                     }
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n  \"commentIds\": [\n    \"CMT-0001\",\n    \"CMT-0002\"\n  ],\n  \"status\": \"APPROVED\"\n}"
+                                    "raw": "{\n    \"commentIds\": [\n        \"CMT-0001\",\n        \"CMT-0002\"\n    ],\n    \"status\": \"APPROVED\"\n}"
                                 },
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/admin/comments/bulk-status",
@@ -1161,7 +1356,13 @@
                             "name": "Create Demo Profile",
                             "request": {
                                 "method": "POST",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "body": {
                                     "mode": "formdata",
                                     "formdata": [
@@ -1247,7 +1448,14 @@
                                         "demo-profiles",
                                         "stats"
                                     ]
-                                }
+                                },
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ]
                             }
                         },
                         {
@@ -1279,7 +1487,14 @@
                                             "value": "10"
                                         }
                                     ]
-                                }
+                                },
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ]
                             }
                         },
                         {
@@ -1298,7 +1513,14 @@
                                         "demo-profiles",
                                         "{{profile_id}}"
                                     ]
-                                }
+                                },
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ]
                             }
                         },
                         {
@@ -1309,11 +1531,16 @@
                                     {
                                         "key": "Content-Type",
                                         "value": "application/json"
+                                    },
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
                                     }
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n  \"isActive\": false\n}"
+                                    "raw": "{\n    \"isActive\": false\n}"
                                 },
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/admin/demo-profiles/{{profile_id}}/status",
@@ -1340,7 +1567,13 @@
                             "name": "Get Prize Money Payouts",
                             "request": {
                                 "method": "GET",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/payments/admin/payouts/prize-money",
                                     "host": [
@@ -1362,7 +1595,13 @@
                             "name": "Get Donations Payouts",
                             "request": {
                                 "method": "GET",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/payments/admin/payouts/donations",
                                     "host": [
@@ -1384,7 +1623,13 @@
                             "name": "Get Photo Sales Payouts",
                             "request": {
                                 "method": "GET",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/payments/admin/payouts/photo-sales",
                                     "host": [
@@ -1406,10 +1651,16 @@
                             "name": "Update Payout Status",
                             "request": {
                                 "method": "PATCH",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n  \"status\": \"APPROVED\"\n}",
+                                    "raw": "{\n    \"status\": \"APPROVED\"\n}",
                                     "options": {
                                         "raw": {
                                             "language": "json"
@@ -1443,7 +1694,13 @@
                             "name": "Admin - Generate Promo Link",
                             "request": {
                                 "method": "POST",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/campaigns/links",
                                     "host": [
@@ -1462,7 +1719,13 @@
                             "name": "Admin - Get Dashboard Stats",
                             "request": {
                                 "method": "GET",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/campaigns/stats",
                                     "host": [
@@ -1481,7 +1744,13 @@
                             "name": "Admin - Get All Promo Links",
                             "request": {
                                 "method": "GET",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/campaigns/links?status=ALL&dateCreated=ALL&requirements=ALL&rewardStatus=ALL&page=1&limit=10",
                                     "host": [
@@ -1526,7 +1795,13 @@
                             "name": "Admin - Get Link Details",
                             "request": {
                                 "method": "GET",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/campaigns/links/:id",
                                     "host": [
@@ -1556,11 +1831,16 @@
                                     {
                                         "key": "Content-Type",
                                         "value": "application/json"
+                                    },
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
                                     }
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n  \"status\": \"PAID\"\n}"
+                                    "raw": "{\n    \"status\": \"PAID\"\n}"
                                 },
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/campaigns/links/:id/reward",
@@ -1605,7 +1885,14 @@
                                         "reports",
                                         "stats"
                                     ]
-                                }
+                                },
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ]
                             }
                         },
                         {
@@ -1637,7 +1924,14 @@
                                             "value": "10"
                                         }
                                     ]
-                                }
+                                },
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ]
                             }
                         },
                         {
@@ -1656,7 +1950,14 @@
                                         "reports",
                                         "{{report_id}}"
                                     ]
-                                }
+                                },
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ]
                             }
                         },
                         {
@@ -1667,11 +1968,16 @@
                                     {
                                         "key": "Content-Type",
                                         "value": "application/json"
+                                    },
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
                                     }
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n  \"status\": \"UNDER_REVIEW\"\n}"
+                                    "raw": "{\n    \"status\": \"UNDER_REVIEW\"\n}"
                                 },
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/admin/reports/{{report_id}}/status",
@@ -1697,11 +2003,16 @@
                                     {
                                         "key": "Content-Type",
                                         "value": "application/json"
+                                    },
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
                                     }
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n  \"action\": \"WARN\"\n}"
+                                    "raw": "{\n    \"action\": \"WARN\"\n}"
                                 },
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/admin/reports/{{report_id}}/action",
@@ -1736,7 +2047,14 @@
                                         "{{user_id}}",
                                         "audit-history"
                                     ]
-                                }
+                                },
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ]
                             }
                         },
                         {
@@ -1755,7 +2073,14 @@
                                         "profile",
                                         "{{username}}"
                                     ]
-                                }
+                                },
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ]
                             }
                         }
                     ]
@@ -1767,7 +2092,13 @@
                             "name": "Get All Competition Artworks",
                             "request": {
                                 "method": "GET",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/admin/artworks?competitionState=IN_COMPETITION&page=1&limit=10",
                                     "host": [
@@ -1806,7 +2137,13 @@
                             "name": "Get Competition Artwork Details",
                             "request": {
                                 "method": "GET",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/admin/artworks/{{artwork_id}}",
                                     "host": [
@@ -1826,7 +2163,13 @@
                             "name": "Delete Competition Artwork",
                             "request": {
                                 "method": "DELETE",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/admin/artworks/{{artwork_id}}",
                                     "host": [
@@ -1851,7 +2194,13 @@
                             "name": "Get All Gallery Artworks",
                             "request": {
                                 "method": "GET",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/admin/artworks?competitionState=PROFILE_ONLY&page=1&limit=10",
                                     "host": [
@@ -1890,7 +2239,13 @@
                             "name": "Get Gallery Artwork Details",
                             "request": {
                                 "method": "GET",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/admin/artworks/{{artwork_id}}",
                                     "host": [
@@ -1910,7 +2265,13 @@
                             "name": "Delete Gallery Artwork",
                             "request": {
                                 "method": "DELETE",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/admin/artworks/{{artwork_id}}",
                                     "host": [
@@ -1962,7 +2323,14 @@
                                             "description": "Filter by kind: SINGLE, SIX, TWELVE"
                                         }
                                     ]
-                                }
+                                },
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ]
                             }
                         },
                         {
@@ -1981,7 +2349,14 @@
                                         "premium-photos",
                                         "{{photo_id}}"
                                     ]
-                                }
+                                },
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ]
                             }
                         },
                         {
@@ -2000,7 +2375,14 @@
                                         "premium-photos",
                                         "{{photo_id}}"
                                     ]
-                                }
+                                },
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ]
                             }
                         }
                     ]
@@ -2012,7 +2394,13 @@
                             "name": "Create Announcement",
                             "request": {
                                 "method": "POST",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "body": {
                                     "mode": "raw",
                                     "raw": "{\n  \"message\": \"Hello, this is a test announcement!\",\n  \"icon\": \"🎉\",\n  \"type\": \"general_announcement\",\n  \"link\": {\n    \"url\": \"https://google.com\",\n    \"buttonName\": \"Learn More\"\n  },\n  \"startDate\": \"2026-10-01\",\n  \"startTime\": \"10:00\",\n  \"noEndDate\": false,\n  \"endDate\": \"2026-10-31\",\n  \"endTime\": \"23:59\",\n  \"activeState\": \"active\",\n  \"priority\": \"medium\"\n}\n\n/* \n==== OTHER VARIATIONS (Uncomment to use) ====\n\nVariation 2: No End Date & No Link\n{\n  \"message\": \"Important feature update!\",\n  \"icon\": \"🔥\",\n  \"type\": \"important_notice\",\n  \"link\": null,\n  \"startDate\": \"2026-10-01\",\n  \"startTime\": \"10:00\",\n  \"noEndDate\": true,\n  \"activeState\": \"active\",\n  \"priority\": \"high\"\n}\n\nVariation 3: Capitalized Enums (Should automatically be handled by backend)\n{\n  \"message\": \"Community news is here!\",\n  \"icon\": null,\n  \"type\": \"Community_News\",\n  \"link\": null,\n  \"startDate\": \"2026-10-01\",\n  \"startTime\": \"12:00\",\n  \"noEndDate\": false,\n  \"endDate\": \"2026-10-05\",\n  \"endTime\": \"12:00\",\n  \"activeState\": \"Inactive\",\n  \"priority\": \"LOW\"\n}\n*/",
@@ -2040,7 +2428,13 @@
                             "name": "Get All Announcements",
                             "request": {
                                 "method": "GET",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/admin/announcements?page=1&limit=10",
                                     "host": [
@@ -2069,7 +2463,13 @@
                             "name": "Get Announcement Stats",
                             "request": {
                                 "method": "GET",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/admin/announcements/stats",
                                     "host": [
@@ -2089,7 +2489,13 @@
                             "name": "Get Announcement Details",
                             "request": {
                                 "method": "GET",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/admin/announcements/{{announcement_id}}",
                                     "host": [
@@ -2109,7 +2515,13 @@
                             "name": "Update Announcement",
                             "request": {
                                 "method": "PUT",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "body": {
                                     "mode": "raw",
                                     "raw": "{\n    \"message\": \"Updated announcement message!\",\n    \"icon\": \"🔥\",\n    \"type\": \"important_notice\",\n    \"startDate\": \"2026-10-01\",\n    \"startTime\": \"10:00\",\n    \"noEndDate\": true,\n    \"activeState\": \"inactive\",\n    \"priority\": \"high\"\n}",
@@ -2138,7 +2550,13 @@
                             "name": "Delete Announcement",
                             "request": {
                                 "method": "DELETE",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/admin/announcements/{{announcement_id}}",
                                     "host": [
@@ -2178,7 +2596,13 @@
                             "name": "Get Categories for Artwork",
                             "request": {
                                 "method": "GET",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/categories",
                                     "host": [
@@ -2198,7 +2622,13 @@
                             "name": "Create Artwork (SINGLE)",
                             "request": {
                                 "method": "POST",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "body": {
                                     "mode": "formdata",
                                     "formdata": [
@@ -2214,7 +2644,7 @@
                                         },
                                         {
                                             "key": "title",
-                                            "value": "{\"en\": \"My First Artwork\"}",
+                                            "value": "My First Artwork",
                                             "type": "text"
                                         },
                                         {
@@ -2242,7 +2672,7 @@
                                         },
                                         {
                                             "key": "story",
-                                            "value": "{\"en\":\"A cool story\"}",
+                                            "value": "A cool story",
                                             "type": "text"
                                         },
                                         {
@@ -2285,7 +2715,13 @@
                             "name": "Create Artwork (SIX - Red Theme)",
                             "request": {
                                 "method": "POST",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "body": {
                                     "mode": "formdata",
                                     "formdata": [
@@ -2296,7 +2732,7 @@
                                         },
                                         {
                                             "key": "title",
-                                            "value": "{\"en\": \"My First Artwork\"}",
+                                            "value": "My First Artwork",
                                             "type": "text"
                                         },
                                         {
@@ -2324,7 +2760,7 @@
                                         },
                                         {
                                             "key": "story",
-                                            "value": "{\"en\":\"A cool story\"}",
+                                            "value": "A cool story",
                                             "type": "text"
                                         },
                                         {
@@ -2392,7 +2828,13 @@
                             "name": "Create Artwork (TWELVE)",
                             "request": {
                                 "method": "POST",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "body": {
                                     "mode": "formdata",
                                     "formdata": [
@@ -2403,7 +2845,7 @@
                                         },
                                         {
                                             "key": "title",
-                                            "value": "{\"en\": \"My First Artwork\"}",
+                                            "value": "My First Artwork",
                                             "type": "text"
                                         },
                                         {
@@ -2436,7 +2878,7 @@
                                         },
                                         {
                                             "key": "story",
-                                            "value": "{\"en\":\"A cool story\"}",
+                                            "value": "A cool story",
                                             "type": "text"
                                         },
                                         {
@@ -2528,7 +2970,13 @@
                             "name": "Get All Artworks",
                             "request": {
                                 "method": "GET",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/artworks?kind=SINGLE&status=all&sort=newest",
                                     "host": [
@@ -2561,10 +3009,16 @@
                             "name": "Update Artwork",
                             "request": {
                                 "method": "PUT",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n  \"title\": {\"en\": \"Updated Title\"}\n}",
+                                    "raw": "{\n    \"title\": \"Updated Title\"\n}",
                                     "options": {
                                         "raw": {
                                             "language": "json"
@@ -2596,7 +3050,13 @@
                             "name": "Delete Artwork",
                             "request": {
                                 "method": "DELETE",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/artworks/:id",
                                     "host": [
@@ -2622,10 +3082,16 @@
                             "name": "Promote Artwork",
                             "request": {
                                 "method": "POST",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n  \"durationDays\": 7\n}"
+                                    "raw": "{\n    \"durationDays\": 7\n}"
                                 },
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/artworks/YOUR_SUBMISSION_ID_HERE/promote",
@@ -2647,10 +3113,16 @@
                             "name": "Switch to Competition",
                             "request": {
                                 "method": "POST",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n  \"competitionId\": \"COMPETITION_ID_HERE\"\n}",
+                                    "raw": "{\n    \"competitionId\": \"COMPETITION_ID_HERE\"\n}",
                                     "options": {
                                         "raw": {
                                             "language": "json"
@@ -2683,10 +3155,16 @@
                             "name": "Resubmit Artwork",
                             "request": {
                                 "method": "POST",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n  \"newCompetitionId\": \"NEW_COMPETITION_ID_HERE\"\n}",
+                                    "raw": "{\n    \"newCompetitionId\": \"NEW_COMPETITION_ID_HERE\"\n}",
                                     "options": {
                                         "raw": {
                                             "language": "json"
@@ -2723,11 +3201,16 @@
                                     {
                                         "key": "Content-Type",
                                         "value": "application/json"
+                                    },
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
                                     }
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n  \"paymentId\": \"YOUR_PAYPAL_ORDER_ID_HERE\"\n}"
+                                    "raw": "{\n    \"paymentId\": \"YOUR_PAYPAL_ORDER_ID_HERE\"\n}"
                                 },
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/artworks/promote/capture",
@@ -2782,14 +3265,27 @@
                                             "value": "{{username}}"
                                         }
                                     ]
-                                }
+                                },
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ]
                             }
                         },
                         {
                             "name": "Create Premium Photo (SINGLE)",
                             "request": {
                                 "method": "POST",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "body": {
                                     "mode": "formdata",
                                     "formdata": [
@@ -2805,7 +3301,7 @@
                                         },
                                         {
                                             "key": "title",
-                                            "value": "{\"en\": \"My Photo Title\"}",
+                                            "value": "My Photo Title",
                                             "type": "text"
                                         },
                                         {
@@ -2874,7 +3370,13 @@
                             "name": "Create Premium Photo (SIX)",
                             "request": {
                                 "method": "POST",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "body": {
                                     "mode": "formdata",
                                     "formdata": [
@@ -2891,7 +3393,7 @@
                                         },
                                         {
                                             "key": "title",
-                                            "value": "{\"en\": \"My Photo Title\"}",
+                                            "value": "My Photo Title",
                                             "type": "text"
                                         },
                                         {
@@ -2980,7 +3482,13 @@
                             "name": "Create Premium Photo (TWELVE)",
                             "request": {
                                 "method": "POST",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "body": {
                                     "mode": "formdata",
                                     "formdata": [
@@ -3001,7 +3509,7 @@
                                         },
                                         {
                                             "key": "title",
-                                            "value": "{\"en\": \"My Photo Title\"}",
+                                            "value": "My Photo Title",
                                             "type": "text"
                                         },
                                         {
@@ -3114,7 +3622,13 @@
                             "name": "Get Premium Photo by ID",
                             "request": {
                                 "method": "GET",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/marketplace/premium-images/:id",
                                     "host": [
@@ -3145,11 +3659,16 @@
                                     {
                                         "key": "Content-Type",
                                         "value": "application/json"
+                                    },
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
                                     }
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n  \"title\": {\"en\": \"Updated Title\"},\n  \"price\": 7.50\n}",
+                                    "raw": "{\n    \"title\": \"Updated Title\",\n    \"price\": 7.5\n}",
                                     "options": {
                                         "raw": {
                                             "language": "json"
@@ -3182,7 +3701,13 @@
                             "name": "Delete Premium Photo",
                             "request": {
                                 "method": "DELETE",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/marketplace/premium-images/:id",
                                     "host": [
@@ -3213,11 +3738,16 @@
                                     {
                                         "key": "Content-Type",
                                         "value": "application/json"
+                                    },
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
                                     }
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n  \"durationDays\": 7\n}",
+                                    "raw": "{\n    \"durationDays\": 7\n}",
                                     "options": {
                                         "raw": {
                                             "language": "json"
@@ -3255,11 +3785,16 @@
                                     {
                                         "key": "Content-Type",
                                         "value": "application/json"
+                                    },
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
                                     }
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n  \"paymentId\": \"PAYPAL_ORDER_ID_HERE\"\n}",
+                                    "raw": "{\n    \"paymentId\": \"PAYPAL_ORDER_ID_HERE\"\n}",
                                     "options": {
                                         "raw": {
                                             "language": "json"
@@ -3292,7 +3827,13 @@
                             "name": "My Purchase Stats",
                             "request": {
                                 "method": "GET",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/marketplace/my-purchases/stats",
                                     "host": [
@@ -3313,7 +3854,13 @@
                             "name": "My Purchases List",
                             "request": {
                                 "method": "GET",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/marketplace/my-purchases?page=1&limit=6",
                                     "host": [
@@ -3343,7 +3890,13 @@
                             "name": "Download Purchased Photo",
                             "request": {
                                 "method": "GET",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/marketplace/premium-images/{{premiumPhotoId}}/download",
                                     "host": [
@@ -3370,7 +3923,13 @@
                             "name": "Create Post",
                             "request": {
                                 "method": "POST",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "body": {
                                     "mode": "formdata",
                                     "formdata": [
@@ -3408,7 +3967,13 @@
                             "name": "Get All My Posts",
                             "request": {
                                 "method": "GET",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/posts",
                                     "host": [
@@ -3427,7 +3992,13 @@
                             "name": "Get Single Post",
                             "request": {
                                 "method": "GET",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/posts/{{postId}}",
                                     "host": [
@@ -3447,7 +4018,13 @@
                             "name": "Update Post",
                             "request": {
                                 "method": "PUT",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "body": {
                                     "mode": "formdata",
                                     "formdata": [
@@ -3486,7 +4063,13 @@
                             "name": "Delete Post",
                             "request": {
                                 "method": "DELETE",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/posts/{{postId}}",
                                     "host": [
@@ -3511,7 +4094,13 @@
                             "name": "Upload Business Link (User)",
                             "request": {
                                 "method": "POST",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "body": {
                                     "mode": "formdata",
                                     "formdata": [
@@ -3522,12 +4111,12 @@
                                         },
                                         {
                                             "key": "title",
-                                            "value": "{\"en\":\"My Business Portfolio\"}",
+                                            "value": "My Business Portfolio",
                                             "type": "text"
                                         },
                                         {
                                             "key": "story",
-                                            "value": "{\"en\":\"This is the creative narrative behind this cosmological series...\"}",
+                                            "value": "This is the creative narrative behind this cosmological series...",
                                             "type": "text"
                                         },
                                         {
@@ -3629,11 +4218,16 @@
                                     {
                                         "key": "Content-Type",
                                         "value": "application/json"
+                                    },
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
                                     }
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"subject\": \"App is crashing\",\n  \"message\": \"I cannot open the app.\"\n}"
+                                    "raw": "{\n    \"name\": \"John Doe\",\n    \"email\": \"john@example.com\",\n    \"subject\": \"App is crashing\",\n    \"message\": \"I cannot open the app.\"\n}"
                                 },
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/support",
@@ -3677,7 +4271,14 @@
                                             "value": "10"
                                         }
                                     ]
-                                }
+                                },
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ]
                             }
                         },
                         {
@@ -3696,7 +4297,14 @@
                                         "my-tickets",
                                         "{{ticket_id}}"
                                     ]
-                                }
+                                },
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ]
                             }
                         }
                     ]
@@ -3708,7 +4316,13 @@
                             "name": "Get Prize Money",
                             "request": {
                                 "method": "GET",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/payments/user/prize-money?page=1&limit=10",
                                     "host": [
@@ -3738,7 +4352,13 @@
                             "name": "Get Donations",
                             "request": {
                                 "method": "GET",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/payments/user/donations?page=1&limit=10",
                                     "host": [
@@ -3768,7 +4388,13 @@
                             "name": "Get Photo Sales",
                             "request": {
                                 "method": "GET",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/payments/user/photo-sales?page=1&limit=10&search=",
                                     "host": [
@@ -3802,7 +4428,13 @@
                             "name": "Export Photo Sales (CSV)",
                             "request": {
                                 "method": "GET",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/payments/user/photo-sales/export?search=",
                                     "host": [
@@ -3829,7 +4461,13 @@
                             "name": "View Image in Marketplace (Public)",
                             "request": {
                                 "method": "GET",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/marketplace/public/premium-images/REPLACE_WITH_PREMIUM_PHOTO_ID",
                                     "host": [
@@ -3850,7 +4488,13 @@
                             "name": "Get Payment History",
                             "request": {
                                 "method": "GET",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/payments/user/history?page=1&limit=10",
                                     "host": [
@@ -3885,11 +4529,16 @@
                                         "key": "Content-Type",
                                         "value": "application/json",
                                         "type": "text"
+                                    },
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
                                     }
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n  \"type\": \"Prize Money\",\n  \"amount\": 50,\n  \"accountNumber\": \"(702) 555-0122\"\n}",
+                                    "raw": "{\n    \"type\": \"Prize Money\",\n    \"amount\": 50,\n    \"accountNumber\": \"(702) 555-0122\"\n}",
                                     "options": {
                                         "raw": {
                                             "language": "json"
@@ -3932,7 +4581,14 @@
                                         "profile",
                                         "me"
                                     ]
-                                }
+                                },
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ]
                             }
                         },
                         {
@@ -3951,7 +4607,14 @@
                                         "profile",
                                         "{{username}}"
                                     ]
-                                }
+                                },
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ]
                             }
                         },
                         {
@@ -4009,7 +4672,14 @@
                                         "users",
                                         "profile"
                                     ]
-                                }
+                                },
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ]
                             }
                         },
                         {
@@ -4044,7 +4714,14 @@
                                             "value": "{{username}}"
                                         }
                                     ]
-                                }
+                                },
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ]
                             }
                         },
                         {
@@ -4062,7 +4739,14 @@
                                         "artworks",
                                         "{{artwork_id}}"
                                     ]
-                                }
+                                },
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ]
                             }
                         },
                         {
@@ -4098,7 +4782,14 @@
                                             "value": "{{username}}"
                                         }
                                     ]
-                                }
+                                },
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ]
                             }
                         },
                         {
@@ -4117,7 +4808,14 @@
                                         "premium-images",
                                         "{{photo_id}}"
                                     ]
-                                }
+                                },
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ]
                             }
                         },
                         {
@@ -4148,7 +4846,14 @@
                                             "value": "{{username}}"
                                         }
                                     ]
-                                }
+                                },
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ]
                             }
                         }
                     ]
@@ -4175,7 +4880,13 @@
                             "name": "Get All IN_COMPETITION",
                             "request": {
                                 "method": "GET",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/artworks/public/all?status=IN_COMPETITION&categoryId={{categoryId}}&subcategoryId={{subcategoryId}}&page=1&limit=10",
                                     "host": [
@@ -4217,7 +4928,13 @@
                             "name": "Get Details",
                             "request": {
                                 "method": "GET",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/artworks/public/:id",
                                     "host": [
@@ -4243,7 +4960,13 @@
                             "name": "Download Artwork",
                             "request": {
                                 "method": "GET",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/artworks/public/:id/download",
                                     "host": [
@@ -4270,7 +4993,13 @@
                             "name": "Vote",
                             "request": {
                                 "method": "POST",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/artworks/:id/vote",
                                     "host": [
@@ -4296,7 +5025,13 @@
                             "name": "Save Artwork",
                             "request": {
                                 "method": "POST",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/artworks/:id/save",
                                     "host": [
@@ -4326,6 +5061,11 @@
                                     {
                                         "key": "Content-Type",
                                         "value": "application/json"
+                                    },
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
                                     }
                                 ],
                                 "body": {
@@ -4361,11 +5101,16 @@
                                     {
                                         "key": "Content-Type",
                                         "value": "application/json"
+                                    },
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
                                     }
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n  \"reason\": \"Offensive or Abusive Content\",\n  \"details\": \"This does not belong here.\"\n}"
+                                    "raw": "{\n    \"reason\": \"Offensive or Abusive Content\",\n    \"details\": \"This does not belong here.\"\n}"
                                 },
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/artworks/:id/report",
@@ -4399,11 +5144,16 @@
                                             {
                                                 "key": "Content-Type",
                                                 "value": "application/json"
+                                            },
+                                            {
+                                                "key": "accept-language",
+                                                "value": "en",
+                                                "type": "text"
                                             }
                                         ],
                                         "body": {
                                             "mode": "raw",
-                                            "raw": "{\n  \"submissionId\": \"REPLACE_WITH_ARTWORK_ID\",\n  \"amount\": 25,\n  \"donorName\": \"Jane Doe\",\n  \"donorEmail\": \"jane@example.com\",\n  \"type\": \"ONE_TIME\",\n  \"message\": \"Keep up the great work!\"\n}"
+                                            "raw": "{\n    \"submissionId\": \"REPLACE_WITH_ARTWORK_ID\",\n    \"amount\": 25,\n    \"donorName\": \"Jane Doe\",\n    \"donorEmail\": \"jane@example.com\",\n    \"type\": \"ONE_TIME\",\n    \"message\": \"Keep up the great work!\"\n}"
                                         },
                                         "url": {
                                             "raw": "{{baseUrl}}/api/v1/payments/donate",
@@ -4427,11 +5177,16 @@
                                             {
                                                 "key": "Content-Type",
                                                 "value": "application/json"
+                                            },
+                                            {
+                                                "key": "accept-language",
+                                                "value": "en",
+                                                "type": "text"
                                             }
                                         ],
                                         "body": {
                                             "mode": "raw",
-                                            "raw": "{\n  \"paymentId\": \"REPLACE_WITH_PAYPAL_ORDER_ID\"\n}"
+                                            "raw": "{\n    \"paymentId\": \"REPLACE_WITH_PAYPAL_ORDER_ID\"\n}"
                                         },
                                         "url": {
                                             "raw": "{{baseUrl}}/api/v1/payments/donate/capture",
@@ -4459,7 +5214,13 @@
                             "name": "Get All PROFILE_ONLY",
                             "request": {
                                 "method": "GET",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/artworks/public/all?status=PROFILE_ONLY&categoryId={{categoryId}}&subcategoryId={{subcategoryId}}&page=1&limit=10",
                                     "host": [
@@ -4501,7 +5262,13 @@
                             "name": "Get Details",
                             "request": {
                                 "method": "GET",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/artworks/public/:id",
                                     "host": [
@@ -4527,7 +5294,13 @@
                             "name": "Download Artwork",
                             "request": {
                                 "method": "GET",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/artworks/public/:id/download",
                                     "host": [
@@ -4554,7 +5327,13 @@
                             "name": "Like",
                             "request": {
                                 "method": "POST",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/artworks/:id/like",
                                     "host": [
@@ -4580,7 +5359,13 @@
                             "name": "Save Artwork",
                             "request": {
                                 "method": "POST",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/artworks/:id/save",
                                     "host": [
@@ -4610,6 +5395,11 @@
                                     {
                                         "key": "Content-Type",
                                         "value": "application/json"
+                                    },
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
                                     }
                                 ],
                                 "body": {
@@ -4645,11 +5435,16 @@
                                     {
                                         "key": "Content-Type",
                                         "value": "application/json"
+                                    },
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
                                     }
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n  \"reason\": \"Offensive or Abusive Content\",\n  \"details\": \"This does not belong here.\"\n}"
+                                    "raw": "{\n    \"reason\": \"Offensive or Abusive Content\",\n    \"details\": \"This does not belong here.\"\n}"
                                 },
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/artworks/:id/report",
@@ -4683,11 +5478,16 @@
                                             {
                                                 "key": "Content-Type",
                                                 "value": "application/json"
+                                            },
+                                            {
+                                                "key": "accept-language",
+                                                "value": "en",
+                                                "type": "text"
                                             }
                                         ],
                                         "body": {
                                             "mode": "raw",
-                                            "raw": "{\n  \"submissionId\": \"REPLACE_WITH_ARTWORK_ID\",\n  \"amount\": 25,\n  \"donorName\": \"Jane Doe\",\n  \"donorEmail\": \"jane@example.com\",\n  \"type\": \"ONE_TIME\",\n  \"message\": \"Keep up the great work!\"\n}"
+                                            "raw": "{\n    \"submissionId\": \"REPLACE_WITH_ARTWORK_ID\",\n    \"amount\": 25,\n    \"donorName\": \"Jane Doe\",\n    \"donorEmail\": \"jane@example.com\",\n    \"type\": \"ONE_TIME\",\n    \"message\": \"Keep up the great work!\"\n}"
                                         },
                                         "url": {
                                             "raw": "{{baseUrl}}/api/v1/payments/donate",
@@ -4711,11 +5511,16 @@
                                             {
                                                 "key": "Content-Type",
                                                 "value": "application/json"
+                                            },
+                                            {
+                                                "key": "accept-language",
+                                                "value": "en",
+                                                "type": "text"
                                             }
                                         ],
                                         "body": {
                                             "mode": "raw",
-                                            "raw": "{\n  \"paymentId\": \"REPLACE_WITH_PAYPAL_ORDER_ID\"\n}"
+                                            "raw": "{\n    \"paymentId\": \"REPLACE_WITH_PAYPAL_ORDER_ID\"\n}"
                                         },
                                         "url": {
                                             "raw": "{{baseUrl}}/api/v1/payments/donate/capture",
@@ -4743,7 +5548,13 @@
                             "name": "Get Competitions / Leaderboard",
                             "request": {
                                 "method": "GET",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/competitions?kind=ALL&year=2026&month=9&page=1&limit=10",
                                     "host": [
@@ -4795,7 +5606,13 @@
                             "name": "Get Winners Archive",
                             "request": {
                                 "method": "GET",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/competitions/winners?kind=ALL&year=2026&month=9&page=1&limit=10",
                                     "host": [
@@ -4848,7 +5665,13 @@
                             "name": "Explore Premium Photos",
                             "request": {
                                 "method": "GET",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/marketplace/public/premium-images?kind=SINGLE&page=1&limit=10",
                                     "host": [
@@ -4900,7 +5723,13 @@
                             "name": "Get Premium Photo Details",
                             "request": {
                                 "method": "GET",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/marketplace/public/premium-images/{{premiumPhotoId}}",
                                     "host": [
@@ -4921,7 +5750,13 @@
                             "name": "Like Premium Photo",
                             "request": {
                                 "method": "POST",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/marketplace/premium-images/{{premiumPhotoId}}/like",
                                     "host": [
@@ -4946,11 +5781,16 @@
                                     {
                                         "key": "Content-Type",
                                         "value": "application/json"
+                                    },
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
                                     }
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n  \"email\": \"guest@example.com\",\n  \"fullName\": \"Guest User\"\n}",
+                                    "raw": "{\n    \"email\": \"guest@example.com\",\n    \"fullName\": \"Guest User\"\n}",
                                     "options": {
                                         "raw": {
                                             "language": "json"
@@ -4981,11 +5821,16 @@
                                     {
                                         "key": "Content-Type",
                                         "value": "application/json"
+                                    },
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
                                     }
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n  \"paymentId\": \"PAYPAL_ORDER_ID\"\n}",
+                                    "raw": "{\n    \"paymentId\": \"PAYPAL_ORDER_ID\"\n}",
                                     "options": {
                                         "raw": {
                                             "language": "json"
@@ -5012,7 +5857,13 @@
                             "name": "Download Purchased Photo",
                             "request": {
                                 "method": "GET",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/marketplace/premium-images/{{premiumPhotoId}}/download?orderId={{orderId}}",
                                     "host": [
@@ -5039,7 +5890,13 @@
                             "name": "Save Photo",
                             "request": {
                                 "method": "POST",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/marketplace/premium-images/{{premiumPhotoId}}/save",
                                     "host": [
@@ -5065,11 +5922,16 @@
                                     {
                                         "key": "Content-Type",
                                         "value": "application/json"
+                                    },
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
                                     }
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n  \"reason\": \"Copyright Infringement\",\n  \"details\": \"This photo belongs to me.\"\n}"
+                                    "raw": "{\n    \"reason\": \"Copyright Infringement\",\n    \"details\": \"This photo belongs to me.\"\n}"
                                 },
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/marketplace/premium-images/:id/report",
@@ -5103,7 +5965,13 @@
                             "name": "Create Advertisement (Local)",
                             "request": {
                                 "method": "POST",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "body": {
                                     "mode": "formdata",
                                     "formdata": [
@@ -5176,7 +6044,13 @@
                             "name": "Create Advertisement (Online)",
                             "request": {
                                 "method": "POST",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "body": {
                                     "mode": "formdata",
                                     "formdata": [
@@ -5258,6 +6132,11 @@
                                     {
                                         "key": "Content-Type",
                                         "value": "application/json"
+                                    },
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
                                     }
                                 ],
                                 "body": {
@@ -5283,7 +6162,13 @@
                             "name": "Download Invoice",
                             "request": {
                                 "method": "GET",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/advertisements/{{advertisementId}}/invoice",
                                     "host": [
@@ -5304,7 +6189,13 @@
                             "name": "Get Public Advertisements",
                             "request": {
                                 "method": "GET",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/advertisements/public?page=Home",
                                     "host": [
@@ -5336,10 +6227,16 @@
                             "name": "Subscribe (Public)",
                             "request": {
                                 "method": "POST",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n  \"email\": \"test@example.com\"\n}",
+                                    "raw": "{\n    \"email\": \"test@example.com\"\n}",
                                     "options": {
                                         "raw": {
                                             "language": "json"
@@ -5369,7 +6266,13 @@
                             "name": "Public - Submit Campaign / Register",
                             "request": {
                                 "method": "POST",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "body": {
                                     "mode": "formdata",
                                     "formdata": [
@@ -5705,7 +6608,13 @@
                             "name": "Get Active Announcements",
                             "request": {
                                 "method": "GET",
-                                "header": [],
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{baseUrl}}/api/v1/announcements",
                                     "host": [
