@@ -9,15 +9,22 @@ export class PostController {
 
   formatPost(req, post) {
     if (!post) return post;
+    const formatted = { ...post };
     const baseUrl = `${req.protocol}://${req.get('host')}`;
     
-    if (post.mediaUrl && !post.mediaUrl.startsWith('http')) {
-      post.mediaUrl = `${baseUrl}${post.mediaUrl.startsWith('/') ? '' : '/'}${post.mediaUrl}`;
+    const sourceLang = req.headers['accept-language']?.split(',')[0]?.split('-')[0] || req.headers['x-lang'] || 'en';
+    
+    if (sourceLang === 'pl') {
+      if (formatted.body_pl) formatted.body = formatted.body_pl;
     }
-    if (post.user && post.user.avatar && !post.user.avatar.startsWith('http')) {
-      post.user.avatar = `${baseUrl}${post.user.avatar.startsWith('/') ? '' : '/'}${post.user.avatar}`;
+    
+    if (formatted.mediaUrl && !formatted.mediaUrl.startsWith('http')) {
+      formatted.mediaUrl = `${baseUrl}${formatted.mediaUrl.startsWith('/') ? '' : '/'}${formatted.mediaUrl}`;
     }
-    return post;
+    if (formatted.user && formatted.user.avatar && !formatted.user.avatar.startsWith('http')) {
+      formatted.user.avatar = `${baseUrl}${formatted.user.avatar.startsWith('/') ? '' : '/'}${formatted.user.avatar}`;
+    }
+    return formatted;
   }
 
   createPost = async (req, res) => {
@@ -29,9 +36,9 @@ export class PostController {
       if (body) {
         if (sourceLang === 'pl') {
           body_pl = body;
-          body = await TranslateUtil.translateText(body, 'pl', 'en');
+          body = await TranslateUtil.translateText(body, 'en', 'pl');
         } else {
-          body_pl = await TranslateUtil.translateText(body, 'en', 'pl');
+          body_pl = await TranslateUtil.translateText(body, 'pl', 'en');
         }
       }
       const mediaFile = req.file;
@@ -96,12 +103,17 @@ export class PostController {
         const sourceLang = req.headers['accept-language']?.split(',')[0]?.split('-')[0] || req.headers['x-lang'] || 'en';
         if (sourceLang === 'pl') {
           req.body.body_pl = req.body.body;
-          req.body.body = await TranslateUtil.translateText(req.body.body, 'pl', 'en');
+          req.body.body = await TranslateUtil.translateText(req.body.body, 'en', 'pl');
         } else {
-          req.body.body_pl = await TranslateUtil.translateText(req.body.body, 'en', 'pl');
+          req.body.body_pl = await TranslateUtil.translateText(req.body.body, 'pl', 'en');
         }
       }
-      let post = await this.postService.updatePost(req.params.id, req.user.id, req.body, req.file);
+      const updateData = {};
+      if (req.body.body !== undefined) updateData.body = req.body.body;
+      if (req.body.body_pl !== undefined) updateData.body_pl = req.body.body_pl;
+      if (req.body.copyrightConfirmed !== undefined) updateData.copyrightConfirmed = req.body.copyrightConfirmed;
+      
+      let post = await this.postService.updatePost(req.params.id, req.user.id, updateData, req.file);
       post = this.formatPost(req, post);
       return ResponseUtil.success(res, 'Post updated successfully', post);
     } catch (error) {
