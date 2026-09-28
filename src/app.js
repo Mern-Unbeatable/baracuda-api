@@ -37,7 +37,7 @@ class App {
   initializeMiddlewares() {
     // Middleware for CORS
     this.app.use(cors({
-      origin: ['http://localhost:5173', 'http://localhost:5174'],
+      origin: ['http://localhost:5173', 'http://localhost:5174', 'https://baracuda260.maktechgroup.tech', 'https://www.baracuda260.maktechgroup.tech'],
       credentials: true
     }));
 
