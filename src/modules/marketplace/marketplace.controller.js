@@ -15,6 +15,31 @@ export class MarketplaceController {
   formatMediaUrls(req, photo) {
     if (!photo) return photo;
     const formatted = { ...photo };
+    
+    const sourceLang = req.headers['accept-language']?.split(',')[0]?.split('-')[0] || req.headers['x-lang'] || 'en';
+    
+    const applyTranslations = (obj) => {
+      if (!obj || typeof obj !== 'object') return;
+      if (Array.isArray(obj)) {
+        obj.forEach(applyTranslations);
+      } else {
+        if (sourceLang === 'pl') {
+          if (obj.title_pl) obj.title = obj.title_pl;
+          if (obj.story_pl) obj.story = obj.story_pl;
+          if (obj.name_pl) obj.name = obj.name_pl;
+          if (obj.description_pl) obj.description = obj.description_pl;
+          if (obj.tags_pl && obj.tags_pl.length > 0) obj.tags = obj.tags_pl;
+          if (obj.features_pl && obj.features_pl.length > 0) obj.features = obj.features_pl;
+        }
+        Object.keys(obj).forEach(key => {
+          if (obj[key] && typeof obj[key] === 'object') {
+            applyTranslations(obj[key]);
+          }
+        });
+      }
+    };
+    applyTranslations(formatted);
+    
     if (formatted.price) {
       formatted.price = parseFloat(formatted.price);
     }

@@ -58,9 +58,9 @@ export class UserPaymentService {
       id: win.id,
       month: win.competition?.title, // using title as per requirement 'Competitions Name'
       monthName: `${new Date(win.createdAt).toLocaleString('default', { month: 'long' })} ${new Date(win.createdAt).getFullYear()}`,
-      competitionName: win.competition?.title?.en || win.competition?.title || 'Unknown',
-      category: win.submission?.category?.name?.en || 'Unknown',
-      albumType: win.submission?.albumType?.name?.en || 'Unknown',
+      competitionName: win.competition?.title || 'Unknown',
+      category: win.submission?.category?.name || 'Unknown',
+      albumType: win.submission?.albumType?.name || 'Unknown',
       position: win.place ? win.place.toString() : (win.rank ? `${win.rank} th` : 'Winner'),
       totalVote: win.votes || 0,
       prizeMoney: win.submission?.prizeMoney ? Number(win.submission.prizeMoney) : 0

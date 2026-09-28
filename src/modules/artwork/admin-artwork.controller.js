@@ -12,6 +12,43 @@ export class AdminArtworkController {
     if (!item) return item;
     const formatted = { ...item };
     
+    const sourceLang = req.headers['accept-language']?.split(',')[0]?.split('-')[0] || req.headers['x-lang'] || 'en';
+    
+    const applyTranslations = (obj) => {
+      if (!obj || typeof obj !== 'object') return;
+      if (Array.isArray(obj)) {
+        obj.forEach(applyTranslations);
+      } else {
+        if (sourceLang === 'pl') {
+          if (obj.title_pl) obj.title = obj.title_pl;
+          if (obj.story_pl) obj.story = obj.story_pl;
+          if (obj.name_pl) obj.name = obj.name_pl;
+          if (obj.description_pl) obj.description = obj.description_pl;
+          if (obj.tags_pl && obj.tags_pl.length > 0) obj.tags = obj.tags_pl;
+          if (obj.features_pl && obj.features_pl.length > 0) obj.features = obj.features_pl;
+        }
+        Object.keys(obj).forEach(key => {
+          if (obj[key] && typeof obj[key] === 'object') {
+            applyTranslations(obj[key]);
+          }
+        });
+      }
+    };
+    applyTranslations(formatted);
+    
+    if (formatted.prizeMoney) {
+      formatted.prizeMoney = parseFloat(formatted.prizeMoney);
+    }
+    
+    if (formatted.promotion && formatted.promotion.amountPaid) {
+      formatted.promotion.amountPaid = parseFloat(formatted.promotion.amountPaid);
+    }
+    
+    if (formatted.albumType) {
+      if (formatted.albumType.prizeMoney) formatted.albumType.prizeMoney = parseFloat(formatted.albumType.prizeMoney);
+      if (formatted.albumType.entryFee) formatted.albumType.entryFee = parseFloat(formatted.albumType.entryFee);
+    }
+    
     if (formatted.user && formatted.user.avatar && !formatted.user.avatar.startsWith('http')) {
       formatted.user.avatar = UrlUtil.getAbsoluteUrl(req, formatted.user.avatar);
     }
@@ -38,16 +75,8 @@ export class AdminArtworkController {
       const formattedData = data.map(item => {
         const formatted = this.formatMediaUrls(req, item);
         
-        // Parse title and story which are JSON
         let titleStr = formatted.title;
-        if (typeof titleStr === 'object' && titleStr !== null) {
-          titleStr = titleStr.en || titleStr[Object.keys(titleStr)[0]] || '';
-        }
-        
         let storyStr = formatted.story;
-        if (typeof storyStr === 'object' && storyStr !== null) {
-          storyStr = storyStr.en || storyStr[Object.keys(storyStr)[0]] || '';
-        }
 
         // Extract cover image and additional photos count
         let coverImage = null;

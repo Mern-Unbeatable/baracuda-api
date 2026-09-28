@@ -14,6 +14,43 @@ export class ArtworkController {
     if (!artwork) return artwork;
     const formatted = { ...artwork };
     
+    const sourceLang = req.headers['accept-language']?.split(',')[0]?.split('-')[0] || req.headers['x-lang'] || 'en';
+    
+    const applyTranslations = (obj) => {
+      if (!obj || typeof obj !== 'object') return;
+      if (Array.isArray(obj)) {
+        obj.forEach(applyTranslations);
+      } else {
+        if (sourceLang === 'pl') {
+          if (obj.title_pl) obj.title = obj.title_pl;
+          if (obj.story_pl) obj.story = obj.story_pl;
+          if (obj.name_pl) obj.name = obj.name_pl;
+          if (obj.description_pl) obj.description = obj.description_pl;
+          if (obj.tags_pl && obj.tags_pl.length > 0) obj.tags = obj.tags_pl;
+          if (obj.features_pl && obj.features_pl.length > 0) obj.features = obj.features_pl;
+        }
+        Object.keys(obj).forEach(key => {
+          if (obj[key] && typeof obj[key] === 'object') {
+            applyTranslations(obj[key]);
+          }
+        });
+      }
+    };
+    applyTranslations(formatted);
+    
+    if (formatted.prizeMoney) {
+      formatted.prizeMoney = parseFloat(formatted.prizeMoney);
+    }
+    
+    if (formatted.promotion && formatted.promotion.amountPaid) {
+      formatted.promotion.amountPaid = parseFloat(formatted.promotion.amountPaid);
+    }
+    
+    if (formatted.albumType) {
+      if (formatted.albumType.prizeMoney) formatted.albumType.prizeMoney = parseFloat(formatted.albumType.prizeMoney);
+      if (formatted.albumType.entryFee) formatted.albumType.entryFee = parseFloat(formatted.albumType.entryFee);
+    }
+
     // Helper to format all avatar fields recursively in the object
     const formatAvatars = (obj) => {
       if (!obj || typeof obj !== 'object') return;
@@ -217,7 +254,7 @@ export class ArtworkController {
       }
       
       const result = await this.artworkService.updateArtwork(id, userId, data, sourceLang);
-      res.status(200).json({ success: true, data: result });
+      res.status(200).json({ success: true, data: this.formatMediaUrls(req, result) });
     } catch (error) {
       res.status(400).json({ success: false, error: error.message });
     }

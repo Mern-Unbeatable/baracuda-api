@@ -7,23 +7,36 @@ import { TranslateUtil } from '../../utils/translate.js';
 
 export class ArtworkService {
   async createArtwork(userId, data, mediaFiles, sourceLang = 'en', tx = prisma) {
+    const translationPromises = [];
     // TRANSLATION LOGIC FOR STRING FIELDS
     if (data.title) {
       if (sourceLang === 'pl') {
         data.title_pl = data.title;
-        data.title = await TranslateUtil.translateText(data.title, 'en', 'pl');
+        translationPromises.push(
+          TranslateUtil.translateText(data.title, 'en', 'pl').then(res => { data.title = res; })
+        );
       } else {
-        data.title_pl = await TranslateUtil.translateText(data.title, 'pl', 'en');
+        translationPromises.push(
+          TranslateUtil.translateText(data.title, 'pl', 'en').then(res => { data.title_pl = res; })
+        );
       }
     }
 
     if (data.story) {
       if (sourceLang === 'pl') {
         data.story_pl = data.story;
-        data.story = await TranslateUtil.translateText(data.story, 'en', 'pl');
+        translationPromises.push(
+          TranslateUtil.translateText(data.story, 'en', 'pl').then(res => { data.story = res; })
+        );
       } else {
-        data.story_pl = await TranslateUtil.translateText(data.story, 'pl', 'en');
+        translationPromises.push(
+          TranslateUtil.translateText(data.story, 'pl', 'en').then(res => { data.story_pl = res; })
+        );
       }
+    }
+    
+    if (translationPromises.length > 0) {
+      await Promise.all(translationPromises);
     }
 
     if (data.tags && Array.isArray(data.tags) && data.tags.length > 0) {
@@ -55,13 +68,21 @@ export class ArtworkService {
 
     const ZODIAC_SIGNS = ['ARIES', 'TAURUS', 'GEMINI', 'CANCER', 'LEO', 'VIRGO', 'LIBRA', 'SCORPIO', 'SAGITTARIUS', 'CAPRICORN', 'AQUARIUS', 'PISCES'];
 
+    // Separate images and videos correctly
+    const images = mediaFiles.filter(f => !f.mimetype.startsWith('video'));
+    const videos = mediaFiles.filter(f => f.mimetype.startsWith('video'));
+
+    // Remove fields from data that are not in Prisma schema for Submission
+    const zodiacSignsArray = data.zodiacSigns;
+    delete data.zodiacSigns;
+
     const getZodiacMapping = (index) => {
       if (data.kind === 'SINGLE') {
         return { zodiacSign: data.zodiacSign || null, slotIndex: 0 };
       }
       // If user provides custom array of zodiacSigns matching files order
-      if (data.zodiacSigns && Array.isArray(data.zodiacSigns) && data.zodiacSigns[index]) {
-        return { zodiacSign: data.zodiacSigns[index], slotIndex: index };
+      if (zodiacSignsArray && Array.isArray(zodiacSignsArray) && zodiacSignsArray[index]) {
+        return { zodiacSign: zodiacSignsArray[index], slotIndex: index };
       }
       if (data.kind === 'SIX' && data.theme === 'RED') {
         return { zodiacSign: ZODIAC_SIGNS[index] || null, slotIndex: index }; // 0 to 5
@@ -74,10 +95,6 @@ export class ArtworkService {
       }
       return { zodiacSign: null, slotIndex: index };
     };
-
-    // Separate images and videos correctly
-    const images = mediaFiles.filter(f => !f.mimetype.startsWith('video'));
-    const videos = mediaFiles.filter(f => f.mimetype.startsWith('video'));
 
     // Create submission and media in a transaction
     const submission = await tx.submission.create({
@@ -281,12 +298,17 @@ export class ArtworkService {
       throw new Error('Artwork not found or unauthorized');
     }
 
+    const translationPromises = [];
     if (data.title) {
       if (sourceLang === 'pl') {
         data.title_pl = data.title;
-        data.title = await TranslateUtil.translateText(data.title, 'en', 'pl');
+        translationPromises.push(
+          TranslateUtil.translateText(data.title, 'en', 'pl').then(res => { data.title = res; })
+        );
       } else {
-        data.title_pl = await TranslateUtil.translateText(data.title, 'pl', 'en');
+        translationPromises.push(
+          TranslateUtil.translateText(data.title, 'pl', 'en').then(res => { data.title_pl = res; })
+        );
       }
     }
 
@@ -297,11 +319,19 @@ export class ArtworkService {
       } else {
         if (sourceLang === 'pl') {
           data.story_pl = data.story;
-          data.story = await TranslateUtil.translateText(data.story, 'en', 'pl');
+          translationPromises.push(
+            TranslateUtil.translateText(data.story, 'en', 'pl').then(res => { data.story = res; })
+          );
         } else {
-          data.story_pl = await TranslateUtil.translateText(data.story, 'pl', 'en');
+          translationPromises.push(
+            TranslateUtil.translateText(data.story, 'pl', 'en').then(res => { data.story_pl = res; })
+          );
         }
       }
+    }
+    
+    if (translationPromises.length > 0) {
+      await Promise.all(translationPromises);
     }
 
     if (data.tags !== undefined) {

@@ -1,5 +1,6 @@
 import prisma from '../../config/prisma.js';
 import paymentService from '../payment/payment.service.js';
+import { TranslateUtil } from '../../utils/translate.js';
 import { ZipArchive } from 'archiver';
 import path from 'path';
 import fs from 'fs';
@@ -25,20 +26,34 @@ export class MarketplaceService {
     let story = data.story;
     let story_pl = data.story;
 
+    const translationPromises = [];
+    
     if (title) {
       if (sourceLang === 'pl') {
-        title = await TranslateUtil.translateText(data.title, 'pl', 'en');
+        translationPromises.push(
+          TranslateUtil.translateText(data.title, 'en', 'pl').then(res => { title = res; })
+        );
       } else {
-        title_pl = await TranslateUtil.translateText(data.title, 'en', 'pl');
+        translationPromises.push(
+          TranslateUtil.translateText(data.title, 'pl', 'en').then(res => { title_pl = res; })
+        );
       }
     }
     
     if (story) {
       if (sourceLang === 'pl') {
-        story = await TranslateUtil.translateText(data.story, 'pl', 'en');
+        translationPromises.push(
+          TranslateUtil.translateText(data.story, 'en', 'pl').then(res => { story = res; })
+        );
       } else {
-        story_pl = await TranslateUtil.translateText(data.story, 'en', 'pl');
+        translationPromises.push(
+          TranslateUtil.translateText(data.story, 'pl', 'en').then(res => { story_pl = res; })
+        );
       }
+    }
+    
+    if (translationPromises.length > 0) {
+      await Promise.all(translationPromises);
     }
 
     // Map images and videos like artwork
@@ -165,7 +180,7 @@ export class MarketplaceService {
           media: {
             where: { kind: 'IMAGE', slotIndex: 0 },
             take: 1,
-            select: { url: true }
+            select: { url: true, slotIndex: true, format: true, zodiacSign: true, kind: true }
           }
         }
       }),
@@ -194,12 +209,18 @@ export class MarketplaceService {
     if (!photo) throw new Error('Photo not found');
     if (photo.userId !== userId) throw new Error('Unauthorized');
 
+    const translationPromises = [];
+
     if (data.title) {
       if (sourceLang === 'pl') {
         data.title_pl = data.title;
-        data.title = await TranslateUtil.translateText(data.title, 'pl', 'en');
+        translationPromises.push(
+          TranslateUtil.translateText(data.title, 'en', 'pl').then(res => { data.title = res; })
+        );
       } else {
-        data.title_pl = await TranslateUtil.translateText(data.title, 'en', 'pl');
+        translationPromises.push(
+          TranslateUtil.translateText(data.title, 'pl', 'en').then(res => { data.title_pl = res; })
+        );
       }
     }
 
@@ -209,11 +230,19 @@ export class MarketplaceService {
       } else {
         if (sourceLang === 'pl') {
           data.story_pl = data.story;
-          data.story = await TranslateUtil.translateText(data.story, 'pl', 'en');
+          translationPromises.push(
+            TranslateUtil.translateText(data.story, 'en', 'pl').then(res => { data.story = res; })
+          );
         } else {
-          data.story_pl = await TranslateUtil.translateText(data.story, 'en', 'pl');
+          translationPromises.push(
+            TranslateUtil.translateText(data.story, 'pl', 'en').then(res => { data.story_pl = res; })
+          );
         }
       }
+    }
+
+    if (translationPromises.length > 0) {
+      await Promise.all(translationPromises);
     }
 
     return prisma.premiumPhoto.update({

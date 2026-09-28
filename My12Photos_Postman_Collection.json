@@ -3630,7 +3630,7 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{baseUrl}}/api/v1/marketplace/premium-images/:id",
+                                    "raw": "{{baseUrl}}/api/v1/marketplace/premium-photos/:id",
                                     "host": [
                                         "{{baseUrl}}"
                                     ],
@@ -3638,7 +3638,7 @@
                                         "api",
                                         "v1",
                                         "marketplace",
-                                        "premium-images",
+                                        "premium-photos",
                                         ":id"
                                     ],
                                     "variable": [
@@ -3676,7 +3676,7 @@
                                     }
                                 },
                                 "url": {
-                                    "raw": "{{baseUrl}}/api/v1/marketplace/premium-images/:id",
+                                    "raw": "{{baseUrl}}/api/v1/marketplace/premium-photos/:id",
                                     "host": [
                                         "{{baseUrl}}"
                                     ],
@@ -3684,7 +3684,7 @@
                                         "api",
                                         "v1",
                                         "marketplace",
-                                        "premium-images",
+                                        "premium-photos",
                                         ":id"
                                     ],
                                     "variable": [
@@ -3709,7 +3709,7 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{baseUrl}}/api/v1/marketplace/premium-images/:id",
+                                    "raw": "{{baseUrl}}/api/v1/marketplace/premium-photos/:id",
                                     "host": [
                                         "{{baseUrl}}"
                                     ],
@@ -3717,7 +3717,7 @@
                                         "api",
                                         "v1",
                                         "marketplace",
-                                        "premium-images",
+                                        "premium-photos",
                                         ":id"
                                     ],
                                     "variable": [
@@ -3755,7 +3755,7 @@
                                     }
                                 },
                                 "url": {
-                                    "raw": "{{baseUrl}}/api/v1/marketplace/premium-images/:id/promote",
+                                    "raw": "{{baseUrl}}/api/v1/marketplace/premium-photos/:id/promote",
                                     "host": [
                                         "{{baseUrl}}"
                                     ],
@@ -3763,7 +3763,7 @@
                                         "api",
                                         "v1",
                                         "marketplace",
-                                        "premium-images",
+                                        "premium-photos",
                                         ":id",
                                         "promote"
                                     ],
@@ -3802,7 +3802,7 @@
                                     }
                                 },
                                 "url": {
-                                    "raw": "{{baseUrl}}/api/v1/marketplace/premium-images/promote/capture",
+                                    "raw": "{{baseUrl}}/api/v1/marketplace/premium-photos/promote/capture",
                                     "host": [
                                         "{{baseUrl}}"
                                     ],
@@ -3810,7 +3810,7 @@
                                         "api",
                                         "v1",
                                         "marketplace",
-                                        "premium-images",
+                                        "premium-photos",
                                         "promote",
                                         "capture"
                                     ]
@@ -3898,7 +3898,7 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{baseUrl}}/api/v1/marketplace/premium-images/{{premiumPhotoId}}/download",
+                                    "raw": "{{baseUrl}}/api/v1/marketplace/premium-photos/{{premiumPhotoId}}/download",
                                     "host": [
                                         "{{baseUrl}}"
                                     ],
@@ -3906,7 +3906,7 @@
                                         "api",
                                         "v1",
                                         "marketplace",
-                                        "premium-images",
+                                        "premium-photos",
                                         "{{premiumPhotoId}}",
                                         "download"
                                     ]
@@ -4469,7 +4469,7 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{baseUrl}}/api/v1/marketplace/public/premium-images/REPLACE_WITH_PREMIUM_PHOTO_ID",
+                                    "raw": "{{baseUrl}}/api/v1/marketplace/public/premium-photos/REPLACE_WITH_PREMIUM_PHOTO_ID",
                                     "host": [
                                         "{{baseUrl}}"
                                     ],
@@ -4478,7 +4478,7 @@
                                         "v1",
                                         "marketplace",
                                         "public",
-                                        "premium-images",
+                                        "premium-photos",
                                         "REPLACE_WITH_PREMIUM_PHOTO_ID"
                                     ]
                                 }
@@ -4797,7 +4797,7 @@
                             "request": {
                                 "method": "GET",
                                 "url": {
-                                    "raw": "{{baseUrl}}/api/v1/marketplace/premium-images/{{photo_id}}",
+                                    "raw": "{{baseUrl}}/api/v1/marketplace/premium-photos/{{photo_id}}",
                                     "host": [
                                         "{{baseUrl}}"
                                     ],
@@ -4805,7 +4805,7 @@
                                         "api",
                                         "v1",
                                         "marketplace",
-                                        "premium-images",
+                                        "premium-photos",
                                         "{{photo_id}}"
                                     ]
                                 },
@@ -5673,7 +5673,7 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{baseUrl}}/api/v1/marketplace/public/premium-images?kind=SINGLE&page=1&limit=10",
+                                    "raw": "{{baseUrl}}/api/v1/marketplace/public/premium-photos?kind=SINGLE&page=1&limit=10",
                                     "host": [
                                         "{{baseUrl}}"
                                     ],
@@ -5682,7 +5682,7 @@
                                         "v1",
                                         "marketplace",
                                         "public",
-                                        "premium-images"
+                                        "premium-photos"
                                     ],
                                     "query": [
                                         {
@@ -5731,7 +5731,7 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{baseUrl}}/api/v1/marketplace/public/premium-images/{{premiumPhotoId}}",
+                                    "raw": "{{baseUrl}}/api/v1/marketplace/public/premium-photos/{{premiumPhotoId}}",
                                     "host": [
                                         "{{baseUrl}}"
                                     ],
@@ -5740,7 +5740,7 @@
                                         "v1",
                                         "marketplace",
                                         "public",
-                                        "premium-images",
+                                        "premium-photos",
                                         "{{premiumPhotoId}}"
                                     ]
                                 }
@@ -5758,7 +5758,7 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{baseUrl}}/api/v1/marketplace/premium-images/{{premiumPhotoId}}/like",
+                                    "raw": "{{baseUrl}}/api/v1/marketplace/premium-photos/{{premiumPhotoId}}/like",
                                     "host": [
                                         "{{baseUrl}}"
                                     ],
@@ -5766,7 +5766,7 @@
                                         "api",
                                         "v1",
                                         "marketplace",
-                                        "premium-images",
+                                        "premium-photos",
                                         "{{premiumPhotoId}}",
                                         "like"
                                     ]
@@ -5798,7 +5798,7 @@
                                     }
                                 },
                                 "url": {
-                                    "raw": "{{baseUrl}}/api/v1/marketplace/premium-images/{{premiumPhotoId}}/buy",
+                                    "raw": "{{baseUrl}}/api/v1/marketplace/premium-photos/{{premiumPhotoId}}/buy",
                                     "host": [
                                         "{{baseUrl}}"
                                     ],
@@ -5806,7 +5806,7 @@
                                         "api",
                                         "v1",
                                         "marketplace",
-                                        "premium-images",
+                                        "premium-photos",
                                         "{{premiumPhotoId}}",
                                         "buy"
                                     ]
@@ -5838,7 +5838,7 @@
                                     }
                                 },
                                 "url": {
-                                    "raw": "{{baseUrl}}/api/v1/marketplace/premium-images/buy/capture",
+                                    "raw": "{{baseUrl}}/api/v1/marketplace/premium-photos/buy/capture",
                                     "host": [
                                         "{{baseUrl}}"
                                     ],
@@ -5846,7 +5846,7 @@
                                         "api",
                                         "v1",
                                         "marketplace",
-                                        "premium-images",
+                                        "premium-photos",
                                         "buy",
                                         "capture"
                                     ]
@@ -5865,7 +5865,7 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{baseUrl}}/api/v1/marketplace/premium-images/{{premiumPhotoId}}/download?orderId={{orderId}}",
+                                    "raw": "{{baseUrl}}/api/v1/marketplace/premium-photos/{{premiumPhotoId}}/download?orderId={{orderId}}",
                                     "host": [
                                         "{{baseUrl}}"
                                     ],
@@ -5873,7 +5873,7 @@
                                         "api",
                                         "v1",
                                         "marketplace",
-                                        "premium-images",
+                                        "premium-photos",
                                         "{{premiumPhotoId}}",
                                         "download"
                                     ],
@@ -5898,7 +5898,7 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{baseUrl}}/api/v1/marketplace/premium-images/{{premiumPhotoId}}/save",
+                                    "raw": "{{baseUrl}}/api/v1/marketplace/premium-photos/{{premiumPhotoId}}/save",
                                     "host": [
                                         "{{baseUrl}}"
                                     ],
@@ -5906,7 +5906,7 @@
                                         "api",
                                         "v1",
                                         "marketplace",
-                                        "premium-images",
+                                        "premium-photos",
                                         "{{premiumPhotoId}}",
                                         "save"
                                     ]
@@ -5934,7 +5934,7 @@
                                     "raw": "{\n    \"reason\": \"Copyright Infringement\",\n    \"details\": \"This photo belongs to me.\"\n}"
                                 },
                                 "url": {
-                                    "raw": "{{baseUrl}}/api/v1/marketplace/premium-images/:id/report",
+                                    "raw": "{{baseUrl}}/api/v1/marketplace/premium-photos/:id/report",
                                     "host": [
                                         "{{baseUrl}}"
                                     ],
@@ -5942,7 +5942,7 @@
                                         "api",
                                         "v1",
                                         "marketplace",
-                                        "premium-images",
+                                        "premium-photos",
                                         ":id",
                                         "report"
                                     ],

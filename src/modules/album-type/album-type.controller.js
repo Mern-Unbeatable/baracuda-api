@@ -11,21 +11,40 @@ export class AlbumTypeController {
    * Create an Album Type
    * @route POST /api/v1/album-types
    */
-  createAlbumType = async (req, res, next) => {
+    createAlbumType = async (req, res, next) => {
     try {
       const { error, value } = albumTypeValidation.create.validate(req.body);
       if (error) {
         return ResponseUtil.error(res, error.details[0].message, 400);
       }
 
+      const sourceLang = req.headers['accept-language']?.split(',')[0]?.split('-')[0] || req.headers['x-lang'] || 'en';
+
       if (value.name) {
-        value.name_pl = await TranslateUtil.translateText(value.name, 'pl', 'en');
+        if (sourceLang === 'pl') {
+          value.name_pl = value.name;
+          value.name = await TranslateUtil.translateText(value.name, 'pl', 'en');
+        } else {
+          value.name_pl = await TranslateUtil.translateText(value.name, 'en', 'pl');
+        }
       }
+      
       if (value.description) {
-        value.description_pl = await TranslateUtil.translateText(value.description, 'pl', 'en');
+        if (sourceLang === 'pl') {
+          value.description_pl = value.description;
+          value.description = await TranslateUtil.translateText(value.description, 'pl', 'en');
+        } else {
+          value.description_pl = await TranslateUtil.translateText(value.description, 'en', 'pl');
+        }
       }
+      
       if (value.features) {
-        value.features_pl = await TranslateUtil.translateText(value.features, 'pl', 'en');
+        if (sourceLang === 'pl') {
+          value.features_pl = value.features;
+          value.features = await TranslateUtil.translateText(value.features, 'pl', 'en');
+        } else {
+          value.features_pl = await TranslateUtil.translateText(value.features, 'en', 'pl');
+        }
       }
 
       const created = await this.albumTypeService.createAlbumType(value);
@@ -35,6 +54,10 @@ export class AlbumTypeController {
         features: Array.isArray(created.features) ? created.features.join('\\n') : created.features,
         features_pl: Array.isArray(created.features_pl) ? created.features_pl.join('\\n') : created.features_pl
       };
+      
+      if (formatted.prizeMoney) {
+        formatted.prizeMoney = parseFloat(formatted.prizeMoney);
+      }
 
       res.status(201).json({
         success: true,
@@ -62,11 +85,15 @@ export class AlbumTypeController {
 
       // We might want to flatten the JSON for the frontend if they expect strings, 
       // but since they might be fetching it directly, let's format it.
-      const formatted = albumTypes.map(at => ({
-        ...at,
-        features: Array.isArray(at.features) ? at.features.join('\\n') : at.features,
-        features_pl: Array.isArray(at.features_pl) ? at.features_pl.join('\\n') : at.features_pl
-      })).sort((a, b) => {
+      const formatted = albumTypes.map(at => {
+        let ret = {
+          ...at,
+          features: Array.isArray(at.features) ? at.features.join('\\n') : at.features,
+          features_pl: Array.isArray(at.features_pl) ? at.features_pl.join('\\n') : at.features_pl
+        };
+        if (ret.prizeMoney) ret.prizeMoney = parseFloat(ret.prizeMoney);
+        return ret;
+      }).sort((a, b) => {
         if (a.sortOrder !== b.sortOrder) return a.sortOrder - b.sortOrder;
         return (order[a.kind] || 99) - (order[b.kind] || 99);
       });
@@ -92,15 +119,32 @@ export class AlbumTypeController {
       if (error) {
         return ResponseUtil.error(res, error.details[0].message, 400);
       }
+      
+      const sourceLang = req.headers['accept-language']?.split(',')[0]?.split('-')[0] || req.headers['x-lang'] || 'en';
 
       if (value.name) {
-        value.name_pl = await TranslateUtil.translateText(value.name, 'pl', 'en');
+        if (sourceLang === 'pl') {
+          value.name_pl = value.name;
+          value.name = await TranslateUtil.translateText(value.name, 'pl', 'en');
+        } else {
+          value.name_pl = await TranslateUtil.translateText(value.name, 'en', 'pl');
+        }
       }
       if (value.description) {
-        value.description_pl = await TranslateUtil.translateText(value.description, 'pl', 'en');
+        if (sourceLang === 'pl') {
+          value.description_pl = value.description;
+          value.description = await TranslateUtil.translateText(value.description, 'pl', 'en');
+        } else {
+          value.description_pl = await TranslateUtil.translateText(value.description, 'en', 'pl');
+        }
       }
       if (value.features) {
-        value.features_pl = await TranslateUtil.translateText(value.features, 'pl', 'en');
+        if (sourceLang === 'pl') {
+          value.features_pl = value.features;
+          value.features = await TranslateUtil.translateText(value.features, 'pl', 'en');
+        } else {
+          value.features_pl = await TranslateUtil.translateText(value.features, 'en', 'pl');
+        }
       }
 
       const updated = await this.albumTypeService.updateAlbumType(id, value);
@@ -110,6 +154,10 @@ export class AlbumTypeController {
         features: Array.isArray(updated.features) ? updated.features.join('\\n') : updated.features,
         features_pl: Array.isArray(updated.features_pl) ? updated.features_pl.join('\\n') : updated.features_pl
       };
+      
+      if (formatted.prizeMoney) {
+        formatted.prizeMoney = parseFloat(formatted.prizeMoney);
+      }
 
       res.status(200).json({
         success: true,
