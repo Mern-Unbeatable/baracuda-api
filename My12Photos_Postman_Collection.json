@@ -4857,6 +4857,202 @@
                             }
                         }
                     ]
+                },
+                {
+                    "name": "My Store",
+                    "item": [
+                        {
+                            "name": "Get All Products",
+                            "request": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/store?category=ART_PRINTS&page=1&limit=10",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "store"
+                                    ],
+                                    "query": [
+                                        {
+                                            "key": "category",
+                                            "value": "ART_PRINTS"
+                                        },
+                                        {
+                                            "key": "page",
+                                            "value": "1"
+                                        },
+                                        {
+                                            "key": "limit",
+                                            "value": "10"
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Get Product by ID",
+                            "request": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/store/:id",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "store",
+                                        ":id"
+                                    ],
+                                    "variable": [
+                                        {
+                                            "key": "id",
+                                            "value": "PRODUCT_ID"
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Create Product",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "accept-language",
+                                        "value": "en",
+                                        "type": "text"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "title",
+                                            "value": "My Product",
+                                            "type": "text"
+                                        },
+                                        {
+                                            "key": "category",
+                                            "value": "ART_PRINTS",
+                                            "type": "text"
+                                        },
+                                        {
+                                            "key": "price",
+                                            "value": "50.00",
+                                            "type": "text"
+                                        },
+                                        {
+                                            "key": "setEditionSize",
+                                            "value": "1 of 100",
+                                            "type": "text"
+                                        },
+                                        {
+                                            "key": "description",
+                                            "value": "Beautiful art print.",
+                                            "type": "text"
+                                        },
+                                        {
+                                            "key": "copyrightConfirmed",
+                                            "value": "true",
+                                            "type": "text"
+                                        },
+                                        {
+                                            "key": "bannerImage",
+                                            "type": "file",
+                                            "src": []
+                                        },
+                                        {
+                                            "key": "images",
+                                            "type": "file",
+                                            "src": []
+                                        }
+                                    ]
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/store",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "store"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Update Product",
+                            "request": {
+                                "method": "PUT",
+                                "header": [],
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "price",
+                                            "value": "45.00",
+                                            "type": "text"
+                                        },
+                                        {
+                                            "key": "isActive",
+                                            "value": "false",
+                                            "type": "text"
+                                        }
+                                    ]
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/store/:id",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "store",
+                                        ":id"
+                                    ],
+                                    "variable": [
+                                        {
+                                            "key": "id",
+                                            "value": "PRODUCT_ID"
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Delete Product",
+                            "request": {
+                                "method": "DELETE",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/store/:id",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "store",
+                                        ":id"
+                                    ],
+                                    "variable": [
+                                        {
+                                            "key": "id",
+                                            "value": "PRODUCT_ID"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    ]
                 }
             ],
             "auth": {

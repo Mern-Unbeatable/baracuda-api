@@ -16,7 +16,7 @@ const storage = multer.diskStorage({
 });
 
 const fileFilter = (req, file, cb) => {
-  if (file.fieldname === 'avatar' || file.fieldname === 'profilePhoto' || file.fieldname === 'coverPhoto' || file.fieldname === 'images' || file.fieldname === 'singlePhoto' || file.fieldname === 'sixPhotos' || file.fieldname === 'twelvePhotos') {
+  if (file.fieldname === 'avatar' || file.fieldname === 'profilePhoto' || file.fieldname === 'coverPhoto' || file.fieldname === 'images' || file.fieldname === 'singlePhoto' || file.fieldname === 'sixPhotos' || file.fieldname === 'twelvePhotos' || file.fieldname === 'bannerImage') {
     const allowedImageTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/avif'];
     const allowedExtensions = ['.jpg', '.jpeg', '.png', '.webp', '.avif'];
     const ext = path.extname(file.originalname).toLowerCase();

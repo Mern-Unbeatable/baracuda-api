@@ -20,6 +20,7 @@ import { CampaignModule } from './modules/campaign/campaign.module.js';
 import { AdminReportModule } from './modules/admin-report/admin-report.module.js';
 import { AnnouncementModule } from './modules/announcement/announcement.module.js';
 import config from './config/env.js';
+import storeRouter from './modules/store/store.module.js';
 
 /**
  * Main Application Class
@@ -138,6 +139,7 @@ class App {
     const supportModule = new SupportModule();
     this.app.use('/api/v1/support', supportModule.router);
 
+    this.app.use('/api/v1/store', storeRouter);
     this.app.use('/api/v1/payments', paymentRouter);
     this.app.use('/api/v1/campaigns', CampaignModule.router);
   }
