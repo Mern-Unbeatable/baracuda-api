@@ -58,6 +58,18 @@ export class StoreModule {
       upload.none(),
       this.storeController.capturePromotion
     );
+
+    this.router.post(
+      '/:id/buy',
+      requireAuth,
+      this.storeController.buyProduct
+    );
+
+    this.router.post(
+      '/buy/capture',
+      requireAuth,
+      this.storeController.capturePurchase
+    );
   }
 }
 

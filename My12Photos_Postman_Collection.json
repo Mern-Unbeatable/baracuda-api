@@ -6870,6 +6870,83 @@
                                             ]
                                         }
                                     }
+                                },
+                                {
+                                    "name": "Get Product Details",
+                                    "request": {
+                                        "method": "GET",
+                                        "header": [],
+                                        "url": {
+                                            "raw": "{{baseUrl}}/api/v1/store/{{product_id}}",
+                                            "host": [
+                                                "{{baseUrl}}"
+                                            ],
+                                            "path": [
+                                                "api",
+                                                "v1",
+                                                "store",
+                                                "{{product_id}}"
+                                            ]
+                                        }
+                                    }
+                                },
+                                {
+                                    "name": "Buy Product",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [
+                                            {
+                                                "key": "Content-Type",
+                                                "value": "application/json"
+                                            }
+                                        ],
+                                        "body": {
+                                            "mode": "raw",
+                                            "raw": "{\n  \"email\": \"buyer@example.com\",\n  \"fullName\": \"John Doe\",\n  \"mobile\": \"+1234567890\",\n  \"city\": \"New York\",\n  \"state\": \"NY\",\n  \"zipCode\": \"10001\",\n  \"deliveryAddress\": \"123 Main St, Apt 4B\",\n  \"quantity\": 1,\n  \"size\": \"12x36 in\"\n}"
+                                        },
+                                        "url": {
+                                            "raw": "{{baseUrl}}/api/v1/store/{{product_id}}/buy",
+                                            "host": [
+                                                "{{baseUrl}}"
+                                            ],
+                                            "path": [
+                                                "api",
+                                                "v1",
+                                                "store",
+                                                "{{product_id}}",
+                                                "buy"
+                                            ]
+                                        }
+                                    }
+                                },
+                                {
+                                    "name": "Capture Product Purchase",
+                                    "request": {
+                                        "method": "POST",
+                                        "header": [
+                                            {
+                                                "key": "Content-Type",
+                                                "value": "application/json"
+                                            }
+                                        ],
+                                        "body": {
+                                            "mode": "raw",
+                                            "raw": "{\n  \"paymentId\": \"PAYPAL_ORDER_ID_HERE\"\n}"
+                                        },
+                                        "url": {
+                                            "raw": "{{baseUrl}}/api/v1/store/buy/capture",
+                                            "host": [
+                                                "{{baseUrl}}"
+                                            ],
+                                            "path": [
+                                                "api",
+                                                "v1",
+                                                "store",
+                                                "buy",
+                                                "capture"
+                                            ]
+                                        }
+                                    }
                                 }
                             ]
                         },

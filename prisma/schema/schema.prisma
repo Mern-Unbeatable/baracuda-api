@@ -1039,11 +1039,15 @@ model Order {
 model OrderItem {
   id             String  @id @default(uuid())
   orderId        String
-  premiumPhotoId String
+  premiumPhotoId String?
+  productId      String?
   price          Decimal @db.Decimal(10, 2)
+  quantity       Int     @default(1)
+  size           String?
 
-  order        Order        @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  premiumPhoto PremiumPhoto @relation(fields: [premiumPhotoId], references: [id])
+  order        Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  premiumPhoto PremiumPhoto? @relation(fields: [premiumPhotoId], references: [id])
+  product      Product?      @relation(fields: [productId], references: [id])
 
   @@map("order_items")
 }
@@ -1299,6 +1303,7 @@ model Product {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   promotion PromotedAlbum?
+  orderItems OrderItem[]
 
   @@index([category, isActive])
   @@map("products")

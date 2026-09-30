@@ -83,7 +83,7 @@ export class StoreService {
     return prisma.product.findUnique({
       where: { id },
       include: {
-        user: { select: { id: true, name: true, avatar: true } }
+        user: { select: { id: true, name: true, username: true, avatar: true } }
       }
     });
   }
@@ -238,6 +238,7 @@ export class StoreService {
             select: {
               id: true,
               title: true,
+              title_pl: true,
               bannerImage: true,
               price: true,
               promotion: {
@@ -263,6 +264,7 @@ export class StoreService {
       const mappedProducts = user.products.map(p => ({
         id: p.id,
         title: p.title,
+        title_pl: p.title_pl,
         bannerImage: p.bannerImage,
         price: p.price
       }));

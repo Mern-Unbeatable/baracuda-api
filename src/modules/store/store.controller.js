@@ -2,6 +2,7 @@ import { ResponseUtil } from '../../utils/response.js';
 import { PaginationUtil } from '../../utils/pagination.js';
 import { UrlUtil } from '../../utils/urlUtil.js';
 import { TranslateUtil } from '../../utils/translate.js';
+import prisma from '../../config/prisma.js';
 
 export class StoreController {
   constructor(storeService) {
@@ -94,8 +95,6 @@ export class StoreController {
       
       let targetUserId = req.user?.id;
       if (req.query.username) {
-        const { PrismaClient } = await import('@prisma/client');
-        const prisma = new PrismaClient();
         const user = await prisma.user.findUnique({ where: { username: req.query.username }, select: { id: true } });
         if (!user) return ResponseUtil.error(res, 'User not found', 404);
         targetUserId = user.id;
@@ -229,19 +228,7 @@ export class StoreController {
         }
         
         if (formattedStore.products && Array.isArray(formattedStore.products)) {
-          formattedStore.products = formattedStore.products.map(product => {
-            const formattedProduct = { ...product };
-            
-            if (formattedProduct.bannerImage && !formattedProduct.bannerImage.startsWith('http')) {
-              formattedProduct.bannerImage = UrlUtil.getAbsoluteUrl(req, formattedProduct.bannerImage);
-            }
-            
-            if (formattedProduct.price !== undefined && formattedProduct.price !== null) {
-              formattedProduct.price = parseFloat(formattedProduct.price);
-            }
-            
-            return formattedProduct;
-          });
+          formattedStore.products = formattedStore.products.map(product => this.formatProductUrls(req, product));
         }
         
         return formattedStore;
@@ -256,6 +243,38 @@ export class StoreController {
           totalPages: Math.ceil(total / Number(limit))
         }
       });
+    } catch (error) {
+      return ResponseUtil.error(res, error.message, 500);
+    }
+  };
+
+  buyProduct = async (req, res) => {
+    try {
+      const { email, fullName, mobile, city, state, zipCode, deliveryAddress, quantity, size } = req.body;
+      if (!email || !fullName || !mobile || !city || !state || !zipCode || !deliveryAddress) {
+        return ResponseUtil.error(res, 'All delivery details are required', 400);
+      }
+      
+      const userId = req.user.id;
+      const orderDetails = { email, fullName, mobile, city, state, zipCode, deliveryAddress, quantity, size };
+      
+      const { default: paymentService } = await import('../payment/payment.service.js');
+      const result = await paymentService.createStoreProductPurchase(req.params.id, userId, orderDetails);
+      
+      return ResponseUtil.success(res, 'Product checkout created', result);
+    } catch (error) {
+      return ResponseUtil.error(res, error.message, 500);
+    }
+  };
+
+  capturePurchase = async (req, res) => {
+    try {
+      const { paymentId } = req.body;
+      if (!paymentId) return ResponseUtil.error(res, 'paymentId is required', 400);
+
+      const { default: paymentService } = await import('../payment/payment.service.js');
+      const result = await paymentService.captureStoreProductPurchase(paymentId);
+      return ResponseUtil.success(res, 'Product purchase successful', result);
     } catch (error) {
       return ResponseUtil.error(res, error.message, 500);
     }

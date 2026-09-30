@@ -648,6 +648,85 @@ class PaymentService {
     };
   }
 
+  async createStoreProductPurchase(productId, userId, orderDetails) {
+    const product = await prisma.product.findUnique({ where: { id: productId } });
+    if (!product) throw new Error('Product not found');
+
+    const quantity = parseInt(orderDetails.quantity) || 1;
+    const price = Number(product.price);
+    const subtotal = price * quantity;
+    const delivery = 20; // flat delivery fee as per UI
+    const total = subtotal + delivery;
+
+    const customData = JSON.stringify({ productId, type: 'STORE_PRODUCT' });
+    
+    const orderData = await this.createPayPalOrder({
+      userId,
+      amount: total,
+      currency: 'GBP',
+      description: `Purchase Product - ${product.id}`,
+      customId: customData
+    });
+
+    const order = await prisma.order.create({
+      data: {
+        userId: userId || null,
+        email: orderDetails.email || 'guest@example.com',
+        fullName: orderDetails.fullName || 'Guest User',
+        address: JSON.stringify({
+          mobile: orderDetails.mobile,
+          city: orderDetails.city,
+          state: orderDetails.state,
+          zipCode: orderDetails.zipCode,
+          deliveryAddress: orderDetails.deliveryAddress
+        }),
+        total,
+        currency: 'GBP',
+        status: 'PENDING',
+        paymentMethod: 'PAYPAL',
+        paymentId: orderData.order.id,
+        items: {
+          create: [{
+            productId,
+            price: price,
+            quantity: quantity,
+            size: orderDetails.size
+          }]
+        }
+      }
+    });
+
+    return { 
+      paymentId: orderData.order.id,
+      checkoutUrl: orderData.approvalUrl,
+      dbOrderId: order.id 
+    };
+  }
+
+  async captureStoreProductPurchase(paymentId) {
+    const captureData = await this.capturePayPalOrder(paymentId);
+    if (captureData.status !== 'COMPLETED') {
+      throw new Error('Payment not completed');
+    }
+
+    const order = await prisma.order.findFirst({
+      where: { paymentId },
+      include: { items: { include: { product: true } } }
+    });
+
+    if (!order) {
+      throw new Error('Order not found');
+    }
+
+    const updatedOrder = await prisma.order.update({
+      where: { id: order.id },
+      data: { status: 'COMPLETED' },
+      include: { items: { include: { product: true } } }
+    });
+
+    return updatedOrder;
+  }
+
   async capturePayPalOrder(paymentId) {
     const accessToken = await this.generateAccessToken();
 
