@@ -21,6 +21,8 @@ export class StoreModule {
       { name: 'images', maxCount: 10 }
     ]);
 
+    this.router.get('/public', this.storeController.getPublicStores);
+
     this.router.post(
       '/',
       requireAuth,
@@ -29,8 +31,8 @@ export class StoreModule {
       this.storeController.createProduct
     );
 
-    this.router.get('/', requireAuth, this.storeController.getAllProducts);
-    this.router.get('/:id', requireAuth, this.storeController.getProductById);
+    this.router.get('/', optionalAuth, this.storeController.getAllProducts);
+    this.router.get('/:id', optionalAuth, this.storeController.getProductById);
 
     this.router.put(
       '/:id',

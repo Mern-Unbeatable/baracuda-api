@@ -278,6 +278,14 @@ export class ArtworkService {
         media: true,
         competition: true,
         promotion: true,
+        user: {
+          select: {
+            id: true,
+            name: true,
+            username: true,
+            avatar: true
+          }
+        }
       }
     });
   }
@@ -592,10 +600,10 @@ export class ArtworkService {
       where: { id, status: 'APPROVED' },
       include: {
         media: { orderBy: { slotIndex: 'asc' } },
-        user: { select: { id: true, name: true, avatar: true } },
+        user: { select: { id: true, name: true, username: true, avatar: true } },
         category: { select: { id: true, name: true, name_pl: true } },
         comments: {
-          include: { user: { select: { id: true, name: true, avatar: true } } },
+          include: { user: { select: { id: true, name: true, username: true, avatar: true } } },
           orderBy: { createdAt: 'desc' }
         }
       }

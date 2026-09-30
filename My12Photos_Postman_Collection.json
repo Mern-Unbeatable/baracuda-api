@@ -4592,32 +4592,6 @@
                             }
                         },
                         {
-                            "name": "Get Public Profile",
-                            "request": {
-                                "method": "GET",
-                                "url": {
-                                    "raw": "{{baseUrl}}/api/v1/users/profile/{{username}}",
-                                    "host": [
-                                        "{{baseUrl}}"
-                                    ],
-                                    "path": [
-                                        "api",
-                                        "v1",
-                                        "users",
-                                        "profile",
-                                        "{{username}}"
-                                    ]
-                                },
-                                "header": [
-                                    {
-                                        "key": "accept-language",
-                                        "value": "en",
-                                        "type": "text"
-                                    }
-                                ]
-                            }
-                        },
-                        {
                             "name": "Edit Profile",
                             "request": {
                                 "method": "PUT",
@@ -4671,180 +4645,6 @@
                                         "v1",
                                         "users",
                                         "profile"
-                                    ]
-                                },
-                                "header": [
-                                    {
-                                        "key": "accept-language",
-                                        "value": "en",
-                                        "type": "text"
-                                    }
-                                ]
-                            }
-                        },
-                        {
-                            "name": "Get All Artworks (Public)",
-                            "request": {
-                                "method": "GET",
-                                "url": {
-                                    "raw": "{{baseUrl}}/api/v1/artworks?kind=SINGLE&status=all&sort=newest&username={{username}}",
-                                    "host": [
-                                        "{{baseUrl}}"
-                                    ],
-                                    "path": [
-                                        "api",
-                                        "v1",
-                                        "artworks"
-                                    ],
-                                    "query": [
-                                        {
-                                            "key": "kind",
-                                            "value": "SINGLE"
-                                        },
-                                        {
-                                            "key": "status",
-                                            "value": "all"
-                                        },
-                                        {
-                                            "key": "sort",
-                                            "value": "newest"
-                                        },
-                                        {
-                                            "key": "username",
-                                            "value": "{{username}}"
-                                        }
-                                    ]
-                                },
-                                "header": [
-                                    {
-                                        "key": "accept-language",
-                                        "value": "en",
-                                        "type": "text"
-                                    }
-                                ]
-                            }
-                        },
-                        {
-                            "name": "Get Artwork Details",
-                            "request": {
-                                "method": "GET",
-                                "url": {
-                                    "raw": "{{baseUrl}}/api/v1/artworks/{{artwork_id}}",
-                                    "host": [
-                                        "{{baseUrl}}"
-                                    ],
-                                    "path": [
-                                        "api",
-                                        "v1",
-                                        "artworks",
-                                        "{{artwork_id}}"
-                                    ]
-                                },
-                                "header": [
-                                    {
-                                        "key": "accept-language",
-                                        "value": "en",
-                                        "type": "text"
-                                    }
-                                ]
-                            }
-                        },
-                        {
-                            "name": "Get All Premium Photos",
-                            "request": {
-                                "method": "GET",
-                                "url": {
-                                    "raw": "{{baseUrl}}/api/v1/marketplace/premium-photos?kind=ALL&page=1&limit=10&username={{username}}",
-                                    "host": [
-                                        "{{baseUrl}}"
-                                    ],
-                                    "path": [
-                                        "api",
-                                        "v1",
-                                        "marketplace",
-                                        "premium-photos"
-                                    ],
-                                    "query": [
-                                        {
-                                            "key": "kind",
-                                            "value": "ALL"
-                                        },
-                                        {
-                                            "key": "page",
-                                            "value": "1"
-                                        },
-                                        {
-                                            "key": "limit",
-                                            "value": "10"
-                                        },
-                                        {
-                                            "key": "username",
-                                            "value": "{{username}}"
-                                        }
-                                    ]
-                                },
-                                "header": [
-                                    {
-                                        "key": "accept-language",
-                                        "value": "en",
-                                        "type": "text"
-                                    }
-                                ]
-                            }
-                        },
-                        {
-                            "name": "Get Premium Photo By ID",
-                            "request": {
-                                "method": "GET",
-                                "url": {
-                                    "raw": "{{baseUrl}}/api/v1/marketplace/premium-photos/{{photo_id}}",
-                                    "host": [
-                                        "{{baseUrl}}"
-                                    ],
-                                    "path": [
-                                        "api",
-                                        "v1",
-                                        "marketplace",
-                                        "premium-photos",
-                                        "{{photo_id}}"
-                                    ]
-                                },
-                                "header": [
-                                    {
-                                        "key": "accept-language",
-                                        "value": "en",
-                                        "type": "text"
-                                    }
-                                ]
-                            }
-                        },
-                        {
-                            "name": "Get Posts (Paginated/Public)",
-                            "request": {
-                                "method": "GET",
-                                "url": {
-                                    "raw": "{{baseUrl}}/api/v1/posts?page=1&limit=10&username={{username}}",
-                                    "host": [
-                                        "{{baseUrl}}"
-                                    ],
-                                    "path": [
-                                        "api",
-                                        "v1",
-                                        "posts"
-                                    ],
-                                    "query": [
-                                        {
-                                            "key": "page",
-                                            "value": "1"
-                                        },
-                                        {
-                                            "key": "limit",
-                                            "value": "10"
-                                        },
-                                        {
-                                            "key": "username",
-                                            "value": "{{username}}"
-                                        }
                                     ]
                                 },
                                 "header": [
@@ -6889,6 +6689,306 @@
                                     ]
                                 }
                             }
+                        }
+                    ]
+                },
+                {
+                    "name": "Marketplace",
+                    "item": [
+                        {
+                            "name": "Get Public Stores (Explore)",
+                            "request": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/store/public?page=1&limit=10&search=&promoted=false",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "store",
+                                        "public"
+                                    ],
+                                    "query": [
+                                        {
+                                            "key": "page",
+                                            "value": "1"
+                                        },
+                                        {
+                                            "key": "limit",
+                                            "value": "10"
+                                        },
+                                        {
+                                            "key": "search",
+                                            "value": ""
+                                        },
+                                        {
+                                            "key": "promoted",
+                                            "value": "false"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Profile",
+                    "item": [
+                        {
+                            "name": "Profile Info",
+                            "item": [
+                                {
+                                    "name": "Get Public Profile",
+                                    "request": {
+                                        "method": "GET",
+                                        "url": {
+                                            "raw": "{{baseUrl}}/api/v1/users/profile/{{username}}",
+                                            "host": [
+                                                "{{baseUrl}}"
+                                            ],
+                                            "path": [
+                                                "api",
+                                                "v1",
+                                                "users",
+                                                "profile",
+                                                "{{username}}"
+                                            ]
+                                        },
+                                        "header": [
+                                            {
+                                                "key": "accept-language",
+                                                "value": "en",
+                                                "type": "text"
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Artwork",
+                            "item": [
+                                {
+                                    "name": "Get All Artworks (Public)",
+                                    "request": {
+                                        "method": "GET",
+                                        "url": {
+                                            "raw": "{{baseUrl}}/api/v1/artworks?kind=SINGLE&status=all&sort=newest&username={{username}}",
+                                            "host": [
+                                                "{{baseUrl}}"
+                                            ],
+                                            "path": [
+                                                "api",
+                                                "v1",
+                                                "artworks"
+                                            ],
+                                            "query": [
+                                                {
+                                                    "key": "kind",
+                                                    "value": "SINGLE"
+                                                },
+                                                {
+                                                    "key": "status",
+                                                    "value": "all"
+                                                },
+                                                {
+                                                    "key": "sort",
+                                                    "value": "newest"
+                                                },
+                                                {
+                                                    "key": "username",
+                                                    "value": "{{username}}"
+                                                }
+                                            ]
+                                        },
+                                        "header": [
+                                            {
+                                                "key": "accept-language",
+                                                "value": "en",
+                                                "type": "text"
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
+                                    "name": "Get Artwork Details",
+                                    "request": {
+                                        "method": "GET",
+                                        "url": {
+                                            "raw": "{{baseUrl}}/api/v1/artworks/{{artwork_id}}",
+                                            "host": [
+                                                "{{baseUrl}}"
+                                            ],
+                                            "path": [
+                                                "api",
+                                                "v1",
+                                                "artworks",
+                                                "{{artwork_id}}"
+                                            ]
+                                        },
+                                        "header": [
+                                            {
+                                                "key": "accept-language",
+                                                "value": "en",
+                                                "type": "text"
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Store",
+                            "item": [
+                                {
+                                    "name": "Get User Store Products",
+                                    "request": {
+                                        "method": "GET",
+                                        "header": [],
+                                        "url": {
+                                            "raw": "{{baseUrl}}/api/v1/store?username=testuser&category=",
+                                            "host": [
+                                                "{{baseUrl}}"
+                                            ],
+                                            "path": [
+                                                "api",
+                                                "v1",
+                                                "store"
+                                            ],
+                                            "query": [
+                                                {
+                                                    "key": "username",
+                                                    "value": "testuser"
+                                                },
+                                                {
+                                                    "key": "category",
+                                                    "value": ""
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Premium Photos",
+                            "item": [
+                                {
+                                    "name": "Get All Premium Photos",
+                                    "request": {
+                                        "method": "GET",
+                                        "url": {
+                                            "raw": "{{baseUrl}}/api/v1/marketplace/premium-photos?kind=ALL&page=1&limit=10&username={{username}}",
+                                            "host": [
+                                                "{{baseUrl}}"
+                                            ],
+                                            "path": [
+                                                "api",
+                                                "v1",
+                                                "marketplace",
+                                                "premium-photos"
+                                            ],
+                                            "query": [
+                                                {
+                                                    "key": "kind",
+                                                    "value": "ALL"
+                                                },
+                                                {
+                                                    "key": "page",
+                                                    "value": "1"
+                                                },
+                                                {
+                                                    "key": "limit",
+                                                    "value": "10"
+                                                },
+                                                {
+                                                    "key": "username",
+                                                    "value": "{{username}}"
+                                                }
+                                            ]
+                                        },
+                                        "header": [
+                                            {
+                                                "key": "accept-language",
+                                                "value": "en",
+                                                "type": "text"
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
+                                    "name": "Get Premium Photo By ID",
+                                    "request": {
+                                        "method": "GET",
+                                        "url": {
+                                            "raw": "{{baseUrl}}/api/v1/marketplace/premium-photos/{{photo_id}}",
+                                            "host": [
+                                                "{{baseUrl}}"
+                                            ],
+                                            "path": [
+                                                "api",
+                                                "v1",
+                                                "marketplace",
+                                                "premium-photos",
+                                                "{{photo_id}}"
+                                            ]
+                                        },
+                                        "header": [
+                                            {
+                                                "key": "accept-language",
+                                                "value": "en",
+                                                "type": "text"
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Posts",
+                            "item": [
+                                {
+                                    "name": "Get Posts (Paginated/Public)",
+                                    "request": {
+                                        "method": "GET",
+                                        "url": {
+                                            "raw": "{{baseUrl}}/api/v1/posts?page=1&limit=10&username={{username}}",
+                                            "host": [
+                                                "{{baseUrl}}"
+                                            ],
+                                            "path": [
+                                                "api",
+                                                "v1",
+                                                "posts"
+                                            ],
+                                            "query": [
+                                                {
+                                                    "key": "page",
+                                                    "value": "1"
+                                                },
+                                                {
+                                                    "key": "limit",
+                                                    "value": "10"
+                                                },
+                                                {
+                                                    "key": "username",
+                                                    "value": "{{username}}"
+                                                }
+                                            ]
+                                        },
+                                        "header": [
+                                            {
+                                                "key": "accept-language",
+                                                "value": "en",
+                                                "type": "text"
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
                         }
                     ]
                 }

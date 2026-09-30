@@ -43,7 +43,9 @@ export class StoreService {
       where.category = filters.category;
     }
     
-    // Can add user id filtering or search filtering if needed
+    if (filters.userId) {
+      where.userId = filters.userId;
+    }
 
     const [products, total] = await Promise.all([
       prisma.product.findMany({
@@ -185,5 +187,102 @@ export class StoreService {
     });
 
     return promotion;
+  }
+
+  async getPublicStores(filters, skip, take) {
+    const { search, promoted } = filters;
+    
+    const userWhere = {
+      products: {
+        some: { isActive: true }
+      }
+    };
+    
+    if (search) {
+      userWhere.OR = [
+        { name: { contains: search, mode: 'insensitive' } },
+        { products: { some: { title: { contains: search, mode: 'insensitive' } } } },
+        { products: { some: { category: { equals: search } } } }
+      ];
+    }
+    
+    if (promoted === 'true') {
+      userWhere.products.some.promotion = {
+        isActive: true,
+        endsAt: { gt: new Date() }
+      };
+    }
+
+    const [users, total] = await Promise.all([
+      prisma.user.findMany({
+        where: userWhere,
+        skip,
+        take,
+        select: {
+          id: true,
+          name: true,
+          username: true,
+          avatar: true,
+          bio: true,
+          _count: {
+            select: {
+              premiumPhotos: true,
+              submissions: true,
+              followers: true
+            }
+          },
+          products: {
+            where: { isActive: true },
+            take: 4,
+            orderBy: { createdAt: 'desc' },
+            select: {
+              id: true,
+              title: true,
+              bannerImage: true,
+              price: true,
+              promotion: {
+                where: { isActive: true, endsAt: { gt: new Date() } },
+                select: { id: true }
+              }
+            }
+          }
+        }
+      }),
+      prisma.user.count({ where: userWhere })
+    ]);
+
+    const formattedData = users.map(user => {
+      const isPromoted = user.products.some(p => p.promotion !== null);
+      
+      const artworkAppreciation = {
+        premiumPhotos: user._count.premiumPhotos,
+        submissions: user._count.submissions,
+        followers: user._count.followers
+      };
+
+      const mappedProducts = user.products.map(p => ({
+        id: p.id,
+        title: p.title,
+        bannerImage: p.bannerImage,
+        price: p.price
+      }));
+
+      return {
+        id: user.id,
+        name: user.name,
+        username: user.username,
+        avatar: user.avatar,
+        bio: user.bio,
+        isPromoted,
+        artworkAppreciation,
+        products: mappedProducts
+      };
+    });
+
+    if (!promoted) {
+      formattedData.sort((a, b) => (b.isPromoted ? 1 : 0) - (a.isPromoted ? 1 : 0));
+    }
+
+    return { data: formattedData, total };
   }
 }

@@ -91,6 +91,21 @@ export class StoreController {
       if (req.query.category) {
         filters.category = req.query.category;
       }
+      
+      let targetUserId = req.user?.id;
+      if (req.query.username) {
+        const { PrismaClient } = await import('@prisma/client');
+        const prisma = new PrismaClient();
+        const user = await prisma.user.findUnique({ where: { username: req.query.username }, select: { id: true } });
+        if (!user) return ResponseUtil.error(res, 'User not found', 404);
+        targetUserId = user.id;
+      }
+
+      if (!targetUserId) {
+        return ResponseUtil.error(res, 'Authentication required to view your own store', 401);
+      }
+      
+      filters.userId = targetUserId;
 
       const result = await this.storeService.getAllProducts(filters, skip, take);
       
@@ -194,6 +209,55 @@ export class StoreController {
       res.status(200).json({ success: true, data: result, message: 'Promotion payment captured successfully' });
     } catch (error) {
       res.status(400).json({ success: false, error: error.message });
+    }
+  };
+
+  getPublicStores = async (req, res) => {
+    try {
+      const { search, promoted, category, page = 1, limit = 10 } = req.query;
+      const skip = (Number(page) - 1) * Number(limit);
+      const take = Number(limit);
+
+      const filters = { search, promoted, category };
+      const { data, total } = await this.storeService.getPublicStores(filters, skip, take);
+
+      const formattedData = data.map(store => {
+        const formattedStore = { ...store };
+        
+        if (formattedStore.avatar && !formattedStore.avatar.startsWith('http')) {
+          formattedStore.avatar = UrlUtil.getAbsoluteUrl(req, formattedStore.avatar);
+        }
+        
+        if (formattedStore.products && Array.isArray(formattedStore.products)) {
+          formattedStore.products = formattedStore.products.map(product => {
+            const formattedProduct = { ...product };
+            
+            if (formattedProduct.bannerImage && !formattedProduct.bannerImage.startsWith('http')) {
+              formattedProduct.bannerImage = UrlUtil.getAbsoluteUrl(req, formattedProduct.bannerImage);
+            }
+            
+            if (formattedProduct.price !== undefined && formattedProduct.price !== null) {
+              formattedProduct.price = parseFloat(formattedProduct.price);
+            }
+            
+            return formattedProduct;
+          });
+        }
+        
+        return formattedStore;
+      });
+
+      return ResponseUtil.success(res, 'Public stores fetched successfully', {
+        data: formattedData,
+        meta: {
+          total,
+          page: Number(page),
+          limit: Number(limit),
+          totalPages: Math.ceil(total / Number(limit))
+        }
+      });
+    } catch (error) {
+      return ResponseUtil.error(res, error.message, 500);
     }
   };
 }
