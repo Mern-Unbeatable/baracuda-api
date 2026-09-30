@@ -21,6 +21,7 @@ import { AdminReportModule } from './modules/admin-report/admin-report.module.js
 import { AnnouncementModule } from './modules/announcement/announcement.module.js';
 import config from './config/env.js';
 import storeRouter from './modules/store/store.module.js';
+import { OrderModule } from './modules/order/order.module.js';
 
 /**
  * Main Application Class
@@ -142,6 +143,8 @@ class App {
     this.app.use('/api/v1/store', storeRouter);
     this.app.use('/api/v1/payments', paymentRouter);
     this.app.use('/api/v1/campaigns', CampaignModule.router);
+    const orderModule = new OrderModule();
+    this.app.use('/api/v1/orders', orderModule.router);
   }
 
   initializeErrorHandling() {
