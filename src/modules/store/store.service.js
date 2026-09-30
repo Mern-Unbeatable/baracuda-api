@@ -148,4 +148,42 @@ export class StoreService {
 
     return prisma.product.delete({ where: { id } });
   }
+
+  async promoteProduct(id, userId, durationDays) {
+    const product = await prisma.product.findUnique({ where: { id } });
+    if (!product || product.userId !== userId) {
+      throw new Error('Product not found or unauthorized');
+    }
+    
+    let amountPaid = 0;
+    if (durationDays === 7) amountPaid = 40;
+    else if (durationDays === 15) amountPaid = 60;
+    else if (durationDays === 30) amountPaid = 100;
+    else throw new Error('Invalid promotion duration. Must be 7, 15, or 30 days.');
+
+    const endsAt = new Date();
+    endsAt.setDate(endsAt.getDate() + durationDays);
+
+    const promotion = await prisma.promotedAlbum.upsert({
+      where: { productId: product.id },
+      update: {
+        durationDays,
+        startsAt: new Date(),
+        endsAt,
+        amountPaid,
+        isActive: true
+      },
+      create: {
+        productId: product.id,
+        userId,
+        durationDays,
+        startsAt: new Date(),
+        endsAt,
+        amountPaid,
+        isActive: true
+      }
+    });
+
+    return promotion;
+  }
 }

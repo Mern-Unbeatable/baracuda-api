@@ -34,6 +34,10 @@ export class StoreValidation {
     copyrightConfirmed: Joi.boolean().truthy('1', 1, 'true').falsy('0', 0, 'false').optional()
   });
 
+  static promoteSchema = Joi.object({
+    durationDays: Joi.number().valid(7, 15, 30).required()
+  });
+
   static validate(schema) {
     return (req, res, next) => {
       const { error, value } = schema.validate(req.body, { abortEarly: false, allowUnknown: true });

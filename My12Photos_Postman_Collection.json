@@ -5051,6 +5051,72 @@
                                     ]
                                 }
                             }
+                        },
+                        {
+                            "name": "Promote Product",
+                            "request": {
+                                "method": "POST",
+                                "header": [],
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "durationDays",
+                                            "value": "7",
+                                            "type": "text"
+                                        }
+                                    ]
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/store/:id/promote",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "store",
+                                        ":id",
+                                        "promote"
+                                    ],
+                                    "variable": [
+                                        {
+                                            "key": "id",
+                                            "value": "PRODUCT_ID"
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Capture Product Promotion",
+                            "request": {
+                                "method": "POST",
+                                "header": [],
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "paymentId",
+                                            "value": "PAYPAL_ORDER_ID",
+                                            "type": "text"
+                                        }
+                                    ]
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/store/promote/capture",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "store",
+                                        "promote",
+                                        "capture"
+                                    ]
+                                }
+                            }
                         }
                     ]
                 }

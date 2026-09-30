@@ -452,6 +452,145 @@ class PaymentService {
     }
     return { success: false, status: data.status };
   }
+
+  async createProductPromotionPayment(productId, durationDays, userId) {
+    const product = await prisma.product.findUnique({
+      where: { id: productId },
+    });
+    if (!product) throw new Error("Product not found");
+    if (product.userId !== userId) throw new Error("Unauthorized");
+
+    let amount = 0;
+    if (durationDays === 7) amount = 40;
+    else if (durationDays === 15) amount = 60;
+    else if (durationDays === 30) amount = 100;
+    else throw new Error("Invalid promotion duration");
+
+    const accessToken = await this.generateAccessToken();
+
+    const orderPayload = {
+      intent: "CAPTURE",
+      purchase_units: [
+        {
+          amount: {
+            currency_code: "USD",
+            value: parseFloat(amount).toFixed(2),
+          },
+          description: `Promoted Product ${productId} for ${durationDays} days`,
+        },
+      ],
+      payment_source: {
+        paypal: {
+          experience_context: {
+            return_url: process.env.FRONTEND_URL
+              ? `${process.env.FRONTEND_URL}/payment/success`
+              : `http://localhost:3000/payment/success`,
+            cancel_url: process.env.FRONTEND_URL
+              ? `${process.env.FRONTEND_URL}/payment/cancel`
+              : `http://localhost:3000/payment/cancel`,
+            landing_page: "GUEST_CHECKOUT",
+            user_action: "PAY_NOW",
+            payment_method_preference: "UNRESTRICTED"
+          }
+        }
+      },
+    };
+
+    const response = await fetch(`${this.baseUrl}/v2/checkout/orders`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(orderPayload),
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
+      console.error(
+        "PayPal Order Error Details (Product Promotion):",
+        JSON.stringify(data, null, 2),
+      );
+      throw new Error(data.message || "Failed to create PayPal order");
+    }
+
+    const payment = await prisma.payment.create({
+      data: {
+        userId,
+        purpose: "PROMOTION",
+        amount,
+        currency: "USD",
+        status: "PENDING",
+        provider: "PAYPAL",
+        providerRef: data.id,
+        productId,
+        metadata: { durationDays },
+      },
+    });
+
+    const approveLink = data.links.find(
+      (link) => link.rel === "approve" || link.rel === "payer-action"
+    );
+    return {
+      paymentId: data.id,
+      checkoutUrl: approveLink ? approveLink.href : null,
+    };
+  }
+
+  async captureProductPromotionPayment(paymentId) {
+    const accessToken = await this.generateAccessToken();
+
+    const response = await fetch(
+      `${this.baseUrl}/v2/checkout/orders/${paymentId}/capture`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+      },
+    );
+
+    const data = await response.json();
+    
+    let isCompleted = false;
+    if (response.ok && data.status === "COMPLETED") {
+      isCompleted = true;
+    } else if (!response.ok) {
+      const isAlreadyCaptured = data.details && data.details.some(d => d.issue === "ORDER_ALREADY_CAPTURED");
+      if (isAlreadyCaptured) {
+        isCompleted = true;
+      } else {
+        throw new Error(data.message || "Failed to capture PayPal order");
+      }
+    }
+
+    if (isCompleted) {
+      const payment = await prisma.payment.findFirst({
+        where: { providerRef: paymentId, status: "PENDING" },
+      });
+
+      if (payment) {
+        await prisma.payment.update({
+          where: { id: payment.id },
+          data: { status: "PAID" },
+        });
+        
+        const { StoreService } = await import("../store/store.service.js");
+        const storeService = new StoreService();
+        
+        await storeService.promoteProduct(
+          payment.productId,
+          payment.userId,
+          payment.metadata.durationDays
+        );
+        
+        return { success: true, paymentId };
+      }
+    }
+    return { success: false, status: data.status };
+  }
+
   async createPayPalOrder({ userId, amount, currency, description, customId }) {
     const accessToken = await this.generateAccessToken();
 

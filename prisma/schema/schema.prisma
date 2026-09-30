@@ -917,6 +917,7 @@ model Payment {
   providerRef    String?
   submissionId   String?
   premiumPhotoId String?
+  productId      String?
   metadata       Json?
   createdAt      DateTime       @default(now())
   updatedAt      DateTime       @updatedAt
@@ -1051,6 +1052,7 @@ model PromotedAlbum {
   id             String   @id @default(uuid())
   submissionId   String?
   premiumPhotoId String?
+  productId      String?
   userId         String
   tierId         String?
   durationDays   Int
@@ -1062,10 +1064,12 @@ model PromotedAlbum {
 
   submission   Submission?   @relation(fields: [submissionId], references: [id], onDelete: Cascade)
   premiumPhoto PremiumPhoto? @relation(fields: [premiumPhotoId], references: [id], onDelete: Cascade)
+  product      Product?      @relation(fields: [productId], references: [id], onDelete: Cascade)
   user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([submissionId])
   @@unique([premiumPhotoId])
+  @@unique([productId])
   @@index([isActive, endsAt])
   @@map("promoted_albums")
 }
@@ -1294,6 +1298,7 @@ model Product {
   updatedAt      DateTime        @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  promotion PromotedAlbum?
 
   @@index([category, isActive])
   @@map("products")

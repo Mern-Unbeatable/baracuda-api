@@ -168,4 +168,32 @@ export class StoreController {
       return ResponseUtil.error(res, error.message, error.message === 'Unauthorized' ? 403 : 500);
     }
   };
+
+  promoteProduct = async (req, res) => {
+    try {
+      const userId = req.user.id;
+      const { id } = req.params;
+      const { durationDays } = req.body;
+      
+      const { default: paymentService } = await import('../payment/payment.service.js');
+      const result = await paymentService.createProductPromotionPayment(id, Number(durationDays), userId);
+      
+      res.status(200).json({ success: true, data: result, message: 'Checkout URL generated successfully' });
+    } catch (error) {
+      res.status(400).json({ success: false, error: error.message });
+    }
+  };
+
+  capturePromotion = async (req, res) => {
+    try {
+      const { paymentId } = req.body;
+      
+      const { default: paymentService } = await import('../payment/payment.service.js');
+      const result = await paymentService.captureProductPromotionPayment(paymentId);
+      
+      res.status(200).json({ success: true, data: result, message: 'Promotion payment captured successfully' });
+    } catch (error) {
+      res.status(400).json({ success: false, error: error.message });
+    }
+  };
 }

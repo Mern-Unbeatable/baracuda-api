@@ -41,6 +41,21 @@ export class StoreModule {
     );
 
     this.router.delete('/:id', requireAuth, this.storeController.deleteProduct);
+
+    this.router.post(
+      '/:id/promote',
+      requireAuth,
+      upload.none(),
+      StoreValidation.validate(StoreValidation.promoteSchema),
+      this.storeController.promoteProduct
+    );
+
+    this.router.post(
+      '/promote/capture',
+      requireAuth,
+      upload.none(),
+      this.storeController.capturePromotion
+    );
   }
 }
 
