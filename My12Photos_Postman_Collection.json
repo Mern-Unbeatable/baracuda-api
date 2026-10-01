@@ -5175,6 +5175,97 @@
                             }
                         }
                     ]
+                },
+                {
+                    "name": "Favourite Photographer",
+                    "item": [
+                        {
+                            "name": "Get Following List",
+                            "request": {
+                                "method": "GET",
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/users/following?page=1&limit=10",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "users",
+                                        "following"
+                                    ],
+                                    "query": [
+                                        {
+                                            "key": "page",
+                                            "value": "1"
+                                        },
+                                        {
+                                            "key": "limit",
+                                            "value": "10"
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Toggle Follow",
+                            "request": {
+                                "method": "POST",
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/users/follow/{{username}}",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "users",
+                                        "follow",
+                                        "{{username}}"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Get Public Profile",
+                            "request": {
+                                "method": "GET",
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/users/profile/{{username}}",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "users",
+                                        "profile",
+                                        "{{username}}"
+                                    ]
+                                }
+                            }
+                        }
+                    ]
                 }
             ],
             "auth": {
@@ -7020,6 +7111,35 @@
                                                 "type": "text"
                                             }
                                         ]
+                                    }
+                                },
+                                {
+                                    "name": "Toggle Follow",
+                                    "request": {
+                                        "method": "POST",
+                                        "auth": {
+                                            "type": "bearer",
+                                            "bearer": [
+                                                {
+                                                    "key": "token",
+                                                    "value": "{{token}}",
+                                                    "type": "string"
+                                                }
+                                            ]
+                                        },
+                                        "url": {
+                                            "raw": "{{baseUrl}}/api/v1/users/follow/{{username}}",
+                                            "host": [
+                                                "{{baseUrl}}"
+                                            ],
+                                            "path": [
+                                                "api",
+                                                "v1",
+                                                "users",
+                                                "follow",
+                                                "{{username}}"
+                                            ]
+                                        }
                                     }
                                 }
                             ]

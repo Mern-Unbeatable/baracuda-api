@@ -2,6 +2,7 @@ import { UrlUtil } from '../../utils/urlUtil.js';
 import { userValidation } from './user.validation.js';
 import { ResponseUtil } from '../../utils/response.js';
 import { TranslateUtil } from '../../utils/translate.js';
+import { PaginationUtil } from '../../utils/pagination.js';
 
 export class UserController {
   constructor(userService) {
@@ -189,6 +190,68 @@ export class UserController {
         success: true,
         message: 'Profile updated successfully',
         data: UrlUtil.formatUserMedia(req, updatedProfile)
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  toggleFollow = async (req, res, next) => {
+    try {
+      const followerId = req.user.id;
+      const { username } = req.params;
+
+      const result = await this.userService.toggleFollow(followerId, username);
+      
+      res.status(200).json({
+        success: true,
+        message: result.message,
+        data: { following: result.following }
+      });
+    } catch (error) {
+      if (error.message === 'Target user not found' || error.message === 'Cannot follow yourself') {
+        return res.status(400).json({ success: false, message: error.message });
+      }
+      next(error);
+    }
+  }
+
+  getFollowingList = async (req, res, next) => {
+    try {
+      const userId = req.user.id;
+      const { skip, take, page, limit } = PaginationUtil.getPaginationOptions(req.query);
+
+      const { data, total } = await this.userService.getFollowingList(userId, skip, take);
+
+      const formattedData = data.map(follow => {
+        let fUser = follow.following;
+        
+        const sourceLang = req.headers['accept-language']?.split(',')[0]?.split('-')[0] || req.headers['x-lang'] || 'en';
+        if (sourceLang === 'pl') {
+          if (fUser.bio_pl) fUser.bio = fUser.bio_pl;
+          if (fUser.country_pl) fUser.country = fUser.country_pl;
+        }
+
+        fUser = UrlUtil.formatUserMedia(req, fUser);
+
+        return {
+          id: fUser.id,
+          username: fUser.username,
+          name: fUser.name,
+          avatar: fUser.avatar,
+          bio: fUser.bio,
+          country: fUser.country,
+          followersCount: fUser._count.followers,
+          artworksCount: fUser._count.submissions,
+          followedAt: follow.createdAt
+        };
+      });
+
+      res.status(200).json({
+        success: true,
+        message: 'Following list fetched successfully',
+        data: formattedData,
+        meta: PaginationUtil.getMetadata(total, page, limit)
       });
     } catch (error) {
       next(error);

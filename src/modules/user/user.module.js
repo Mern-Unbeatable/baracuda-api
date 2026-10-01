@@ -27,6 +27,10 @@ export class UserModule {
       { name: 'introVideo', maxCount: 1 }
     ]), this.userController.updateProfile);
 
+    // Follow Routes
+    this.publicRouter.post('/follow/:username', requireAuth, this.userController.toggleFollow);
+    this.publicRouter.get('/following', requireAuth, this.userController.getFollowingList);
+
     // Admin User Management Routes
     this.adminRouter.get('/', requireAuth, requireAdmin, this.userController.getAllUsers);
     this.adminRouter.get('/:id', requireAuth, requireAdmin, this.userController.getUserById);

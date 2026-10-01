@@ -152,7 +152,7 @@ export class UserService {
     }
 
     // Aggregate stats
-    const [followersCount, followingCount, totalArtwork, competitionEntries, submissionVotesAgg, premiumLikesAgg] = await Promise.all([
+    const [followersCount, followingCount, totalArtwork, competitionEntries, submissionVotesAgg, premiumLikesAgg, isFollowingData] = await Promise.all([
       prisma.follow.count({ where: { followingId: user.id } }),
       prisma.follow.count({ where: { followerId: user.id } }),
       prisma.submission.count({ where: { userId: user.id } }),
@@ -164,7 +164,15 @@ export class UserService {
       prisma.premiumPhoto.aggregate({
         _sum: { likesCount: true },
         where: { userId: user.id }
-      })
+      }),
+      viewerId ? prisma.follow.findUnique({
+        where: {
+          followerId_followingId: {
+            followerId: viewerId,
+            followingId: user.id
+          }
+        }
+      }) : Promise.resolve(null)
     ]);
 
     const totalVotes = submissionVotesAgg._sum.votesCount || 0;
@@ -173,6 +181,7 @@ export class UserService {
 
     return {
       ...user,
+      isFollowing: !!isFollowingData,
       stats: {
         followers: followersCount,
         following: followingCount,
@@ -219,5 +228,71 @@ export class UserService {
         socialLinks: true
       }
     });
+  }
+
+  async toggleFollow(followerId, targetUsername) {
+    try {
+      const targetUser = await prisma.user.findUnique({
+        where: { username: targetUsername }
+      });
+      if (!targetUser) throw new Error('Target user not found');
+      if (targetUser.id === followerId) throw new Error('Cannot follow yourself');
+
+      const existingFollow = await prisma.follow.findUnique({
+        where: {
+          followerId_followingId: {
+            followerId: followerId,
+            followingId: targetUser.id
+          }
+        }
+      });
+
+      if (existingFollow) {
+        await prisma.follow.delete({ where: { id: existingFollow.id } });
+        return { following: false, message: 'Unfollowed successfully' };
+      } else {
+        await prisma.follow.create({
+          data: {
+            followerId: followerId,
+            followingId: targetUser.id
+          }
+        });
+        return { following: true, message: 'Followed successfully' };
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getFollowingList(userId, skip, take) {
+    try {
+      const [following, total] = await Promise.all([
+        prisma.follow.findMany({
+          where: { followerId: userId },
+          skip,
+          take,
+          include: {
+            following: {
+              select: {
+                id: true,
+                username: true,
+                name: true,
+                avatar: true,
+                bio: true,
+                bio_pl: true,
+                country: true,
+                country_pl: true,
+                _count: { select: { followers: true, submissions: true } }
+              }
+            }
+          }
+        }),
+        prisma.follow.count({ where: { followerId: userId } })
+      ]);
+
+      return { data: following, total };
+    } catch (error) {
+      throw error;
+    }
   }
 }
