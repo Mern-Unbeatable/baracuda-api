@@ -280,6 +280,107 @@ export class UserPaymentService {
   }
 
   /**
+   * Get Store Sales Stats and Paginated List
+   */
+  async getStoreSalesStatsAndList(req, userId, search = '', page = 1, limit = 10) {
+    const baseWhere = {
+      order: { status: 'PAID' },
+      product: { userId }
+    };
+
+    // Only fetch once, without full media/variants to save memory
+    const allSales = await prisma.orderItem.findMany({
+      where: baseWhere,
+      orderBy: { order: { createdAt: 'desc' } },
+      include: {
+        order: true,
+        product: {
+          select: {
+            id: true,
+            title: true,
+            title_pl: true,
+            price: true,
+            images: true
+          }
+        }
+      }
+    });
+
+    const totalSales = allSales.reduce((sum, item) => sum + Number(item.price * item.quantity), 0);
+    const itemsSold = allSales.reduce((sum, item) => sum + item.quantity, 0);
+    const platformFee = 0; // 0% fee currently for store sales (adjust if needed)
+    const yourEarnings = totalSales - platformFee;
+
+    const payouts = await prisma.payout.findMany({
+      where: { userId, kind: 'STORE' }
+    });
+
+    const paidOut = payouts
+      .filter(p => p.status === 'PAID')
+      .reduce((sum, p) => sum + Number(p.amount), 0);
+      
+    const pending = payouts
+      .filter(p => ['PENDING', 'APPROVED'].includes(p.status))
+      .reduce((sum, p) => sum + Number(p.amount), 0);
+
+    const available = yourEarnings - (paidOut + pending);
+
+    const searchFilter = search ? search.toLowerCase() : null;
+
+    let filteredSales = allSales;
+    if (searchFilter) {
+      filteredSales = allSales.filter(item => {
+        const titleStr = typeof item.product.title === 'object' ? JSON.stringify(item.product.title).toLowerCase() : String(item.product.title).toLowerCase();
+        return (
+          item.order.fullName.toLowerCase().includes(searchFilter) ||
+          item.order.email.toLowerCase().includes(searchFilter) ||
+          titleStr.includes(searchFilter)
+        );
+      });
+    }
+
+    const skip = (page - 1) * limit;
+    const paginatedResult = filteredSales.slice(skip, skip + limit);
+
+    const formattedList = paginatedResult.map(item => {
+      const price = Number(item.price);
+      const totalItemPrice = price * item.quantity;
+      const fee = 0; // 0% fee
+      
+      const photoUrl = item.product.images && item.product.images.length > 0 ? UrlUtil.getAbsoluteUrl(req, item.product.images[0]) : null;
+
+      return {
+        id: item.id,
+        date: item.order.createdAt,
+        buyer: item.order.fullName,
+        email: item.order.email,
+        productId: item.product.id,
+        photo: item.product.title?.en || item.product.title || 'Unknown',
+        photoUrl,
+        quantity: item.quantity,
+        salePrice: totalItemPrice,
+        yourEarnings: totalItemPrice - fee
+      };
+    });
+
+    return {
+      stats: {
+        totalSales,
+        itemsSold,
+        platformFee,
+        yourEarnings,
+        paidOut,
+        pending,
+        available
+      },
+      list: {
+        data: formattedList,
+        meta: PaginationUtil.getMetadata(filteredSales.length, page, limit)
+      }
+    };
+  }
+
+  /**
    * Request Payout
    */
   async requestPayout(userId, type, amount, accountType, accountNumber) {
@@ -287,6 +388,7 @@ export class UserPaymentService {
     if (type.toLowerCase() === 'prize money' || type.toLowerCase() === 'prize') kind = 'PRIZE';
     else if (type.toLowerCase() === 'donation' || type.toLowerCase() === 'donations') kind = 'DONATION';
     else if (type.toLowerCase() === 'photo sales' || type.toLowerCase() === 'premium') kind = 'PREMIUM';
+    else if (type.toLowerCase() === 'store sales' || type.toLowerCase() === 'store') kind = 'STORE';
     else throw new Error('Invalid payout type requested');
 
     let available = 0;
@@ -298,7 +400,10 @@ export class UserPaymentService {
       const stats = await this.getDonationStatsAndList(userId, 1, 1);
       available = stats.stats.available;
     } else if (kind === 'PREMIUM') {
-      const stats = await this.getPhotoSalesStatsAndList(userId, '', 1, 1);
+      const stats = await this.getPhotoSalesStatsAndList(null, userId, '', 1, 1);
+      available = stats.stats.available;
+    } else if (kind === 'STORE') {
+      const stats = await this.getStoreSalesStatsAndList(null, userId, '', 1, 1);
       available = stats.stats.available;
     }
 

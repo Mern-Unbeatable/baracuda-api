@@ -34,6 +34,8 @@ userRouter.get('/prize-money', userPaymentController.getPrizeMoney);
 userRouter.get('/donations', userPaymentController.getDonations);
 userRouter.get('/photo-sales/export', userPaymentController.exportPhotoSales);
 userRouter.get('/photo-sales', userPaymentController.getPhotoSales);
+userRouter.get('/store-sales/export', userPaymentController.exportStoreSales);
+userRouter.get('/store-sales', userPaymentController.getStoreSales);
 userRouter.get('/history', userPaymentController.getPaymentHistory);
 
 userRouter.post(

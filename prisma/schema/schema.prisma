@@ -193,6 +193,7 @@ enum PayoutKind {
   PRIZE
   DONATION
   PREMIUM
+  STORE
 }
 
 enum PayoutStatus {
