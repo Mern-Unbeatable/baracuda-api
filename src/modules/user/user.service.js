@@ -295,4 +295,67 @@ export class UserService {
       throw error;
     }
   }
+
+  async getLikedArtworks(userId, skip, take) {
+    try {
+      const whereCondition = {
+        OR: [
+          { likes: { some: { userId: userId } } },
+          { votes: { some: { userId: userId } } }
+        ]
+      };
+      
+      const [artworks, total] = await Promise.all([
+        prisma.submission.findMany({
+          where: whereCondition,
+          skip,
+          take,
+          include: {
+            user: {
+              select: {
+                id: true,
+                username: true,
+                name: true,
+                avatar: true
+              }
+            },
+            media: {
+              select: { url: true, format: true },
+              orderBy: { slotIndex: 'asc' },
+              take: 1
+            },
+            saves: {
+              where: { userId }
+            }
+          },
+          orderBy: {
+            createdAt: 'desc'
+          }
+        }),
+        prisma.submission.count({ where: whereCondition })
+      ]);
+      
+      const mappedData = artworks.map(art => ({
+        id: art.id,
+        kind: art.kind,
+        title: art.title,
+        title_pl: art.title_pl,
+        story: art.story,
+        story_pl: art.story_pl,
+        viewsCount: art.viewsCount,
+        likesCount: art.likesCount,
+        votesCount: art.votesCount,
+        createdAt: art.createdAt,
+        competitionState: art.competitionState,
+        status: art.status,
+        media: art.media,
+        user: art.user,
+        isSaved: art.saves && art.saves.length > 0
+      }));
+
+      return { data: mappedData, total };
+    } catch (error) {
+      throw error;
+    }
+  }
 }

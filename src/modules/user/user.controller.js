@@ -257,4 +257,48 @@ export class UserController {
       next(error);
     }
   }
+
+  getLikedArtworks = async (req, res, next) => {
+    try {
+      const userId = req.user.id;
+      const { skip, take, page, limit } = PaginationUtil.getPaginationOptions(req.query);
+
+      const { data, total } = await this.userService.getLikedArtworks(userId, skip, take);
+
+      const sourceLang = req.headers['accept-language']?.split(',')[0]?.split('-')[0] || req.headers['x-lang'] || 'en';
+
+      const formattedData = data.map(art => {
+        let fArt = { ...art };
+        
+        if (sourceLang === 'pl') {
+          if (fArt.title_pl) fArt.title = fArt.title_pl;
+          if (fArt.story_pl) fArt.story = fArt.title_pl;
+        }
+
+        fArt.user = UrlUtil.formatUserMedia(req, fArt.user);
+        
+        if (fArt.media && Array.isArray(fArt.media)) {
+          fArt.media = fArt.media.map(m => ({
+            ...m,
+            url: UrlUtil.getAbsoluteUrl(req, m.url)
+          }));
+        }
+
+        // Return a cover image URL for easier frontend mapping
+        fArt.coverImage = fArt.media && fArt.media.length > 0 ? fArt.media[0].url : null;
+        delete fArt.media;
+
+        return fArt;
+      });
+
+      res.status(200).json({
+        success: true,
+        message: 'Liked artworks fetched successfully',
+        data: formattedData,
+        meta: PaginationUtil.getMetadata(total, page, limit)
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 }

@@ -5266,6 +5266,107 @@
                             }
                         }
                     ]
+                },
+                {
+                    "name": "Favourite Photos",
+                    "item": [
+                        {
+                            "name": "Get Liked Artworks",
+                            "request": {
+                                "method": "GET",
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/users/liked-artworks?page=1&limit=10",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "users",
+                                        "liked-artworks"
+                                    ],
+                                    "query": [
+                                        {
+                                            "key": "page",
+                                            "value": "1"
+                                        },
+                                        {
+                                            "key": "limit",
+                                            "value": "10"
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Toggle Like Artwork",
+                            "request": {
+                                "method": "POST",
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/artworks/{{artwork_id}}/like",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "artworks",
+                                        "{{artwork_id}}",
+                                        "like"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Toggle Vote Artwork",
+                            "request": {
+                                "method": "POST",
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/v1/artworks/{{artwork_id}}/vote",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "artworks",
+                                        "{{artwork_id}}",
+                                        "vote"
+                                    ]
+                                }
+                            }
+                        }
+                    ]
                 }
             ],
             "auth": {

@@ -418,11 +418,15 @@ export class ArtworkService {
       throw new Error('No active competition available to join right now');
     }
 
+    // Clear any existing likes because it's now in a competition
+    await prisma.like.deleteMany({ where: { submissionId: id } });
+
     return prisma.submission.update({
       where: { id },
       data: {
         competitionState: 'IN_COMPETITION',
-        competitionId: activeComp.id
+        competitionId: activeComp.id,
+        likesCount: 0
       }
     });
   }
@@ -634,10 +638,20 @@ export class ArtworkService {
   }
 
   async voteArtwork(id, userId, ipAddress) {
-    const submission = await prisma.submission.findUnique({ where: { id } });
+    const submission = await prisma.submission.findUnique({ 
+      where: { id },
+      include: { competition: true }
+    });
+    
     if (!submission || submission.competitionState !== 'IN_COMPETITION') {
       throw new Error('Can only vote for artworks currently in competition');
     }
+    
+    // Check if the competition has ended
+    if (!submission.competition || submission.competition.status !== 'OPEN') {
+      throw new Error('Voting is closed. This competition has already ended.');
+    }
+
     if (submission.userId === userId) {
       throw new Error('You cannot vote for your own artwork');
     }

@@ -31,6 +31,9 @@ export class UserModule {
     this.publicRouter.post('/follow/:username', requireAuth, this.userController.toggleFollow);
     this.publicRouter.get('/following', requireAuth, this.userController.getFollowingList);
 
+    // Liked Artworks
+    this.publicRouter.get('/liked-artworks', requireAuth, this.userController.getLikedArtworks);
+
     // Admin User Management Routes
     this.adminRouter.get('/', requireAuth, requireAdmin, this.userController.getAllUsers);
     this.adminRouter.get('/:id', requireAuth, requireAdmin, this.userController.getUserById);
