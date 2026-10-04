@@ -896,9 +896,15 @@ model ChatMessage {
   id        String   @id @default(uuid())
   roomId    String
   senderId  String
-  content   String   @db.Text
+  content   String?  @db.Text
+  fileUrl   String?
+  fileType  String?
+  fileName  String?
   isRead    Boolean  @default(false)
+  isEdited  Boolean  @default(false)
+  isDeleted Boolean  @default(false)
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   room   ChatRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
   sender User     @relation(fields: [senderId], references: [id], onDelete: Cascade)

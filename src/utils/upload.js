@@ -52,6 +52,10 @@ const fileFilter = (req, file, cb) => {
     } else {
       cb(new Error('Invalid banner file. Supported formats are: jpg, jpeg, png, webp, avif'), false);
     }
+  } else if (file.fieldname === 'file') {
+    // Chat files: Allow basically any standard file (images, videos, audio, pdf, docx, etc.)
+    // We will bypass strict MIME checking for chat files to avoid false rejections from various browser recordings.
+    cb(null, true);
   } else {
     cb(new Error('Unexpected field: ' + file.fieldname), false);
   }

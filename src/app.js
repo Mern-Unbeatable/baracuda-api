@@ -22,6 +22,7 @@ import { AnnouncementModule } from './modules/announcement/announcement.module.j
 import config from './config/env.js';
 import storeRouter from './modules/store/store.module.js';
 import { OrderModule } from './modules/order/order.module.js';
+import { ChatModule } from './modules/chat/chat.module.js';
 
 /**
  * Main Application Class
@@ -39,7 +40,7 @@ class App {
   initializeMiddlewares() {
     // Middleware for CORS
     this.app.use(cors({
-      origin: ['http://localhost:5173', 'http://localhost:5174', 'https://baracuda260.maktechgroup.tech', 'https://www.baracuda260.maktechgroup.tech'],
+      origin: ['http://localhost:5173', 'http://localhost:5174', 'http://127.0.0.1:5500', 'https://baracuda260.maktechgroup.tech', 'https://www.baracuda260.maktechgroup.tech'],
       credentials: true
     }));
 
@@ -145,6 +146,9 @@ class App {
     this.app.use('/api/v1/campaigns', CampaignModule.router);
     const orderModule = new OrderModule();
     this.app.use('/api/v1/orders', orderModule.router);
+
+    const chatModule = new ChatModule();
+    this.app.use('/api/v1/chat', chatModule.router);
   }
 
   initializeErrorHandling() {

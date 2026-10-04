@@ -3,6 +3,8 @@ import config from './config/env.js';
 import cron from 'node-cron';
 import { CompetitionService } from './modules/competition/competition.service.js';
 
+import { initSocket } from './socket.js';
+
 // Get port from environment variable or use default
 const PORT = config.app.port;
 
@@ -12,6 +14,9 @@ const server = app.listen(PORT, () => {
   console.log(`Environment: ${config.app.env}`);
   console.log(`Health check available at: http://localhost:${PORT}/health`);
 });
+
+// Initialize Socket.io
+initSocket(server);
 
 // Initialize Competition cron jobs
 const competitionService = new CompetitionService();
@@ -54,10 +59,10 @@ cron.schedule('0 * * * *', async () => {
       const notifications = ids.map(id => ({
         userId: id,
         type: 'SYSTEM',
-        title: { en: 'Account Reactivated', bn: 'অ্যাকাউন্ট রিঅ্যাক্টিভেট' },
+        title: { en: 'Account Reactivated', pl: 'Konto reaktywowane' },
         body: { 
           en: 'Your suspension period has ended and your account is now fully active again.',
-          bn: 'আপনার অ্যাকাউন্ট সাসপেনশনের মেয়াদ শেষ হয়েছে এবং অ্যাকাউন্টটি পুনরায় অ্যাক্টিভ করা হয়েছে।'
+          pl: 'Okres zawieszenia minął i Twoje konto jest znów w pełni aktywne.'
         }
       }));
       await prisma.notification.createMany({ data: notifications });
