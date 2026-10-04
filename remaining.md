@@ -5,3 +5,4 @@
 
 ## User Profile
 - **Artwork Appreciation:** Implement artwork appreciation features.
+- **User Slideshow:** Implement user slideshow functionality.
