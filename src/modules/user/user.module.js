@@ -36,6 +36,7 @@ export class UserModule {
     this.publicRouter.get('/liked-artworks', requireAuth, this.userController.getLikedArtworks);
 
     // Admin User Management Routes
+    this.adminRouter.get('/dashboard', requireAuth, requireAdmin, this.userController.getAdminDashboard);
     this.adminRouter.get('/', requireAuth, requireAdmin, this.userController.getAllUsers);
     this.adminRouter.get('/:id', requireAuth, requireAdmin, this.userController.getUserById);
     this.adminRouter.patch('/:id/status', requireAuth, requireAdmin, this.userController.updateUserStatus);

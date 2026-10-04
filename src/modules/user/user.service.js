@@ -431,6 +431,171 @@ export class UserService {
     }
   }
 
+  async getAdminDashboard() {
+    try {
+      const now = new Date();
+      const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+      const currentYear = now.getFullYear();
+
+      // Users and Submissions
+      const registeredUsers = await prisma.user.count({ where: { role: 'USER' } });
+      const photosSubmitted = await prisma.submission.count();
+      
+      const votesAgg = await prisma.submission.aggregate({
+        _sum: { votesCount: true }
+      });
+      const votesCast = votesAgg._sum.votesCount || 0;
+
+      // Revenues & Commission
+      const donationsAgg = await prisma.donation.aggregate({
+        where: { status: 'COMPLETED' },
+        _sum: { amount: true }
+      });
+      const monthDonationsAgg = await prisma.donation.aggregate({
+        where: { status: 'COMPLETED', createdAt: { gte: firstDayOfMonth } },
+        _sum: { amount: true }
+      });
+      const donationTotal = Number(donationsAgg._sum.amount || 0);
+      const donationMonth = Number(monthDonationsAgg._sum.amount || 0);
+
+      const ordersAgg = await prisma.order.aggregate({
+        where: { status: 'PAID' },
+        _sum: { total: true }
+      });
+      const monthOrdersAgg = await prisma.order.aggregate({
+        where: { status: 'PAID', createdAt: { gte: firstDayOfMonth } },
+        _sum: { total: true }
+      });
+      const storeTotal = Number(ordersAgg._sum.total || 0);
+      const storeMonth = Number(monthOrdersAgg._sum.total || 0);
+
+      const totalCommission = (donationTotal + storeTotal) * 0.20;
+      const thisMonthCommission = (donationMonth + storeMonth) * 0.20;
+
+      const promotedAgg = await prisma.promotedAlbum.aggregate({
+        _sum: { amountPaid: true }
+      });
+      const monthPromotedAgg = await prisma.promotedAlbum.aggregate({
+        where: { createdAt: { gte: firstDayOfMonth } },
+        _sum: { amountPaid: true }
+      });
+      const totalPromoted = Number(promotedAgg._sum.amountPaid || 0);
+      const thisMonthPromoted = Number(monthPromotedAgg._sum.amountPaid || 0);
+
+      const totalRevenue = totalCommission + totalPromoted;
+
+      const payoutsAgg = await prisma.payout.aggregate({
+        where: { status: 'PAID' },
+        _sum: { amount: true }
+      });
+      const totalPayouts = Number(payoutsAgg._sum.amount || 0);
+
+      const recentSubmissionsCount = await prisma.submission.count({
+        where: { status: 'PENDING' } 
+      });
+      
+      const recentSubmissions = await prisma.submission.findMany({
+        where: { status: 'PENDING' },
+        take: 3,
+        orderBy: { createdAt: 'desc' },
+        include: {
+          user: { select: { name: true, country: true } },
+          media: { select: { url: true }, take: 1 }
+        }
+      });
+
+      const recentCompetition = {
+        pendingDecisions: recentSubmissionsCount,
+        submissions: recentSubmissions.map(sub => ({
+          id: sub.id,
+          title: sub.title,
+          author: sub.user?.name || 'Unknown',
+          country: sub.user?.country || 'Unknown',
+          image: sub.media?.[0]?.url || null
+        }))
+      };
+
+      // Real Data for Revenue Trend
+      const donationTrend = await prisma.$queryRaw`
+        SELECT EXTRACT(MONTH FROM "createdAt") as month, COALESCE(SUM(amount), 0) as total
+        FROM donations
+        WHERE status = 'COMPLETED' AND EXTRACT(YEAR FROM "createdAt") = ${currentYear}
+        GROUP BY EXTRACT(MONTH FROM "createdAt")
+      `;
+      
+      const orderTrend = await prisma.$queryRaw`
+        SELECT EXTRACT(MONTH FROM "createdAt") as month, COALESCE(SUM(total), 0) as total
+        FROM orders
+        WHERE status = 'PAID' AND EXTRACT(YEAR FROM "createdAt") = ${currentYear}
+        GROUP BY EXTRACT(MONTH FROM "createdAt")
+      `;
+
+      const promotedTrend = await prisma.$queryRaw`
+        SELECT EXTRACT(MONTH FROM "createdAt") as month, COALESCE(SUM("amountPaid"), 0) as total
+        FROM promoted_albums
+        WHERE EXTRACT(YEAR FROM "createdAt") = ${currentYear}
+        GROUP BY EXTRACT(MONTH FROM "createdAt")
+      `;
+
+      const cDonationArray = new Array(12).fill(0);
+      const cStoreArray = new Array(12).fill(0);
+      const promotedArray = new Array(12).fill(0);
+
+      donationTrend.forEach(row => {
+        const m = Number(row.month) - 1;
+        cDonationArray[m] = Number(row.total) * 0.20;
+      });
+
+      orderTrend.forEach(row => {
+        const m = Number(row.month) - 1;
+        cStoreArray[m] = Number(row.total) * 0.20;
+      });
+
+      promotedTrend.forEach(row => {
+        const m = Number(row.month) - 1;
+        promotedArray[m] = Number(row.total);
+      });
+
+      const revenueTrend = {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        commissionDonation: cDonationArray,
+        commissionStore: cStoreArray,
+        promoted: promotedArray
+      };
+
+      const topCountriesQuery = await prisma.user.groupBy({
+        by: ['country'],
+        where: { role: 'USER', country: { not: null } },
+        _count: { id: true },
+        orderBy: { _count: { id: 'desc' } },
+        take: 4
+      });
+
+      const communityReach = topCountriesQuery.map(c => ({
+        country: c.country,
+        count: c._count.id
+      }));
+
+      return {
+        registeredUsers,
+        photosSubmitted,
+        votesCast,
+        totalCommission,
+        thisMonthCommission,
+        totalPromoted,
+        thisMonthPromoted,
+        totalRevenue,
+        totalPayouts,
+        recentCompetition,
+        revenueTrend,
+        communityReach
+      };
+    } catch (error) {
+      console.error('Error fetching admin dashboard:', error);
+      throw error;
+    }
+  }
+
   async getLikedArtworks(userId, skip, take) {
     try {
       const whereCondition = {

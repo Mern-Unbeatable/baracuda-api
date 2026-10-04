@@ -144,6 +144,29 @@ export class UserController {
     }
   }
 
+  getAdminDashboard = async (req, res, next) => {
+    try {
+      const dashboardData = await this.userService.getAdminDashboard();
+      
+      // format URLs if needed
+      if (dashboardData.recentCompetition && dashboardData.recentCompetition.submissions) {
+        dashboardData.recentCompetition.submissions = dashboardData.recentCompetition.submissions.map(sub => {
+          if (sub.image) {
+            sub.image = UrlUtil.getAbsoluteUrl(req, sub.image);
+          }
+          return sub;
+        });
+      }
+
+      res.status(200).json({
+        success: true,
+        data: dashboardData
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
   /**
    * Get Public Profile
    * @route GET /api/v1/users/profile/:username

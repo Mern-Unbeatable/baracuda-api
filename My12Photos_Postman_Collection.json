@@ -271,6 +271,40 @@
       "name": "Admin",
       "item": [
         {
+          "name": "Dashboard",
+          "item": [
+            {
+              "name": "Get Admin Dashboard",
+              "request": {
+                "method": "GET",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{adminToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/users/dashboard",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "users",
+                    "dashboard"
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
           "name": "Category",
           "item": [
             {
