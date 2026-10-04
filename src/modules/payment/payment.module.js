@@ -54,6 +54,7 @@ adminRouter.use(requireAuth, requireAdmin);
 adminRouter.get('/payouts/prize-money', adminPaymentController.getPrizeMoneyPayouts);
 adminRouter.get('/payouts/donations', adminPaymentController.getDonationPayouts);
 adminRouter.get('/payouts/photo-sales', adminPaymentController.getPhotoSalesPayouts);
+adminRouter.get('/payouts/store-sales', adminPaymentController.getStoreSalesPayouts);
 adminRouter.patch(
   '/payouts/:id/status',
   paymentValidation.validate(paymentValidation.updatePayoutStatusSchema),

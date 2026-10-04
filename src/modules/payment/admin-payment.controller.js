@@ -37,6 +37,17 @@ class AdminPaymentController {
     }
   }
 
+  async getStoreSalesPayouts(req, res, next) {
+    try {
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 10;
+      const result = await adminPaymentService.getPayouts('STORE', page, limit);
+      return ResponseUtil.success(res, 'Store sales payout requests fetched successfully', result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
   async updatePayoutStatus(req, res, next) {
     try {
       const { id } = req.params;
