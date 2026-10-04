@@ -209,6 +209,26 @@ export class UserService {
       data.introVideo = `/uploads/${files.introVideo[0].filename}`;
     }
 
+    // Check unique constraints
+    if (data.username) {
+      const existingUser = await prisma.user.findUnique({ where: { username: data.username } });
+      if (existingUser && existingUser.id !== userId) {
+        throw new Error('Username is already taken');
+      }
+    }
+    if (data.email) {
+      const existingEmail = await prisma.user.findUnique({ where: { email: data.email } });
+      if (existingEmail && existingEmail.id !== userId) {
+        throw new Error('Email is already registered');
+      }
+    }
+    if (data.phone) {
+      const existingPhone = await prisma.user.findUnique({ where: { phone: data.phone } });
+      if (existingPhone && existingPhone.id !== userId) {
+        throw new Error('Phone number is already registered');
+      }
+    }
+
     return await prisma.user.update({
       where: { id: userId },
       data,
@@ -216,6 +236,8 @@ export class UserService {
         id: true,
         username: true,
         name: true,
+        email: true,
+        phone: true,
         avatar: true,
         coverPhoto: true,
         introVideo: true,

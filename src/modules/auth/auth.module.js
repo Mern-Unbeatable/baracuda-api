@@ -4,6 +4,7 @@ import { AuthService } from './auth.service.js';
 import { AuthValidation } from './auth.validation.js';
 import { upload } from '../../utils/upload.js';
 import prisma from '../../config/prisma.js';
+import { requireAuth } from '../../middlewares/auth.middleware.js';
 
 /**
  * Auth Module
@@ -54,6 +55,12 @@ export class AuthModule {
       '/reset-password',
       AuthValidation.validate(AuthValidation.resetPasswordSchema),
       this.authController.resetPassword
+    );
+
+    this.router.post(
+      '/change-password',
+      requireAuth,
+      this.authController.changePassword
     );
   }
 }

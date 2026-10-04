@@ -104,6 +104,11 @@ export class UserController {
       
       // Use existing public profile logic, which aggregates all stats
       const profile = await this.userService.getPublicProfile(user.username, viewerId);
+      
+      // Inject private fields for the owner
+      profile.email = user.email;
+      profile.phone = user.phone;
+
       const formattedProfile = UrlUtil.formatUserMedia(req, profile);
       
       res.status(200).json({
@@ -175,6 +180,9 @@ export class UserController {
 
       const updateData = {
         name: req.body.name,
+        username: req.body.username,
+        email: req.body.email,
+        phone: req.body.phone,
         bio: req.body.bio,
         bio_pl,
         city: req.body.city,
@@ -183,6 +191,9 @@ export class UserController {
         country_pl,
         socialLinks: socialLinks
       };
+
+      // Remove undefined values
+      Object.keys(updateData).forEach(key => updateData[key] === undefined && delete updateData[key]);
 
       const updatedProfile = await this.userService.updateProfile(userId, updateData, files);
       

@@ -126,5 +126,28 @@ export class AuthController {
       next(err);
     }
   }
+
+  changePassword = async (req, res, next) => {
+    try {
+      const { currentPassword, newPassword } = req.body;
+      const userId = req.user?.id;
+      
+      if (!userId) {
+        return ResponseUtil.error(res, 'Unauthorized', 401);
+      }
+      
+      if (!currentPassword || !newPassword) {
+        return ResponseUtil.error(res, 'Current password and new password are required', 400);
+      }
+
+      await this.authService.changePassword(userId, currentPassword, newPassword);
+      return ResponseUtil.success(res, 'Password successfully changed');
+    } catch (err) {
+      if (err.message === 'Current password is incorrect') {
+        return ResponseUtil.error(res, err.message, 400);
+      }
+      next(err);
+    }
+  }
 }
 
