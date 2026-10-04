@@ -5595,6 +5595,39 @@
               }
             }
           ]
+        },
+        {
+          "name": "Dashboard",
+          "item": [
+            {
+              "name": "Get User Dashboard",
+              "request": {
+                "method": "GET",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/users/dashboard",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "users",
+                    "dashboard"
+                  ]
+                }
+              }
+            }
+          ]
         }
       ],
       "auth": {

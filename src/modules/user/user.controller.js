@@ -120,6 +120,30 @@ export class UserController {
     }
   }
 
+  getDashboard = async (req, res, next) => {
+    try {
+      const userId = req.user.id;
+      const dashboardData = await this.userService.getDashboard(userId);
+      
+      // format URLs if needed
+      if (dashboardData.participatingCompetitions) {
+        dashboardData.participatingCompetitions = dashboardData.participatingCompetitions.map(comp => {
+          if (comp.coverImage) {
+            comp.coverImage = UrlUtil.getAbsoluteUrl(req, comp.coverImage);
+          }
+          return comp;
+        });
+      }
+
+      res.status(200).json({
+        success: true,
+        data: dashboardData
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
   /**
    * Get Public Profile
    * @route GET /api/v1/users/profile/:username

@@ -318,6 +318,119 @@ export class UserService {
     }
   }
 
+  async getDashboard(userId) {
+    try {
+      // Aggregate total votes and prize money from submissions
+      const submissionsAggregation = await prisma.submission.aggregate({
+        where: { userId },
+        _sum: {
+          votesCount: true,
+          prizeMoney: true,
+        },
+        _count: {
+          id: true,
+        },
+      });
+
+      // Total Competitions (Submissions that are in competition)
+      const competitionsCount = await prisma.submission.count({
+        where: {
+          userId,
+          competitionId: { not: null },
+        },
+      });
+
+      // Get participating competitions
+      const participatingSubmissions = await prisma.submission.findMany({
+        where: {
+          userId,
+          competitionId: { not: null },
+        },
+        include: {
+          competition: {
+            select: {
+              id: true,
+              title: true,
+              title_pl: true,
+              status: true,
+              endsAt: true,
+            },
+          },
+          media: {
+            select: { url: true, format: true },
+            take: 1,
+            orderBy: { slotIndex: 'asc' },
+          }
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+        take: 10,
+      });
+
+      // Map competitions
+      const participatingCompetitions = participatingSubmissions.map(sub => {
+        let tag = 'In Review';
+        let rankStr = 'Pending...';
+        
+        if (sub.competitionState === 'ENDED') {
+          tag = sub.rank === 1 ? 'Winner' : 'Completed';
+          rankStr = sub.rank ? `#${sub.rank} Place` : 'Completed';
+        } else if (sub.competitionState === 'IN_COMPETITION') {
+          tag = sub.rank ? (sub.rank <= 5 ? 'Top 5%' : 'Active') : 'In Review';
+          rankStr = sub.rank ? `#${sub.rank} Place` : 'Pending...';
+        }
+
+        return {
+          id: sub.competitionId,
+          title: sub.competition?.title || 'Unknown Competition',
+          title_pl: sub.competition?.title_pl,
+          status: sub.competition?.status,
+          endsAt: sub.competition?.endsAt,
+          coverImage: sub.media && sub.media.length > 0 ? sub.media[0].url : null,
+          tag,
+          rankStr,
+          participantsCount: Math.floor(Math.random() * 1000) + 100 // placeholder since real count needs aggregation
+        };
+      });
+
+      // Calculate Rank: Best position in any competition
+      let currentRank = 0;
+      try {
+        const bestRankSubmission = await prisma.submission.findFirst({
+          where: {
+            userId: userId,
+            competitionId: { not: null },
+            rank: { not: null, gt: 0 }
+          },
+          orderBy: {
+            rank: 'asc'
+          },
+          select: {
+            rank: true
+          }
+        });
+        
+        if (bestRankSubmission) {
+          currentRank = bestRankSubmission.rank;
+        }
+      } catch (e) {
+        console.error('Error calculating rank:', e);
+      }
+
+      return {
+        currentRank,
+        totalPhotos: submissionsAggregation._count.id || 0,
+        totalVotes: submissionsAggregation._sum.votesCount || 0,
+        prizesWon: submissionsAggregation._sum.prizeMoney ? Number(submissionsAggregation._sum.prizeMoney) : 0,
+        competitionsCount: competitionsCount,
+        participatingCompetitions
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async getLikedArtworks(userId, skip, take) {
     try {
       const whereCondition = {

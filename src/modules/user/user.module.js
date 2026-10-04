@@ -19,6 +19,7 @@ export class UserModule {
 
   initializeRoutes() {
     // Profile Routes (Public & Self)
+    this.publicRouter.get('/dashboard', requireAuth, this.userController.getDashboard);
     this.publicRouter.get('/profile/me', requireAuth, this.userController.getMyProfile);
     this.publicRouter.get('/profile/:username', optionalAuth, this.userController.getPublicProfile);
     this.publicRouter.put('/profile', requireAuth, upload.fields([
