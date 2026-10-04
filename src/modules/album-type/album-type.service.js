@@ -1,4 +1,5 @@
 import prisma from '../../config/prisma.js';
+import { TranslateUtil } from '../../utils/translate.js';
 
 export class AlbumTypeService {
   /**
@@ -27,7 +28,7 @@ export class AlbumTypeService {
         kind: data.kind,
         prizeMoney: data.prizeMoney,
         name: data.name,
-        name_pl: data.name_pl || null,
+        name_pl: data.name_pl || (data.name ? await TranslateUtil.translateText(data.name, 'en', 'pl') : null),
         photoCount
       };
       
@@ -38,16 +39,20 @@ export class AlbumTypeService {
 
       if (data.description !== undefined) {
         createData.description = data.description;
-        createData.description_pl = data.description_pl || null;
+        createData.description_pl = data.description_pl || (data.description ? await TranslateUtil.translateText(data.description, 'en', 'pl') : null);
       }
 
       if (data.features !== undefined) {
         const featureList = data.features
           ? data.features.split('\\n').map(f => f.trim()).filter(f => f.length > 0)
           : [];
-        const featureListPl = data.features_pl
-          ? data.features_pl.split('\\n').map(f => f.trim()).filter(f => f.length > 0)
-          : [];
+        let featureListPl = [];
+        if (data.features_pl) {
+          featureListPl = data.features_pl.split('\\n').map(f => f.trim()).filter(f => f.length > 0);
+        } else if (data.features) {
+          const transFeatures = await TranslateUtil.translateText(data.features, 'en', 'pl');
+          featureListPl = transFeatures.split('\\n').map(f => f.trim()).filter(f => f.length > 0);
+        }
         createData.features = featureList;
         createData.features_pl = featureListPl;
       }
@@ -81,12 +86,12 @@ export class AlbumTypeService {
 
       if (data.name) {
         updateData.name = data.name;
-        updateData.name_pl = data.name_pl || null;
+        updateData.name_pl = data.name_pl || await TranslateUtil.translateText(data.name, 'en', 'pl');
       }
       
       if (data.description !== undefined) {
         updateData.description = data.description;
-        updateData.description_pl = data.description_pl || null;
+        updateData.description_pl = data.description_pl || (data.description ? await TranslateUtil.translateText(data.description, 'en', 'pl') : null);
       }
 
       // 'features' in the DB is now String[]
@@ -95,9 +100,13 @@ export class AlbumTypeService {
         const featureList = data.features
           ? data.features.split('\\n').map(f => f.trim()).filter(f => f.length > 0)
           : [];
-        const featureListPl = data.features_pl
-          ? data.features_pl.split('\\n').map(f => f.trim()).filter(f => f.length > 0)
-          : [];
+        let featureListPl = [];
+        if (data.features_pl) {
+          featureListPl = data.features_pl.split('\\n').map(f => f.trim()).filter(f => f.length > 0);
+        } else if (data.features) {
+          const transFeatures = await TranslateUtil.translateText(data.features, 'en', 'pl');
+          featureListPl = transFeatures.split('\\n').map(f => f.trim()).filter(f => f.length > 0);
+        }
         updateData.features = featureList;
         updateData.features_pl = featureListPl;
       }

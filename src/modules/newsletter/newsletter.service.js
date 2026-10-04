@@ -1,6 +1,7 @@
 import prisma from '../../config/prisma.js';
 import { EmailUtil } from '../../utils/email.js';
 import config from '../../config/env.js';
+import { TranslateUtil } from '../../utils/translate.js';
 
 export class NewsletterService {
   async subscribe(email) {
@@ -42,14 +43,14 @@ export class NewsletterService {
     const campaign = await prisma.newsletterCampaign.create({
       data: {
         subject: subject,
-        subject_pl: subject_pl || null,
+        subject_pl: subject_pl || (subject ? await TranslateUtil.translateText(subject, 'en', 'pl') : null),
         title: title,
-        title_pl: title_pl || null,
+        title_pl: title_pl || (title ? await TranslateUtil.translateText(title, 'en', 'pl') : null),
         content: content,
-        content_pl: content_pl || null,
+        content_pl: content_pl || (content ? await TranslateUtil.translateText(content, 'en', 'pl') : null),
         bannerUrl,
         ctaText,
-        ctaText_pl: ctaText_pl || null,
+        ctaText_pl: ctaText_pl || (ctaText ? await TranslateUtil.translateText(ctaText, 'en', 'pl') : null),
         ctaUrl,
         target,
         selectedIds: selectedIds ? selectedIds.split(',').map(s => s.trim()) : [],
