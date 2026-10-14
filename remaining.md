@@ -4,11 +4,8 @@
 - **Visitor Analytics (Dashboard Page):** Integrate Google Analytics 4 (GA4) Data API to fetch real Visitor Analytics (unique visitors and returning sessions) for the visitor statistics chart.
 
 ## 2. User Profile & Artwork
-- **Artwork Appreciation:**
-  - Implement artwork appreciation features.
-  - Update the Gold appreciation artwork badge to a more vibrant gold/yellow looking award design.
-- **User Slideshow:**
-  - Implement user slideshow functionality.
+- [x] ~~**Artwork Appreciation:**~~ ✅ *(Completed — Module, Sunday weekly reset, profile & artwork API integration, Postman endpoints)*
+- [x] ~~**User Slideshow:**~~ ✅ *(Completed — SlideshowModule, unified query across Competitions, Gallery/Profile & Marketplace Sell Images, pagination with limit 15, load more support, user & source filtering, Postman collection updated)*
 - **Standalone 1-Minute Video Comment:**
   - Add an option in the user panel to upload a separate 1-minute video comment without adding photos.
   - Display under the user's "My Artwork" section alongside photos and albums, sorted chronologically by upload date and time.

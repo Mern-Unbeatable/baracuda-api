@@ -24,6 +24,7 @@ import storeRouter from './modules/store/store.module.js';
 import { OrderModule } from './modules/order/order.module.js';
 import { ChatModule } from './modules/chat/chat.module.js';
 import { AppreciationModule } from './modules/appreciation/appreciation.module.js';
+import { SlideshowModule } from './modules/slideshow/slideshow.module.js';
 
 /**
  * Main Application Class
@@ -153,6 +154,9 @@ class App {
 
     const appreciationModule = new AppreciationModule();
     this.app.use('/api/v1/appreciation', appreciationModule.router);
+
+    const slideshowModule = new SlideshowModule();
+    this.app.use('/api/v1/slideshow', slideshowModule.router);
   }
 
   initializeErrorHandling() {

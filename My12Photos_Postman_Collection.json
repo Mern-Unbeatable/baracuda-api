@@ -3300,6 +3300,257 @@
                   ]
                 }
               }
+            },
+            {
+              "name": "slideshow",
+              "item": [
+                {
+                  "name": "1. Get My Uploaded Images (For Creating Slideshow)",
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "accept-language",
+                        "value": "en",
+                        "type": "text"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{baseUrl}}/api/v1/slideshow/my-images?page=1&limit=15",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "v1",
+                        "slideshow",
+                        "my-images"
+                      ],
+                      "query": [
+                        {
+                          "key": "page",
+                          "value": "1",
+                          "description": "Page number"
+                        },
+                        {
+                          "key": "limit",
+                          "value": "15",
+                          "description": "Initial 15 images. Next 15 fetched when clicking Load More."
+                        },
+                        {
+                          "key": "source",
+                          "value": "ALL",
+                          "description": "Optional: ALL, COMPETITION, GALLERY, PREMIUM",
+                          "disabled": true
+                        }
+                      ]
+                    },
+                    "description": "Fetch all images uploaded by the logged-in user across Competition, Gallery (Profile), and Sell Photos. Returns image id, url, title, and source."
+                  }
+                },
+                {
+                  "name": "2. Create Slideshow (With Selected & Ordered Photos)",
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json",
+                        "type": "text"
+                      },
+                      {
+                        "key": "accept-language",
+                        "value": "en",
+                        "type": "text"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"name\": \"Summer Moments\",\n  \"items\": [\n    {\n      \"mediaId\": \"accaa7df-9b4b-4c2b-95ae-552ea5e5b807\",\n      \"order\": 1\n    },\n    {\n      \"mediaId\": \"02870304-55ab-41c8-b95e-8ae5e5b1cdd7\",\n      \"order\": 2\n    },\n    {\n      \"mediaId\": \"304dbf6d-4bef-4eea-b3b0-6a7b8da0187f\",\n      \"order\": 3\n    }\n  ]\n}"
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/api/v1/slideshow",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "v1",
+                        "slideshow"
+                      ]
+                    },
+                    "description": "Create a custom slideshow by selecting unlimited photos from uploaded images and specifying their order (1, 2, 3... or any custom index)."
+                  }
+                },
+                {
+                  "name": "3. Get My Slideshows (via Token)",
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "accept-language",
+                        "value": "en",
+                        "type": "text"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{baseUrl}}/api/v1/slideshow/me?page=1&limit=50",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "v1",
+                        "slideshow",
+                        "me"
+                      ],
+                      "query": [
+                        {
+                          "key": "page",
+                          "value": "1"
+                        },
+                        {
+                          "key": "limit",
+                          "value": "50"
+                        }
+                      ]
+                    },
+                    "description": "Get all slideshows created by the logged-in user (authenticated via Bearer token)."
+                  }
+                },
+                {
+                  "name": "4. Get Photographer Slideshows (by Username)",
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "accept-language",
+                        "value": "en",
+                        "type": "text"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{baseUrl}}/api/v1/slideshow/user/test_follower?page=1&limit=50",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "v1",
+                        "slideshow",
+                        "user",
+                        "test_follower"
+                      ],
+                      "query": [
+                        {
+                          "key": "page",
+                          "value": "1"
+                        },
+                        {
+                          "key": "limit",
+                          "value": "50"
+                        }
+                      ]
+                    },
+                    "description": "Get slideshows created by a specific photographer by their username for public profile display."
+                  }
+                },
+                {
+                  "name": "5. Get Single Slideshow Details (Play Slideshow)",
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "accept-language",
+                        "value": "en",
+                        "type": "text"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{baseUrl}}/api/v1/slideshow/:id",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "v1",
+                        "slideshow",
+                        ":id"
+                      ],
+                      "variable": [
+                        {
+                          "key": "id",
+                          "value": "slideshow-uuid-here",
+                          "description": "Slideshow ID"
+                        }
+                      ]
+                    },
+                    "description": "Get full details of a slideshow including all photos ordered by sortOrder to play the slideshow."
+                  }
+                },
+                {
+                  "name": "6. Update Slideshow",
+                  "request": {
+                    "method": "PUT",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json",
+                        "type": "text"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"title\": \"Summer Moments 2026 Edition\",\n  \"description\": \"Updated description for the slideshow\"\n}"
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/api/v1/slideshow/:id",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "v1",
+                        "slideshow",
+                        ":id"
+                      ],
+                      "variable": [
+                        {
+                          "key": "id",
+                          "value": "slideshow-uuid-here"
+                        }
+                      ]
+                    },
+                    "description": "Update slideshow title, description, coverImage, or reorder/replace items."
+                  }
+                },
+                {
+                  "name": "7. Delete Slideshow",
+                  "request": {
+                    "method": "DELETE",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/api/v1/slideshow/:id",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "v1",
+                        "slideshow",
+                        ":id"
+                      ],
+                      "variable": [
+                        {
+                          "key": "id",
+                          "value": "slideshow-uuid-here"
+                        }
+                      ]
+                    },
+                    "description": "Delete a created slideshow."
+                  }
+                }
+              ]
             }
           ]
         },
@@ -7756,6 +8007,78 @@
                         "type": "text"
                       }
                     ]
+                  }
+                },
+                {
+                  "name": "Get Photographer Slideshows (by Username)",
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "accept-language",
+                        "value": "en",
+                        "type": "text"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{baseUrl}}/api/v1/slideshow/user/test_follower?page=1&limit=50",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "v1",
+                        "slideshow",
+                        "user",
+                        "test_follower"
+                      ],
+                      "query": [
+                        {
+                          "key": "page",
+                          "value": "1",
+                          "description": "Page number"
+                        },
+                        {
+                          "key": "limit",
+                          "value": "50",
+                          "description": "Number of slideshows"
+                        }
+                      ]
+                    },
+                    "description": "Get slideshows created by a specific photographer by username to display under the Profile > Artwork tab."
+                  }
+                },
+                {
+                  "name": "Get Single Slideshow Details (Play Slideshow)",
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "accept-language",
+                        "value": "en",
+                        "type": "text"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{baseUrl}}/api/v1/slideshow/:id",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "v1",
+                        "slideshow",
+                        ":id"
+                      ],
+                      "variable": [
+                        {
+                          "key": "id",
+                          "value": "slideshow-id-here",
+                          "description": "Slideshow ID"
+                        }
+                      ]
+                    },
+                    "description": "Get full details of a specific slideshow including all ordered photos for playback."
                   }
                 }
               ]

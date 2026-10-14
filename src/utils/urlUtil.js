@@ -7,9 +7,18 @@ export const UrlUtil = {
     // If it's already an absolute URL, leave it alone
     if (filePath.startsWith('http://') || filePath.startsWith('https://')) return filePath;
     
+    // Normalize Windows backslashes if present
+    let normalized = filePath.replace(/\\/g, '/');
+    const uploadIndex = normalized.indexOf('/uploads/');
+    if (uploadIndex !== -1) {
+      normalized = normalized.substring(uploadIndex);
+    } else if (normalized.startsWith('uploads/')) {
+      normalized = '/' + normalized;
+    }
+
     // Dynamically build the base URL (works for localhost and live server automatically)
     const baseUrl = `${req.protocol}://${req.get('host')}`;
-    return `${baseUrl}${filePath.startsWith('/') ? '' : '/'}${filePath}`;
+    return `${baseUrl}${normalized.startsWith('/') ? '' : '/'}${normalized}`;
   },
 
   /**
