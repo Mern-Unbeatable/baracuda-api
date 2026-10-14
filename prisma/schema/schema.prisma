@@ -227,6 +227,12 @@ enum NewsletterStatus {
   FAILED
 }
 
+enum AppreciationTier {
+  GOLD
+  SILVER
+  BRONZE
+}
+
 // ============================================================
 // AUTH & USERS
 // ============================================================
@@ -305,6 +311,8 @@ model User {
   reports              Report[]
   moderationAudits     ModerationAudit[]
   products             Product[]
+  sentAppreciations     ArtworkAppreciation[] @relation("SentAppreciations")
+  receivedAppreciations ArtworkAppreciation[] @relation("ReceivedAppreciations")
 
   @@index([role, status])
   @@index([country])
@@ -457,6 +465,7 @@ model Submission {
   saves         SavedArtwork[]
   reports       Report[]
   views         SubmissionView[]
+  appreciations ArtworkAppreciation[]
 
   @@index([kind, status, visibility, createdAt])
   @@index([competitionId, kind, votesCount])
@@ -1319,4 +1328,23 @@ model Product {
 
   @@index([category, isActive])
   @@map("products")
+}
+
+model ArtworkAppreciation {
+  id           String           @id @default(uuid())
+  senderId     String
+  receiverId   String
+  submissionId String?
+  tier         AppreciationTier
+  weekStart    DateTime
+  createdAt    DateTime         @default(now())
+
+  sender     User        @relation("SentAppreciations", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver   User        @relation("ReceivedAppreciations", fields: [receiverId], references: [id], onDelete: Cascade)
+  submission Submission? @relation(fields: [submissionId], references: [id], onDelete: SetNull)
+
+  @@unique([senderId, receiverId, weekStart])
+  @@index([receiverId, tier])
+  @@index([senderId, weekStart])
+  @@map("artwork_appreciations")
 }

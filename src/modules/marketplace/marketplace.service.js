@@ -178,8 +178,8 @@ export class MarketplaceService {
           createdAt: true,
           // First image only for the card thumbnail
           media: {
-            where: { kind: 'IMAGE', slotIndex: 0 },
-            take: 1,
+            where: { OR: [{ kind: 'IMAGE', slotIndex: 0 }, { kind: 'VIDEO' }] },
+            take: 2,
             select: { url: true, slotIndex: true, format: true, zodiacSign: true, kind: true }
           }
         }

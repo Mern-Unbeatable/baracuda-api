@@ -4,6 +4,7 @@ import fs from 'fs';
 import path from 'path';
 
 import { TranslateUtil } from '../../utils/translate.js';
+import { appreciationService } from '../appreciation/appreciation.service.js';
 
 export class ArtworkService {
   async createArtwork(userId, data, mediaFiles, sourceLang = 'en', tx = prisma) {
@@ -181,9 +182,8 @@ export class ArtworkService {
           select: { endsAt: true }
         },
         media: {
-          select: { url: true, format: true, zodiacSign: true, slotIndex: true },
-          orderBy: { slotIndex: 'asc' },
-          take: 1
+          select: { url: true, format: true, zodiacSign: true, slotIndex: true, kind: true },
+          orderBy: { slotIndex: 'asc' }
         }
       }
     });
@@ -549,9 +549,8 @@ export class ArtworkService {
       competitionState: true,
       status: true,
       media: {
-        select: { url: true, format: true },
-        orderBy: { slotIndex: 'asc' },
-        take: 1
+        select: { url: true, format: true, kind: true, slotIndex: true },
+        orderBy: { slotIndex: 'asc' }
       },
       user: { select: { id: true, name: true, avatar: true } },
       category: { select: { name: true, name_pl: true } },
@@ -634,7 +633,14 @@ export class ArtworkService {
       }
     }
 
-    return artwork;
+    // Fetch photographer appreciation stats for this artwork
+    const validViewerUserId = (viewerId && typeof viewerId === 'string' && viewerId.length === 36 && viewerId.includes('-')) ? viewerId : null;
+    const appreciationStats = await appreciationService.getAppreciationStats(artwork.user.id, validViewerUserId);
+
+    return {
+      ...artwork,
+      appreciation: appreciationStats
+    };
   }
 
   async voteArtwork(id, userId, ipAddress) {

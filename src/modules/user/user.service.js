@@ -1,4 +1,5 @@
 import prisma from '../../config/prisma.js';
+import { appreciationService } from '../appreciation/appreciation.service.js';
 
 /**
  * User Service Layer
@@ -152,7 +153,7 @@ export class UserService {
     }
 
     // Aggregate stats
-    const [followersCount, followingCount, totalArtwork, competitionEntries, submissionVotesAgg, premiumLikesAgg, isFollowingData] = await Promise.all([
+    const [followersCount, followingCount, totalArtwork, competitionEntries, submissionVotesAgg, premiumLikesAgg, isFollowingData, appreciationStats] = await Promise.all([
       prisma.follow.count({ where: { followingId: user.id } }),
       prisma.follow.count({ where: { followerId: user.id } }),
       prisma.submission.count({ where: { userId: user.id } }),
@@ -172,7 +173,8 @@ export class UserService {
             followingId: user.id
           }
         }
-      }) : Promise.resolve(null)
+      }) : Promise.resolve(null),
+      appreciationService.getAppreciationStats(user.id, viewerId)
     ]);
 
     const totalVotes = submissionVotesAgg._sum.votesCount || 0;
@@ -189,7 +191,8 @@ export class UserService {
         totalArtwork,
         competitionEntries,
         totalHearts
-      }
+      },
+      appreciation: appreciationStats
     };
   }
 

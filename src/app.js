@@ -23,6 +23,7 @@ import config from './config/env.js';
 import storeRouter from './modules/store/store.module.js';
 import { OrderModule } from './modules/order/order.module.js';
 import { ChatModule } from './modules/chat/chat.module.js';
+import { AppreciationModule } from './modules/appreciation/appreciation.module.js';
 
 /**
  * Main Application Class
@@ -149,6 +150,9 @@ class App {
 
     const chatModule = new ChatModule();
     this.app.use('/api/v1/chat', chatModule.router);
+
+    const appreciationModule = new AppreciationModule();
+    this.app.use('/api/v1/appreciation', appreciationModule.router);
   }
 
   initializeErrorHandling() {

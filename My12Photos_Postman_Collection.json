@@ -5772,6 +5772,16 @@
             {
               "name": "Get Details",
               "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
                 "method": "GET",
                 "header": [
                   {
@@ -5979,6 +5989,50 @@
               }
             },
             {
+              "name": "Award Appreciation",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "accept-language",
+                    "value": "en",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"submissionId\": \"REPLACE_WITH_ARTWORK_ID\",\n  \"tier\": \"GOLD\" // GOLD, SILVER, or BRONZE\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/appreciation/award",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "appreciation",
+                    "award"
+                  ]
+                },
+                "description": "Award this photographer with Gold, Silver, or Bronze camera appreciation once per week. Awards reset every Sunday at midnight."
+              }
+            },
+            {
               "name": "Donation",
               "item": [
                 {
@@ -6106,6 +6160,16 @@
             {
               "name": "Get Details",
               "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
                 "method": "GET",
                 "header": [
                   {
@@ -6310,6 +6374,50 @@
                     }
                   ]
                 }
+              }
+            },
+            {
+              "name": "Award Appreciation",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "accept-language",
+                    "value": "en",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"submissionId\": \"REPLACE_WITH_ARTWORK_ID\",\n  \"tier\": \"GOLD\" // GOLD, SILVER, or BRONZE\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/appreciation/award",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "appreciation",
+                    "award"
+                  ]
+                },
+                "description": "Award this photographer with Gold, Silver, or Bronze camera appreciation once per week. Awards reset every Sunday at midnight."
               }
             },
             {
