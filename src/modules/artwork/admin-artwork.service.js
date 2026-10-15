@@ -107,8 +107,19 @@ export class AdminArtworkService {
       }
     }
 
+    let subcategory = null;
+    if (artwork.subcategoryId) {
+      subcategory = await prisma.category.findUnique({
+        where: { id: artwork.subcategoryId },
+        select: { id: true, name: true, name_pl: true, slug: true }
+      });
+    }
+
     return {
       ...artwork,
+      categoryName: artwork.category?.name || null,
+      subcategoryName: subcategory?.name || null,
+      subcategory,
       artworkRankInCompetition,
       comments,
       globalRankings

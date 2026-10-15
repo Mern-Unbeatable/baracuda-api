@@ -36,6 +36,17 @@ export class AdminArtworkController {
     };
     applyTranslations(formatted);
     
+    if (formatted.category) {
+      formatted.categoryName = formatted.category.name || null;
+      delete formatted.category;
+    }
+    if (formatted.subcategory !== undefined) {
+      if (formatted.subcategory) {
+        formatted.subcategoryName = formatted.subcategory.name || null;
+      }
+      delete formatted.subcategory;
+    }
+
     if (formatted.prizeMoney) {
       formatted.prizeMoney = parseFloat(formatted.prizeMoney);
     }

@@ -272,12 +272,20 @@ export class ArtworkService {
   }
 
   async getArtworkDetails(id) {
-    return prisma.submission.findUnique({
+    const submission = await prisma.submission.findUnique({
       where: { id },
       include: {
         media: true,
         competition: true,
         promotion: true,
+        category: {
+          select: {
+            id: true,
+            name: true,
+            name_pl: true,
+            slug: true
+          }
+        },
         user: {
           select: {
             id: true,
@@ -288,6 +296,28 @@ export class ArtworkService {
         }
       }
     });
+
+    if (!submission) return null;
+
+    let subcategory = null;
+    if (submission.subcategoryId) {
+      subcategory = await prisma.category.findUnique({
+        where: { id: submission.subcategoryId },
+        select: {
+          id: true,
+          name: true,
+          name_pl: true,
+          slug: true
+        }
+      });
+    }
+
+    return {
+      ...submission,
+      categoryName: submission.category?.name || null,
+      subcategoryName: subcategory?.name || null,
+      subcategory
+    };
   }
 
   async deleteArtwork(id, userId) {
@@ -637,8 +667,19 @@ export class ArtworkService {
     const validViewerUserId = (viewerId && typeof viewerId === 'string' && viewerId.length === 36 && viewerId.includes('-')) ? viewerId : null;
     const appreciationStats = await appreciationService.getAppreciationStats(artwork.user.id, validViewerUserId);
 
+    let subcategory = null;
+    if (artwork.subcategoryId) {
+      subcategory = await prisma.category.findUnique({
+        where: { id: artwork.subcategoryId },
+        select: { id: true, name: true, name_pl: true, slug: true }
+      });
+    }
+
     return {
       ...artwork,
+      categoryName: artwork.category?.name || null,
+      subcategoryName: subcategory?.name || null,
+      subcategory,
       appreciation: appreciationStats
     };
   }
