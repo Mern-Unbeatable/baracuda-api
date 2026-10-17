@@ -359,4 +359,44 @@ export class UserController {
       next(error);
     }
   }
+
+  /**
+   * Get Admin Profile
+   * @route GET /api/v1/admin/profile
+   */
+  getAdminProfile = async (req, res, next) => {
+    try {
+      const adminId = req.user.id;
+      const admin = await this.userService.getUserById(adminId);
+      if (!admin) {
+        return ResponseUtil.error(res, 'Admin not found', 404);
+      }
+      return ResponseUtil.success(res, 'Admin profile retrieved successfully', UrlUtil.formatUserMedia(req, admin));
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  /**
+   * Update Admin Profile (Name, Email, etc.)
+   * @route PUT /api/v1/admin/profile, PATCH /api/v1/admin/profile
+   */
+  updateAdminProfile = async (req, res, next) => {
+    try {
+      const adminId = req.user.id;
+      const files = req.files || {};
+      const { name, email, phone, bio } = req.body;
+
+      const updateData = {};
+      if (name !== undefined) updateData.name = name;
+      if (email !== undefined) updateData.email = email;
+      if (phone !== undefined) updateData.phone = phone;
+      if (bio !== undefined) updateData.bio = bio;
+
+      const updated = await this.userService.updateProfile(adminId, updateData, files);
+      return ResponseUtil.success(res, 'Admin profile updated successfully', UrlUtil.formatUserMedia(req, updated));
+    } catch (error) {
+      next(error);
+    }
+  };
 }

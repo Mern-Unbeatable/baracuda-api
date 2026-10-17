@@ -96,6 +96,7 @@ class App {
 
     const userModule = new UserModule();
     this.app.use('/api/v1/admin/users', userModule.adminRouter);
+    this.app.use('/api/v1/admin/profile', userModule.adminProfileRouter);
     this.app.use('/api/v1/users', userModule.publicRouter);
     
     const adminReportModule = new AdminReportModule();
