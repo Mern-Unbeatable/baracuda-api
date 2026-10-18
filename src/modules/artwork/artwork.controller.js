@@ -1,3 +1,4 @@
+import path from 'path';
 import { UrlUtil } from '../../utils/urlUtil.js';
 import { PaginationUtil } from '../../utils/pagination.js';
 import { ResponseUtil } from '../../utils/response.js';
@@ -78,6 +79,11 @@ export class ArtworkController {
     // Format all user avatars (e.g., in user, comments, donations, etc)
     formatAvatars(formatted);
 
+    // Format featuredImage to full absolute URL
+    if (formatted.featuredImage && typeof formatted.featuredImage === 'string') {
+      formatted.featuredImage = UrlUtil.getAbsoluteUrl(req, formatted.featuredImage);
+    }
+
     if (!formatted.media) return formatted;
 
     if (formatted.kind === 'TWELVE' || formatted.kind === 'SIX' || formatted.kind === 'SINGLE') {
@@ -95,6 +101,33 @@ export class ArtworkController {
       formatted.images = mappedImages;
       formatted.video = videos.length > 0 ? videos[0] : null; // Usually 1 video
       delete formatted.media; // Replaced by structured images and video
+    } else if (formatted.kind === 'VIDEO') {
+      const v = formatted.media && formatted.media[0];
+      if (v) {
+        const videoUrl = UrlUtil.getAbsoluteUrl(req, v.url);
+        formatted.video = {
+          id: v.id,
+          url: videoUrl,
+          duration: v.duration || null,
+          format: v.format || null
+        };
+      }
+      formatted.aiBadge = formatted.isAiGenerated === true;
+      delete formatted.media;
+
+      // Remove photo/competition specific fields that do not apply to standalone video
+      delete formatted.tags;
+      delete formatted.camera;
+      delete formatted.resolution;
+      delete formatted.format;
+      delete formatted.quality;
+      delete formatted.theme;
+      delete formatted.zodiacSign;
+      delete formatted.prizeMoney;
+      delete formatted.copyrightConfirmed;
+      delete formatted.albumTypeId;
+      delete formatted.competitionId;
+      delete formatted.rank;
     } else {
       formatted.media = formatted.media.map(m => ({
         ...m,
@@ -167,6 +200,48 @@ export class ArtworkController {
       res.status(400).json({ success: false, error: error.message });
     }
   }
+
+  createVideoComment = async (req, res, next) => {
+    try {
+      const userId = req.user.id;
+      const videoFile = req.files?.video ? req.files.video[0] : null;
+      const sourceLang = req.headers['accept-language']?.split(',')[0]?.split('-')[0] || req.headers['x-lang'] || 'en';
+
+      if (!videoFile) {
+        return ResponseUtil.error(res, 'Video file is required (field name: video)', 400);
+      }
+
+      const result = await this.artworkService.createVideoComment(userId, req.body, videoFile, sourceLang);
+
+      // Run watermark asynchronously so response isn't blocked if AI Generated
+      const isAiGenerated = req.body.isAiGenerated === true || req.body.isAiGenerated === 'true';
+      if (isAiGenerated) {
+        const mediaToWatermark = [videoFile];
+        if (result.featuredImage) {
+          const thumbPath = path.join(process.cwd(), result.featuredImage.replace(/^\//, ''));
+          mediaToWatermark.push({ path: thumbPath, mimetype: 'image/jpeg' });
+        }
+        watermarkService.applyWatermarkInBackground(mediaToWatermark, true).catch(console.error);
+      }
+
+      return ResponseUtil.actionSuccess(res, '1-minute video comment uploaded successfully', null, 201);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  getMyVideoComments = async (req, res, next) => {
+    try {
+      const userId = req.user.id;
+      const { skip, take, page, limit } = PaginationUtil.getPaginationOptions(req.query);
+      const { data, total } = await this.artworkService.getUserVideoComments(userId, skip, take);
+      const formattedData = data.map(v => this.formatMediaUrls(req, v));
+      const meta = PaginationUtil.getMetadata(total, page, limit);
+      return res.status(200).json({ success: true, message: 'Video comments fetched successfully', data: formattedData, meta });
+    } catch (error) {
+      next(error);
+    }
+  };
 
   getAllArtworks = async (req, res) => {
     try {

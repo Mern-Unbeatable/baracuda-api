@@ -35,22 +35,20 @@ export class WatermarkService {
     
     try {
       const metadata = await sharp(filePath).metadata();
-      const { width, height } = metadata;
+      const { width } = metadata;
       
-      // Calculate font size relative to image width (approx 5% of width for icon)
-      const fontSize = Math.max(30, Math.floor(width * 0.05));
+      // Calculate star size relative to image width (approx 5.5% of width)
+      const starHeight = Math.max(30, Math.floor(width * 0.055));
+      const starWidth = Math.floor(starHeight * 0.65);
       
-      const svgText = `
-        <svg width="${fontSize * 1.5}" height="${fontSize * 1.5}">
-          <style>
-            .icon { font-size: ${fontSize}px; font-family: sans-serif; }
-          </style>
-          <text class="icon" x="0" y="${fontSize}">✨</text>
+      const singleStarSvg = `
+        <svg width="${starWidth + 20}" height="${starHeight + 20}" viewBox="0 0 60 90" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 30 5 Q 30 45 55 45 Q 30 45 30 85 Q 30 45 5 45 Q 30 45 30 5 Z" fill="black" />
         </svg>
       `;
 
       await sharp(filePath)
-        .composite([{ input: Buffer.from(svgText), gravity: 'southeast' }])
+        .composite([{ input: Buffer.from(singleStarSvg), gravity: 'southeast' }])
         .toFile(tempPath);
 
       // Overwrite the original file
@@ -62,41 +60,56 @@ export class WatermarkService {
     }
   }
 
-  watermarkVideo(filePath) {
-    return new Promise((resolve, reject) => {
-      const tempPath = `${filePath}.tmp.mp4`;
-      
-      // Using ffmpeg drawtext filter to add watermark at bottom right
-      // text='✨ AI Generated'
-      // x=w-tw-10 (width - text_width - 10px margin)
-      // y=h-th-10 (height - text_height - 10px margin)
-      ffmpeg(filePath)
-        .videoFilters({
-          filter: 'drawtext',
-          options: {
-            text: '✨',
-            fontsize: '(w*0.05)',
-            fontcolor: 'white',
-            box: 0,
-            x: 'w-tw-20',
-            y: 'h-th-20'
-          }
-        })
-        .output(tempPath)
-        .on('end', async () => {
-          try {
-            await fs.rename(tempPath, filePath);
-            resolve();
-          } catch (err) {
+  async watermarkVideo(filePath) {
+    const tempPath = `${filePath}.tmp.mp4`;
+    const watermarkPngPath = `${filePath}.watermark.png`;
+
+    try {
+      // 1. Get video resolution using ffprobe
+      const dimensions = await new Promise((resolve) => {
+        ffmpeg.ffprobe(filePath, (err, metadata) => {
+          if (err || !metadata?.streams) return resolve({ width: 1920, height: 1080 });
+          const videoStream = metadata.streams.find(s => s.width && s.height);
+          resolve(videoStream ? { width: videoStream.width, height: videoStream.height } : { width: 1920, height: 1080 });
+        });
+      });
+
+      const starHeight = Math.max(35, Math.floor(dimensions.width * 0.055));
+      const starWidth = Math.floor(starHeight * 0.65);
+
+      // 2. Generate crisp single 4-pointed AI star
+      const singleStarSvg = `
+        <svg width="${starWidth}" height="${starHeight}" viewBox="0 0 60 90" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 30 5 Q 30 45 55 45 Q 30 45 30 85 Q 30 45 5 45 Q 30 45 30 5 Z" fill="black" />
+        </svg>
+      `;
+      await sharp(Buffer.from(singleStarSvg)).png().toFile(watermarkPngPath);
+
+      // 3. Overlay onto video using ffmpeg at bottom right
+      await new Promise((resolve, reject) => {
+        ffmpeg(filePath)
+          .input(watermarkPngPath)
+          .complexFilter(['[0:v][1:v]overlay=W-w-25:H-h-25:format=auto[v]'], ['v'])
+          .outputOptions(['-c:a copy', '-preset ultrafast'])
+          .output(tempPath)
+          .on('end', async () => {
+            try {
+              await fs.rename(tempPath, filePath);
+              resolve();
+            } catch (err) {
+              reject(err);
+            }
+          })
+          .on('error', async (err) => {
+            try { await fs.unlink(tempPath); } catch (e) {}
             reject(err);
-          }
-        })
-        .on('error', async (err) => {
-          try { await fs.unlink(tempPath); } catch (e) {}
-          reject(err);
-        })
-        .run();
-    });
+          })
+          .run();
+      });
+    } finally {
+      try { await fs.unlink(watermarkPngPath); } catch (e) {}
+      try { await fs.unlink(tempPath); } catch (e) {}
+    }
   }
 }
 

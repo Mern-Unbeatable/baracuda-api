@@ -6,17 +6,8 @@
 ## 2. User Profile & Artwork
 - [x] ~~**Artwork Appreciation:**~~ ✅ *(Completed — Module, Sunday weekly reset, profile & artwork API integration, Postman endpoints)*
 - [x] ~~**User Slideshow:**~~ ✅ *(Completed — SlideshowModule, unified query across Competitions, Gallery/Profile & Marketplace Sell Images, pagination with limit 15, load more support, user & source filtering, Postman collection updated)*
-- **Standalone 1-Minute Video Comment:**
-  - Add an option in the user panel to upload a separate 1-minute video comment without adding photos.
-  - Display under the user's "My Artwork" section alongside photos and albums, sorted chronologically by upload date and time.
-  - Keep separate from competitions (only 1, 6, and 12-photo albums participate in competitions).
-- **AI Declaration & Badge for Videos:**
-  - Add a confirmation tick-box during video upload asking users to declare: *"Was that video made by AI?"*
-  - Applies to:
-    - Personal profile video
-    - Photo video comment
-    - Standalone 1-minute video comment
-  - Display the "AI Badge" on the video when marked as AI-generated.
+- [x] ~~**Standalone 1-Minute Video Comment:**~~ ✅ *(Completed — Upload separate 1-minute video comment without photos, strict <=60s duration validation, auto thumbnail generation, merged into "My Artwork" and profile chronologically, excluded from competitions)*
+- [x] ~~**AI Declaration & Badge for Videos:**~~ ✅ *(Completed — `isAiGenerated` tickbox & `aiBadge: true/false` indicator on video player & cards across profile & standalone video comments)*
 
 ## 3. Safety & Content Moderation (New Scope)
 - **Automated NSFW & Explicit Content Moderation:**

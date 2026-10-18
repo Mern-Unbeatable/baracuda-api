@@ -7,7 +7,7 @@
   "variable": [
     {
       "key": "baseUrl",
-      "value": "http://localhost:3000",
+      "value": "http://localhost:5000",
       "type": "string"
     },
     {
@@ -2812,6 +2812,108 @@
                   ]
                 },
                 "description": "Get all categories and their subcategories for the frontend dropdowns when creating an artwork."
+              },
+              "response": []
+            },
+            {
+              "name": "Upload Standalone 1-Minute Video Comment",
+              "request": {
+                "method": "POST",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "accept-language",
+                    "value": "en",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "title",
+                      "value": "My Studio & Artwork Update",
+                      "type": "text"
+                    },
+                    {
+                      "key": "story",
+                      "value": "Sharing a quick 1-minute message about my upcoming photo series and thanking my supporters!",
+                      "type": "text"
+                    },
+                    {
+                      "key": "isAiGenerated",
+                      "value": "false",
+                      "type": "text"
+                    },
+                    {
+                      "key": "video",
+                      "type": "file",
+                      "description": "Max 1-minute video file (MP4)"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/artworks/video-comment",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "artworks",
+                    "video-comment"
+                  ]
+                },
+                "description": "Upload a standalone 1-minute video comment without adding photos. Automatically validates <=60s duration, generates video poster thumbnail, sets AI declaration/badge, and integrates chronologically into My Artwork & Public Profile."
+              },
+              "response": []
+            },
+            {
+              "name": "Get My Video Comments",
+              "request": {
+                "method": "GET",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/artworks/video-comments?page=1&limit=10",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "artworks",
+                    "video-comments"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    }
+                  ]
+                },
+                "description": "Get a list of all standalone 1-minute video comments uploaded by the authenticated user."
               },
               "response": []
             },

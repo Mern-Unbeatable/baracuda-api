@@ -49,6 +49,7 @@ enum AlbumKind {
   SINGLE
   SIX
   TWELVE
+  VIDEO
 }
 
 enum AlbumTheme {
@@ -413,7 +414,7 @@ model Submission {
   id               String                      @id @default(uuid())
   userId           String
   competitionId    String?
-  albumTypeId      String
+  albumTypeId      String?
   categoryId       String?
   kind             AlbumKind
   theme            AlbumTheme?
@@ -452,7 +453,7 @@ model Submission {
 
   user          User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   competition   Competition?      @relation(fields: [competitionId], references: [id], onDelete: SetNull)
-  albumType     AlbumType         @relation(fields: [albumTypeId], references: [id])
+  albumType     AlbumType?        @relation(fields: [albumTypeId], references: [id])
   category      Category?         @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   subcategoryId String?
   media         SubmissionMedia[]
@@ -488,6 +489,7 @@ model SubmissionMedia {
   height       Int?
   format       String?
   bytes        Int?
+  duration     Float?
   createdAt    DateTime    @default(now())
 
   submission Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)

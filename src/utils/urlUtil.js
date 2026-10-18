@@ -30,6 +30,27 @@ export const UrlUtil = {
     if (formattedUser.avatar) formattedUser.avatar = UrlUtil.getAbsoluteUrl(req, formattedUser.avatar);
     if (formattedUser.coverPhoto) formattedUser.coverPhoto = UrlUtil.getAbsoluteUrl(req, formattedUser.coverPhoto);
     if (formattedUser.introVideo) formattedUser.introVideo = UrlUtil.getAbsoluteUrl(req, formattedUser.introVideo);
+    if (formattedUser.standaloneVideos && Array.isArray(formattedUser.standaloneVideos)) {
+      formattedUser.standaloneVideos = formattedUser.standaloneVideos.map(v => {
+        const videoMedia = v.media && v.media[0];
+        const videoUrl = videoMedia ? UrlUtil.getAbsoluteUrl(req, videoMedia.url) : null;
+        const thumbnailUrl = (videoMedia?.thumbnailUrl || v.featuredImage) ? UrlUtil.getAbsoluteUrl(req, videoMedia?.thumbnailUrl || v.featuredImage) : null;
+        return {
+          id: v.id,
+          title: v.title,
+          story: v.story,
+          isAiGenerated: v.isAiGenerated,
+          aiBadge: v.isAiGenerated === true,
+          videoUrl,
+          thumbnailUrl,
+          duration: videoMedia?.duration || null,
+          viewsCount: v.viewsCount || 0,
+          likesCount: v.likesCount || 0,
+          commentsCount: v.commentsCount || 0,
+          createdAt: v.createdAt
+        };
+      });
+    }
     return formattedUser;
   }
 };

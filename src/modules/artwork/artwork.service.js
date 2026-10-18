@@ -5,6 +5,7 @@ import path from 'path';
 
 import { TranslateUtil } from '../../utils/translate.js';
 import { appreciationService } from '../appreciation/appreciation.service.js';
+import { VideoUtil } from '../../utils/videoUtil.js';
 
 export class ArtworkService {
   async createArtwork(userId, data, mediaFiles, sourceLang = 'en', tx = prisma) {
@@ -137,6 +138,127 @@ export class ArtworkService {
     return submission;
   }
 
+  async createVideoComment(userId, data, videoFile, sourceLang = 'en') {
+    if (!videoFile) {
+      throw new Error('Video file is required');
+    }
+
+    const videoFilePath = path.join(process.cwd(), 'uploads', videoFile.filename);
+
+    // 1. Duration check (client specified 1-minute video; 65s allows slight encoding buffer)
+    const duration = await VideoUtil.getDuration(videoFilePath);
+    if (duration && duration > 65) {
+      try { fs.unlinkSync(videoFilePath); } catch (e) {}
+      throw new Error(`Video duration (${Math.round(duration)}s) exceeds the 1-minute limit. Maximum allowed duration is 60 seconds.`);
+    }
+
+    // 2. Generate video thumbnail poster
+    const uploadsDir = path.join(process.cwd(), 'uploads');
+    const thumbnailUrl = await VideoUtil.generateThumbnail(videoFilePath, uploadsDir, videoFile.filename.replace(/\.[^/.]+$/, ''));
+
+    // 3. Translation
+    const translationPromises = [];
+    if (data.title) {
+      if (sourceLang === 'pl') {
+        data.title_pl = data.title;
+        translationPromises.push(
+          TranslateUtil.translateText(data.title, 'en', 'pl').then(res => { data.title = res; })
+        );
+      } else {
+        translationPromises.push(
+          TranslateUtil.translateText(data.title, 'pl', 'en').then(res => { data.title_pl = res; })
+        );
+      }
+    }
+
+    if (data.story) {
+      if (sourceLang === 'pl') {
+        data.story_pl = data.story;
+        translationPromises.push(
+          TranslateUtil.translateText(data.story, 'en', 'pl').then(res => { data.story = res; })
+        );
+      } else {
+        translationPromises.push(
+          TranslateUtil.translateText(data.story, 'pl', 'en').then(res => { data.story_pl = res; })
+        );
+      }
+    }
+
+    if (translationPromises.length > 0) {
+      await Promise.all(translationPromises);
+    }
+
+    const isAiGenerated = data.isAiGenerated === true || data.isAiGenerated === 'true';
+
+    // 4. Create Submission & SubmissionMedia
+    const submission = await prisma.submission.create({
+      data: {
+        userId,
+        kind: 'VIDEO',
+        competitionState: 'PROFILE_ONLY',
+        competitionId: null,
+        albumTypeId: null,
+        categoryId: data.categoryId || null,
+        subcategoryId: data.subcategoryId || null,
+        visibility: data.visibility || 'PUBLIC',
+        status: 'APPROVED',
+        title: data.title,
+        title_pl: data.title_pl || null,
+        story: data.story || null,
+        story_pl: data.story_pl || null,
+        tags: [],
+        isAiGenerated,
+        featuredImage: thumbnailUrl || null,
+        media: {
+          create: {
+            kind: 'VIDEO',
+            slotIndex: 0,
+            url: `/uploads/${videoFile.filename}`,
+            thumbnailUrl: thumbnailUrl || null,
+            duration: duration || null,
+            bytes: videoFile.size || null,
+            format: videoFile.mimetype || 'video/mp4'
+          }
+        }
+      },
+      include: {
+        media: true,
+        user: {
+          select: {
+            id: true,
+            name: true,
+            username: true,
+            avatar: true
+          }
+        }
+      }
+    });
+
+    return submission;
+  }
+
+  async getUserVideoComments(userId, skip = 0, take = 10) {
+    const [videos, total] = await Promise.all([
+      prisma.submission.findMany({
+        where: { userId, kind: 'VIDEO' },
+        include: {
+          media: true,
+          user: {
+            select: { id: true, name: true, username: true, avatar: true }
+          }
+        },
+        orderBy: { createdAt: 'desc' },
+        skip,
+        take
+      }),
+      prisma.submission.count({
+        where: { userId, kind: 'VIDEO' }
+      })
+    ]);
+
+    return { data: videos, total };
+  }
+
   async getAllArtworks(userId, filters = {}, sort = 'newest', skip = 0, take = 10) {
     const where = { userId };
     
@@ -165,6 +287,7 @@ export class ArtworkService {
         title_pl: true,
         story: true,
         story_pl: true,
+        isAiGenerated: true,
         viewsCount: true,
         likesCount: true,
         votesCount: true,
@@ -182,7 +305,7 @@ export class ArtworkService {
           select: { endsAt: true }
         },
         media: {
-          select: { url: true, format: true, zodiacSign: true, slotIndex: true, kind: true },
+          select: { url: true, thumbnailUrl: true, format: true, zodiacSign: true, slotIndex: true, kind: true, duration: true },
           orderBy: { slotIndex: 'asc' }
         }
       }
@@ -434,6 +557,9 @@ export class ArtworkService {
     const submission = await prisma.submission.findUnique({ where: { id } });
     if (!submission || submission.userId !== userId) {
       throw new Error('Artwork not found or unauthorized');
+    }
+    if (submission.kind === 'VIDEO') {
+      throw new Error('Standalone video comments cannot enter competitions. Only 1, 6, and 12 photo albums can participate.');
     }
     if (submission.competitionState !== 'PROFILE_ONLY') {
       throw new Error('Artwork is already in a competition or has ended');
@@ -690,8 +816,8 @@ export class ArtworkService {
       include: { competition: true }
     });
     
-    if (!submission || submission.competitionState !== 'IN_COMPETITION') {
-      throw new Error('Can only vote for artworks currently in competition');
+    if (!submission || submission.competitionState !== 'IN_COMPETITION' || submission.kind === 'VIDEO') {
+      throw new Error('Can only vote for photo albums currently in competition');
     }
     
     // Check if the competition has ended

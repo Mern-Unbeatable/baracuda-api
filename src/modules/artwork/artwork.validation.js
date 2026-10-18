@@ -13,6 +13,15 @@ export const ArtworkValidation = {
     quality: Joi.string().optional().allow(null, ''),
   }),
 
+  createVideoCommentSchema: Joi.object({
+    title: Joi.string().required().min(1).max(255),
+    story: Joi.string().optional().allow(null, '').max(2000),
+    isAiGenerated: Joi.any().optional(),
+    visibility: Joi.string().valid('PUBLIC', 'PRIVATE_BUSINESS').optional().allow(null, ''),
+    categoryId: Joi.string().uuid().optional().allow(null, ''),
+    subcategoryId: Joi.string().uuid().optional().allow(null, '')
+  }),
+
   updateSchema: Joi.object({
     title: Joi.string().optional(),
     story: Joi.string().optional().allow(null, ''),
