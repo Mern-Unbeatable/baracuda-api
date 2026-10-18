@@ -3,6 +3,7 @@ import { BusinessController } from './business.controller.js';
 import { BusinessService } from './business.service.js';
 import { BusinessValidation } from './business.validation.js';
 import { upload } from '../../utils/upload.js';
+import { moderateUploadedContent } from '../../middlewares/moderation.middleware.js';
 import { requireAuth, requireAdmin } from '../../middlewares/auth.middleware.js';
 
 export class BusinessModule {
@@ -24,6 +25,7 @@ export class BusinessModule {
       '/',
       requireAuth,
       photoUploadFields,
+      moderateUploadedContent,
       BusinessValidation.validate(BusinessValidation.createSchema),
       this.businessController.createBusinessAlbum
     );

@@ -4,6 +4,7 @@ import { DemoProfileService } from './demo-profile.service.js';
 import { DemoProfileValidation } from './demo-profile.validation.js';
 import { requireAuth, requireAdmin } from '../../middlewares/auth.middleware.js';
 import { upload } from '../../utils/upload.js';
+import { moderateUploadedContent } from '../../middlewares/moderation.middleware.js';
 
 export class DemoProfileModule {
   constructor() {
@@ -24,6 +25,7 @@ export class DemoProfileModule {
         { name: 'profilePhoto', maxCount: 1 },
         { name: 'coverPhoto', maxCount: 1 }
       ]),
+      moderateUploadedContent,
       (req, res, next) => {
         if (req.body.socialLinks && typeof req.body.socialLinks === 'string') {
           try {

@@ -3,6 +3,7 @@ import { AuthController } from './auth.controller.js';
 import { AuthService } from './auth.service.js';
 import { AuthValidation } from './auth.validation.js';
 import { upload } from '../../utils/upload.js';
+import { moderateUploadedContent } from '../../middlewares/moderation.middleware.js';
 import prisma from '../../config/prisma.js';
 import { requireAuth } from '../../middlewares/auth.middleware.js';
 
@@ -29,6 +30,7 @@ export class AuthModule {
         { name: 'coverPhoto', maxCount: 1 },
         { name: 'introVideo', maxCount: 1 }
       ]),
+      moderateUploadedContent,
       AuthValidation.validate(AuthValidation.registerSchema),
       this.authController.register
     );

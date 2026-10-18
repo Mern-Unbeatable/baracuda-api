@@ -4,6 +4,7 @@ import { MarketplaceService } from './marketplace.service.js';
 import { MarketplaceValidation } from './marketplace.validation.js';
 import { AdminPremiumPhotoController } from './admin-premium-photo.controller.js';
 import { upload } from '../../utils/upload.js';
+import { moderateUploadedContent } from '../../middlewares/moderation.middleware.js';
 import { requireAuth, requireAdmin } from '../../middlewares/auth.middleware.js';
 import { optionalAuth } from '../../middlewares/optionalAuth.middleware.js';
 
@@ -33,6 +34,7 @@ export class MarketplaceModule {
       '/premium-photos',
       requireAuth,
       photoUploadFields,
+      moderateUploadedContent,
       MarketplaceValidation.validate(MarketplaceValidation.createSchema),
       this.marketplaceController.createPremiumPhoto
     );

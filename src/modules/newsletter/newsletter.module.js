@@ -4,6 +4,7 @@ import { NewsletterService } from './newsletter.service.js';
 import { NewsletterValidation } from './newsletter.validation.js';
 import { requireAuth, requireAdmin } from '../../middlewares/auth.middleware.js';
 import { upload } from '../../utils/upload.js';
+import { moderateUploadedContent } from '../../middlewares/moderation.middleware.js';
 
 // Setup basic validation middleware inline or use an existing one if available.
 const validateBody = (schema) => {
@@ -51,6 +52,7 @@ export class NewsletterModule {
       requireAuth,
       requireAdmin,
       upload.single('banner'),
+      moderateUploadedContent,
       validateBody(NewsletterValidation.sendCampaign),
       this.newsletterController.sendCampaign
     );

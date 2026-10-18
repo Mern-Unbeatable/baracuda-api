@@ -7,6 +7,7 @@ import prisma from '../../config/prisma.js';
 import { requireAuth, requireAdmin } from '../../middlewares/auth.middleware.js';
 import { optionalAuth } from '../../middlewares/optionalAuth.middleware.js';
 import { upload } from '../../utils/upload.js';
+import { moderateUploadedContent } from '../../middlewares/moderation.middleware.js';
 
 export class UserModule {
   constructor() {
@@ -29,10 +30,10 @@ export class UserModule {
     this.adminProfileRouter.get('/', this.userController.getAdminProfile);
     this.adminProfileRouter.put('/', upload.fields([
       { name: 'avatar', maxCount: 1 }
-    ]), this.userController.updateAdminProfile);
+    ]), moderateUploadedContent, this.userController.updateAdminProfile);
     this.adminProfileRouter.patch('/', upload.fields([
       { name: 'avatar', maxCount: 1 }
-    ]), this.userController.updateAdminProfile);
+    ]), moderateUploadedContent, this.userController.updateAdminProfile);
     this.adminProfileRouter.post('/change-password', this.authController.changePassword);
     // Profile Routes (Public & Self)
     this.publicRouter.get('/dashboard', requireAuth, this.userController.getDashboard);
@@ -42,7 +43,7 @@ export class UserModule {
       { name: 'avatar', maxCount: 1 },
       { name: 'coverPhoto', maxCount: 1 },
       { name: 'introVideo', maxCount: 1 }
-    ]), this.userController.updateProfile);
+    ]), moderateUploadedContent, this.userController.updateProfile);
 
     // Follow Routes
     this.publicRouter.post('/follow/:username', requireAuth, this.userController.toggleFollow);

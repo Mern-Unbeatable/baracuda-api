@@ -4,6 +4,7 @@ import { ArtworkService } from './artwork.service.js';
 import { ArtworkValidation } from './artwork.validation.js';
 import { AdminArtworkController } from './admin-artwork.controller.js';
 import { upload } from '../../utils/upload.js';
+import { moderateUploadedContent } from '../../middlewares/moderation.middleware.js';
 import { requireAuth, requireAdmin } from '../../middlewares/auth.middleware.js';
 import { optionalAuth } from '../../middlewares/optionalAuth.middleware.js';
 
@@ -33,14 +34,14 @@ export class ArtworkModule {
     ]);
 
     // Standalone 1-minute video comment routes (must be registered before /:id)
-    this.router.post('/video-comment', requireAuth, upload.fields([{ name: 'video', maxCount: 1 }]), ArtworkValidation.validate(ArtworkValidation.createVideoCommentSchema), this.artworkController.createVideoComment);
+    this.router.post('/video-comment', requireAuth, upload.fields([{ name: 'video', maxCount: 1 }]), moderateUploadedContent, ArtworkValidation.validate(ArtworkValidation.createVideoCommentSchema), this.artworkController.createVideoComment);
     this.router.get('/video-comments', requireAuth, this.artworkController.getMyVideoComments);
 
     // Endpoints
     this.router.get('/', optionalAuth, this.artworkController.getAllArtworks);
     this.router.get('/:id', optionalAuth, this.artworkController.getArtworkDetails);
     
-    this.router.post('/', requireAuth, artworkUploadFields, ArtworkValidation.validate(ArtworkValidation.createSchema), this.artworkController.createArtwork);
+    this.router.post('/', requireAuth, artworkUploadFields, moderateUploadedContent, ArtworkValidation.validate(ArtworkValidation.createSchema), this.artworkController.createArtwork);
     
     this.router.put('/:id', requireAuth, ArtworkValidation.validate(ArtworkValidation.updateSchema), this.artworkController.updateArtwork);
     this.router.delete('/:id', requireAuth, this.artworkController.deleteArtwork);

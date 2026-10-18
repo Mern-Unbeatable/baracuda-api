@@ -5,6 +5,7 @@ import { PostValidation } from './post.validation.js';
 import { requireAuth } from '../../middlewares/auth.middleware.js';
 import { optionalAuth } from '../../middlewares/optionalAuth.middleware.js';
 import { upload } from '../../utils/upload.js';
+import { moderateUploadedContent } from '../../middlewares/moderation.middleware.js';
 
 export class PostModule {
   constructor() {
@@ -19,6 +20,7 @@ export class PostModule {
       '/',
       requireAuth,
       upload.single('media'),
+      moderateUploadedContent,
       PostValidation.validate(PostValidation.createSchema),
       this.postController.createPost
     );
@@ -30,6 +32,7 @@ export class PostModule {
       '/:id',
       requireAuth,
       upload.single('media'),
+      moderateUploadedContent,
       PostValidation.validate(PostValidation.updateSchema),
       this.postController.updatePost
     );

@@ -3,6 +3,7 @@ import { CampaignController } from './campaign.controller.js';
 import { CampaignValidation } from './campaign.validation.js';
 import { requireAuth, requireAdmin } from '../../middlewares/auth.middleware.js';
 import { upload } from '../../utils/upload.js';
+import { moderateUploadedContent } from '../../middlewares/moderation.middleware.js';
 
 const router = Router();
 
@@ -52,6 +53,7 @@ router.post('/submit/:token',
     { name: 'twelvePhotos', maxCount: 12 },
     { name: 'twelveVideo', maxCount: 1 }
   ]),
+  moderateUploadedContent,
   CampaignValidation.validate(CampaignValidation.submitCampaignSchema),
   CampaignController.submitCampaign
 );

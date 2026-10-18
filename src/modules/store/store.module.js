@@ -4,6 +4,7 @@ import { StoreService } from './store.service.js';
 import { StoreValidation } from './store.validation.js';
 import { requireAuth } from '../../middlewares/auth.middleware.js';
 import { upload } from '../../utils/upload.js';
+import { moderateUploadedContent } from '../../middlewares/moderation.middleware.js';
 import { optionalAuth } from '../../middlewares/optionalAuth.middleware.js';
 
 export class StoreModule {
@@ -27,6 +28,7 @@ export class StoreModule {
       '/',
       requireAuth,
       productUploads,
+      moderateUploadedContent,
       StoreValidation.validate(StoreValidation.createSchema),
       this.storeController.createProduct
     );
@@ -38,6 +40,7 @@ export class StoreModule {
       '/:id',
       requireAuth,
       productUploads,
+      moderateUploadedContent,
       StoreValidation.validate(StoreValidation.updateSchema),
       this.storeController.updateProduct
     );

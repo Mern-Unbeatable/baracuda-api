@@ -3,6 +3,7 @@ import { ChatController } from './chat.controller.js';
 import { ChatService } from './chat.service.js';
 import { requireAuth } from '../../middlewares/auth.middleware.js';
 import { upload } from '../../utils/upload.js';
+import { moderateUploadedContent } from '../../middlewares/moderation.middleware.js';
 
 export class ChatModule {
   constructor() {
@@ -26,7 +27,7 @@ export class ChatModule {
     this.router.get('/:roomId/messages', this.chatController.getMessages);
 
     // Send a message to a specific room (supports file upload)
-    this.router.post('/:roomId/messages', upload.single('file'), this.chatController.sendMessage);
+    this.router.post('/:roomId/messages', upload.single('file'), moderateUploadedContent, this.chatController.sendMessage);
 
     // Edit a specific message
     this.router.put('/messages/:messageId', this.chatController.editMessage);

@@ -4,6 +4,7 @@ import { AdvertisementService } from './advertisement.service.js';
 import { AdvertisementValidation } from './advertisement.validation.js';
 import { optionalAuth, requireAuth, requireAdmin } from '../../middlewares/auth.middleware.js';
 import { upload } from '../../utils/upload.js';
+import { moderateUploadedContent } from '../../middlewares/moderation.middleware.js';
 
 export class AdvertisementModule {
   constructor() {
@@ -18,6 +19,7 @@ export class AdvertisementModule {
       '/',
       optionalAuth,
       upload.single('media'), // Since they upload the image, we can use the existing 'media' fieldname that I allowed previously
+      moderateUploadedContent,
       AdvertisementValidation.validate(AdvertisementValidation.createSchema),
       this.advertisementController.createAdvertisement
     );

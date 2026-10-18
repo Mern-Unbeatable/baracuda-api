@@ -10,9 +10,7 @@
 - [x] ~~**AI Declaration & Badge for Videos:**~~ ✅ *(Completed — `isAiGenerated` tickbox & `aiBadge: true/false` indicator on video player & cards across profile & standalone video comments)*
 
 ## 3. Safety & Content Moderation (New Scope)
-- **Automated NSFW & Explicit Content Moderation:**
-  - Integrate an automated AI moderation service (Sightengine API) to scan uploaded photos in real-time.
-  - Automatically detect and block explicit adult content, pornography, and child abuse material before photos are saved or published.
+- [x] ~~**Automated NSFW & Explicit Content Moderation:**~~ ✅ *(Completed — Integrated Sightengine API with real-time inspection for all 14 image/video upload endpoints across 12 modules. Built `ModerationService` and `moderateUploadedContent` middleware. Automatically blocks and deletes explicit adult nudity, pornography, sexual acts, CSAM, and extreme violence/gore before files are stored or published; provides immediate 400 Bad Request response with violation reason and instant disk cleanup).*
 
 ## 4. Server & Infrastructure Deployment (Pending Client Credentials)
 - **Backend & Database Hosting:** Configure Node.js backend and PostgreSQL database on the production server (VPS / Cloud).

@@ -31,6 +31,11 @@ export const config = {
     user: process.env.SMTP_USER || '',
     pass: process.env.SMTP_PASS || '',
     from: process.env.SMTP_FROM || '"My12Photos" <noreply@my12photos.com>',
+  },
+  moderation: {
+    enabled: process.env.CONTENT_MODERATION_ENABLED !== 'false',
+    apiUser: process.env.SIGHTENGINE_API_USER || '',
+    apiSecret: process.env.SIGHTENGINE_API_SECRET || '',
   }
 };
 
