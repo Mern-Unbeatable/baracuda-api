@@ -25,6 +25,7 @@ import { OrderModule } from './modules/order/order.module.js';
 import { ChatModule } from './modules/chat/chat.module.js';
 import { AppreciationModule } from './modules/appreciation/appreciation.module.js';
 import { SlideshowModule } from './modules/slideshow/slideshow.module.js';
+import { AdminPromotionModule } from './modules/admin-promotion/admin-promotion.module.js';
 
 /**
  * Main Application Class
@@ -125,6 +126,9 @@ class App {
     const marketplaceModule = new MarketplaceModule();
     this.app.use('/api/v1/marketplace', marketplaceModule.router);
     this.app.use('/api/v1/admin/premium-photos', marketplaceModule.adminRouter);
+
+    const adminPromotionModule = new AdminPromotionModule();
+    this.app.use('/api/v1/admin/promotions', adminPromotionModule.router);
 
     const postModule = new PostModule();
     this.app.use('/api/v1/posts', postModule.router);

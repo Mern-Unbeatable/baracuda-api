@@ -2770,6 +2770,180 @@
               }
             }
           ]
+        },
+        {
+          "name": "Promotions (Artworks & Sell Photos)",
+          "item": [
+            {
+              "name": "Get All Promoted Items (Artworks & Sell Photos)",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{admin_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/promotions?type=ALL&status=ALL&page=1&limit=10",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "promotions"
+                  ],
+                  "query": [
+                    {
+                      "key": "type",
+                      "value": "ALL",
+                      "description": "ALL | ARTWORK | SELL | PRODUCT"
+                    },
+                    {
+                      "key": "status",
+                      "value": "ALL",
+                      "description": "ALL | ACTIVE | EXPIRED"
+                    },
+                    {
+                      "key": "search",
+                      "value": "",
+                      "description": "Search by title, user name or email",
+                      "disabled": true
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Filter Promoted Artworks Only",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{admin_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/promotions?type=ARTWORK&status=ACTIVE&page=1&limit=10",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "promotions"
+                  ],
+                  "query": [
+                    {
+                      "key": "type",
+                      "value": "ARTWORK"
+                    },
+                    {
+                      "key": "status",
+                      "value": "ACTIVE"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Filter Promoted Sell Photos Only",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{admin_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/promotions?type=SELL&status=ACTIVE&page=1&limit=10",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "promotions"
+                  ],
+                  "query": [
+                    {
+                      "key": "type",
+                      "value": "SELL"
+                    },
+                    {
+                      "key": "status",
+                      "value": "ACTIVE"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Get Promotion Details by ID",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{admin_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/promotions/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "promotions",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "39384561-cc82-43f5-9f8f-d1025b73d6e5"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
         }
       ],
       "auth": {

@@ -1,10 +1,30 @@
 import prisma from '../../config/prisma.js';
 
 export class AdminPremiumPhotoService {
-  async getAllPremiumPhotos(skip, take, filters) {
+  async getAllPremiumPhotos(skip, take, filters = {}) {
     const where = {};
     if (filters.kind) {
       where.kind = filters.kind;
+    }
+
+    if (filters.isPromoted !== undefined) {
+      const isProm = filters.isPromoted === 'true' || filters.isPromoted === true;
+      const now = new Date();
+      if (isProm) {
+        where.promotions = {
+          some: {
+            isActive: true,
+            endsAt: { gte: now }
+          }
+        };
+      } else {
+        where.promotions = {
+          none: {
+            isActive: true,
+            endsAt: { gte: now }
+          }
+        };
+      }
     }
 
     const [total, data] = await Promise.all([
@@ -16,6 +36,12 @@ export class AdminPremiumPhotoService {
         orderBy: { createdAt: 'desc' },
         include: {
           media: true,
+          category: true,
+          user: { select: { id: true, name: true, avatar: true, username: true } },
+          promotions: {
+            orderBy: { createdAt: 'desc' },
+            take: 1
+          }
         }
       })
     ]);

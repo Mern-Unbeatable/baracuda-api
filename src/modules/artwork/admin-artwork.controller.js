@@ -77,10 +77,10 @@ export class AdminArtworkController {
 
   getAllArtworks = async (req, res) => {
     try {
-      const { kind, competitionState } = req.query;
+      const { kind, competitionState, isPromoted } = req.query;
       const { skip, take, page, limit } = PaginationUtil.getPaginationOptions(req.query);
 
-      const filters = { kind, competitionState };
+      const filters = { kind, competitionState, isPromoted };
       const { total, data } = await this.adminArtworkService.getAllArtworks(skip, take, filters);
 
       const formattedData = data.map(item => {
@@ -107,6 +107,8 @@ export class AdminArtworkController {
           additionalPhotos = imageCount > 1 ? imageCount - 1 : 0;
         }
 
+        const isItemPromoted = Boolean(formatted.promotion && formatted.promotion.isActive && new Date(formatted.promotion.endsAt) >= new Date());
+
         return {
           id: formatted.id,
           kind: formatted.kind,
@@ -120,7 +122,9 @@ export class AdminArtworkController {
           likesCount: formatted.competitionState === 'PROFILE_ONLY' ? formatted.likesCount : undefined,
           competitionState: formatted.competitionState,
           coverImage: coverImage,
-          additionalPhotos: additionalPhotos
+          additionalPhotos: additionalPhotos,
+          isPromoted: isItemPromoted,
+          promotion: formatted.promotion || null
         };
       });
 

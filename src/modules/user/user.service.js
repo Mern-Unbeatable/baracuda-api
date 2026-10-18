@@ -235,7 +235,7 @@ export class UserService {
       }
     }
     if (data.phone) {
-      const existingPhone = await prisma.user.findUnique({ where: { phone: data.phone } });
+      const existingPhone = await prisma.user.findFirst({ where: { phone: data.phone } });
       if (existingPhone && existingPhone.id !== userId) {
         throw new Error('Phone number is already registered');
       }

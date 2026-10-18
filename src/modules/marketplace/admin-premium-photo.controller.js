@@ -32,10 +32,10 @@ export class AdminPremiumPhotoController {
 
   getAllPremiumPhotos = async (req, res) => {
     try {
-      const { kind } = req.query;
+      const { kind, isPromoted } = req.query;
       const { skip, take, page, limit } = PaginationUtil.getPaginationOptions(req.query);
 
-      const filters = { kind };
+      const filters = { kind, isPromoted };
       const { total, data } = await this.adminPremiumPhotoService.getAllPremiumPhotos(skip, take, filters);
 
       const formattedData = data.map(item => {
@@ -58,6 +58,9 @@ export class AdminPremiumPhotoController {
           additionalPhotos = imageCount > 1 ? imageCount - 1 : 0;
         }
 
+        const latestPromotion = formatted.promotions && formatted.promotions.length > 0 ? formatted.promotions[0] : null;
+        const isItemPromoted = Boolean(latestPromotion && latestPromotion.isActive && new Date(latestPromotion.endsAt) >= new Date());
+
         return {
           id: formatted.id,
           kind: formatted.kind,
@@ -71,7 +74,16 @@ export class AdminPremiumPhotoController {
           totalSales: formatted.totalSales,
           price: formatted.price,
           coverImage: coverImage,
-          additionalPhotos: additionalPhotos
+          additionalPhotos: additionalPhotos,
+          isPromoted: isItemPromoted,
+          promotion: latestPromotion ? {
+            id: latestPromotion.id,
+            durationDays: latestPromotion.durationDays,
+            startsAt: latestPromotion.startsAt,
+            endsAt: latestPromotion.endsAt,
+            amountPaid: parseFloat(latestPromotion.amountPaid),
+            isActive: latestPromotion.isActive
+          } : null
         };
       });
 

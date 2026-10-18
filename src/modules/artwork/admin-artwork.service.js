@@ -18,6 +18,15 @@ export class AdminArtworkService {
       where.competitionState = filters.competitionState; // IN_COMPETITION, PROFILE_ONLY, ENDED
     }
 
+    if (filters.isPromoted !== undefined) {
+      const isProm = filters.isPromoted === 'true' || filters.isPromoted === true;
+      if (isProm) {
+        where.promotion = { isNot: null, isActive: true };
+      } else {
+        where.promotion = null;
+      }
+    }
+
     const [total, artworks] = await Promise.all([
       prisma.submission.count({ where }),
       prisma.submission.findMany({
@@ -28,6 +37,7 @@ export class AdminArtworkService {
         include: {
           media: true,
           category: true,
+          promotion: true,
           user: { select: { id: true, name: true, avatar: true, username: true } }
         }
       })
