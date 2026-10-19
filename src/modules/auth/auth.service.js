@@ -137,6 +137,7 @@ export class AuthService {
 
     return {
       user: essentialUser,
+      token: token,
       accessToken: token
     };
   }
