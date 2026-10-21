@@ -316,12 +316,12 @@ export class UserController {
     }
   }
 
-  getLikedArtworks = async (req, res, next) => {
+  getSavedArtworks = async (req, res, next) => {
     try {
       const userId = req.user.id;
       const { skip, take, page, limit } = PaginationUtil.getPaginationOptions(req.query);
 
-      const { data, total } = await this.userService.getLikedArtworks(userId, skip, take);
+      const { data, total } = await this.userService.getSavedArtworks(userId, skip, take);
 
       const sourceLang = req.headers['accept-language']?.split(',')[0]?.split('-')[0] || req.headers['x-lang'] || 'en';
 
@@ -351,7 +351,7 @@ export class UserController {
 
       res.status(200).json({
         success: true,
-        message: 'Liked artworks fetched successfully',
+        message: 'Saved artworks fetched successfully',
         data: formattedData,
         meta: PaginationUtil.getMetadata(total, page, limit)
       });
@@ -359,6 +359,9 @@ export class UserController {
       next(error);
     }
   }
+
+  // Alias for backward compatibility
+  getLikedArtworks = this.getSavedArtworks;
 
   /**
    * Get Admin Profile

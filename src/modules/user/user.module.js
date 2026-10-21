@@ -49,8 +49,11 @@ export class UserModule {
     this.publicRouter.post('/follow/:username', requireAuth, this.userController.toggleFollow);
     this.publicRouter.get('/following', requireAuth, this.userController.getFollowingList);
 
-    // Liked Artworks
-    this.publicRouter.get('/liked-artworks', requireAuth, this.userController.getLikedArtworks);
+    // Saved Artworks
+    this.publicRouter.get('/saved-artworks', requireAuth, this.userController.getSavedArtworks);
+    this.publicRouter.get('/saved-artwork', requireAuth, this.userController.getSavedArtworks);
+    this.publicRouter.get('/liked-artworks', requireAuth, this.userController.getSavedArtworks);
+    this.publicRouter.get('/favourite-photos', requireAuth, this.userController.getSavedArtworks);
 
     // Admin User Management Routes
     this.adminRouter.get('/dashboard', requireAuth, requireAdmin, this.userController.getAdminDashboard);

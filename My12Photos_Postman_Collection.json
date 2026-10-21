@@ -6064,7 +6064,7 @@
           "name": "Favourite Photos",
           "item": [
             {
-              "name": "Get Liked Artworks",
+              "name": "Get Saved Artworks",
               "request": {
                 "method": "GET",
                 "auth": {
@@ -6078,7 +6078,7 @@
                   ]
                 },
                 "url": {
-                  "raw": "{{baseUrl}}/api/v1/users/liked-artworks?page=1&limit=10",
+                  "raw": "{{baseUrl}}/api/v1/users/saved-artworks?page=1&limit=10",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -6086,7 +6086,7 @@
                     "api",
                     "v1",
                     "users",
-                    "liked-artworks"
+                    "saved-artworks"
                   ],
                   "query": [
                     {
@@ -6155,6 +6155,37 @@
                     "artworks",
                     "{{artwork_id}}",
                     "vote"
+                  ]
+                }
+              }
+            },            {
+              "name": "Unsave Artwork",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "accept-language",
+                    "value": "en",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/artworks/:id/save",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "artworks",
+                    ":id",
+                    "save"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "ARTWORK_ID"
+                    }
                   ]
                 }
               }
