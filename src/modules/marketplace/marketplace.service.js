@@ -473,12 +473,12 @@ export class MarketplaceService {
     });
 
     if (existingSave) {
-      await prisma.save.delete({ where: { id: existingSave.id } });
+      await prisma.savedPremiumPhoto.delete({ where: { id: existingSave.id } });
       return { message: 'Photo unsaved successfully', saved: false };
     } else {
-      await prisma.save.create({
+      await prisma.savedPremiumPhoto.create({
         data: {
-          submissionId: id,
+          premiumPhotoId: id,
           userId
         }
       });
