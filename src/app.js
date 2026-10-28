@@ -48,7 +48,7 @@ class App {
     }));
 
     // Middleware to parse JSON request bodies
-    this.app.use(express.json());
+    this.app.use(express.json({ type: ['application/json', 'text/plain'] }));
     
     // Middleware to parse URL-encoded request bodies
     this.app.use(express.urlencoded({ extended: true }));
