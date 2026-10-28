@@ -64,10 +64,15 @@ export class MarketplaceModule {
       this.marketplaceController.capturePromotion
     );
     // Public endpoints for Explore and Details
+    this.router.get('/public/premium-photos', optionalAuth, this.marketplaceController.getPublicPremiumPhotos);
+    this.router.get('/public/premium-photos/:id', optionalAuth, this.marketplaceController.getPublicPremiumPhotoDetails);
     this.router.get('/public/premium-images', optionalAuth, this.marketplaceController.getPublicPremiumPhotos);
     this.router.get('/public/premium-images/:id', optionalAuth, this.marketplaceController.getPublicPremiumPhotoDetails);
 
     // Interaction endpoints
+    this.router.post('/premium-photos/:id/like', requireAuth, this.marketplaceController.likePremiumPhoto);
+    this.router.post('/premium-photos/:id/save', requireAuth, this.marketplaceController.savePremiumPhoto);
+    this.router.post('/premium-photos/:id/report', requireAuth, this.marketplaceController.reportPremiumPhoto);
     this.router.post('/premium-images/:id/like', requireAuth, this.marketplaceController.likePremiumPhoto);
     this.router.post('/premium-images/:id/save', requireAuth, this.marketplaceController.savePremiumPhoto);
     this.router.post(
@@ -79,6 +84,9 @@ export class MarketplaceModule {
     // Purchase endpoints
     this.router.get('/my-purchases/stats', requireAuth, this.marketplaceController.getMyPurchaseStats);
     this.router.get('/my-purchases', requireAuth, this.marketplaceController.getMyPurchases);
+    this.router.post('/premium-photos/:id/buy', optionalAuth, this.marketplaceController.buyPremiumPhoto);
+    this.router.post('/premium-photos/buy/capture', optionalAuth, this.marketplaceController.capturePurchase);
+    this.router.get('/premium-photos/:id/download', optionalAuth, this.marketplaceController.downloadPurchasedPhoto);
     this.router.post('/premium-images/:id/buy', optionalAuth, this.marketplaceController.buyPremiumPhoto);
     this.router.post('/premium-images/buy/capture', optionalAuth, this.marketplaceController.capturePurchase);
     this.router.get('/premium-images/:id/download', optionalAuth, this.marketplaceController.downloadPurchasedPhoto);
