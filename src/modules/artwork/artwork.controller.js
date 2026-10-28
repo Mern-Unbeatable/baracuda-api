@@ -350,7 +350,12 @@ export class ArtworkController {
     try {
       const userId = req.user?.id || 'TEST_USER_ID';
       const { id } = req.params;
-      const { durationDays } = req.validatedBody || req.body;
+      const durationDays = req.validatedBody?.durationDays 
+        || req.validatedBody?.duration_days 
+        || req.body?.durationDays 
+        || req.body?.duration_days 
+        || req.query?.durationDays 
+        || req.query?.duration_days;
       
       const { default: paymentService } = await import('../payment/payment.service.js');
       const result = await paymentService.createPromotionPayment(id, Number(durationDays), userId);
