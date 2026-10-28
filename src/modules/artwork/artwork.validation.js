@@ -32,8 +32,9 @@ export const ArtworkValidation = {
   }),
 
   promoteSchema: Joi.object({
-    durationDays: Joi.number().valid(7, 15, 30).required(),
-  }),
+    durationDays: Joi.number().valid(7, 15, 30).optional(),
+    duration_days: Joi.number().valid(7, 15, 30).optional(),
+  }).or('durationDays', 'duration_days'),
 
   switchCompetitionSchema: Joi.object({
     // competitionId is intentionally omitted as the backend will auto-resolve the OPEN competition
@@ -67,7 +68,13 @@ export const ArtworkValidation = {
 
   validate: (schema) => {
     return (req, res, next) => {
-      const payload = { ...req.body };
+      let payload = { ...req.query, ...req.body };
+      
+      if (typeof req.body === 'string') {
+        try {
+          payload = { ...payload, ...JSON.parse(req.body) };
+        } catch (e) {}
+      }
       
       // Handle files differently since they come as arrays for images
       if (req.files) {
