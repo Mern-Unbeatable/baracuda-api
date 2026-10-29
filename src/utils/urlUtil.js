@@ -17,6 +17,9 @@ export const UrlUtil = {
     }
 
     // Dynamically build the base URL (works for localhost and live server automatically)
+    if (!req || !req.protocol || typeof req.get !== 'function') {
+      return normalized.startsWith('/') ? normalized : `/${normalized}`;
+    }
     const baseUrl = `${req.protocol}://${req.get('host')}`;
     return `${baseUrl}${normalized.startsWith('/') ? '' : '/'}${normalized}`;
   },
