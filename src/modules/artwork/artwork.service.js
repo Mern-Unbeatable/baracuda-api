@@ -762,6 +762,7 @@ export class ArtworkService {
         user: { select: { id: true, name: true, username: true, avatar: true } },
         category: { select: { id: true, name: true, name_pl: true } },
         comments: {
+          where: { status: 'APPROVED' },
           include: { user: { select: { id: true, name: true, username: true, avatar: true } } },
           orderBy: { createdAt: 'desc' }
         }
