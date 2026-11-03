@@ -262,9 +262,12 @@ export class ArtworkService {
   async getAllArtworks(userId, filters = {}, sort = 'newest', skip = 0, take = 10) {
     const where = { userId };
     
-    if (filters.kind && filters.kind.toLowerCase() !== 'all') {
-      // filters.kind is expected to map to AlbumKind enum (SINGLE, SIX, TWELVE)
+    if (filters.kind && ['SINGLE', 'SIX', 'TWELVE'].includes(filters.kind.toUpperCase())) {
       where.kind = filters.kind.toUpperCase();
+    } else if (filters.kind && filters.kind.toUpperCase() === 'VIDEO') {
+      where.kind = 'VIDEO';
+    } else {
+      where.kind = { in: ['SINGLE', 'SIX', 'TWELVE'] };
     }
     
     if (filters.status && filters.status.toLowerCase() !== 'all') {
@@ -658,8 +661,13 @@ export class ArtworkService {
   }
 
   async getPublicArtworks(filters, sort, skip, take, viewerId = null) {
-    // Only fetch APPROVED artworks globally
+    // Only fetch APPROVED artworks globally (exclude standalone 1-minute video comments)
     const where = { status: 'APPROVED' };
+    if (filters.kind && ['SINGLE', 'SIX', 'TWELVE'].includes(filters.kind.toUpperCase())) {
+      where.kind = filters.kind.toUpperCase();
+    } else {
+      where.kind = { in: ['SINGLE', 'SIX', 'TWELVE'] };
+    }
     if (filters.status && filters.status.toUpperCase() !== 'ALL') {
       where.competitionState = filters.status.toUpperCase();
     }
