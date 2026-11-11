@@ -3,29 +3,23 @@ import Joi from 'joi';
 export class StoreValidation {
   static createSchema = Joi.object({
     title: Joi.string().required(),
-    category: Joi.string().valid(
-      'ART_PRINTS',
-      'HANDMADE_CRAFTS',
-      'APPAREL',
-      'PHOTOBOOKS',
-      'DIGITAL_PRESET',
-      'OTHERS'
-    ).required(),
+    category: Joi.string().allow('', null).optional(),
+    categories: Joi.alternatives().try(
+      Joi.array().items(Joi.string()),
+      Joi.string()
+    ).optional(),
     price: Joi.number().min(0).required(),
-    setEditionSize: Joi.string().required(),
-    description: Joi.string().required(),
+    setEditionSize: Joi.string().allow('', null).optional(),
+    description: Joi.string().allow('', null).optional(),
     copyrightConfirmed: Joi.boolean().truthy('1', 1, 'true').falsy('0', 0, 'false').default(false)
   });
 
   static updateSchema = Joi.object({
     title: Joi.string().optional(),
-    category: Joi.string().valid(
-      'ART_PRINTS',
-      'HANDMADE_CRAFTS',
-      'APPAREL',
-      'PHOTOBOOKS',
-      'DIGITAL_PRESET',
-      'OTHERS'
+    category: Joi.string().allow('', null).optional(),
+    categories: Joi.alternatives().try(
+      Joi.array().items(Joi.string()),
+      Joi.string()
     ).optional(),
     price: Joi.number().min(0).optional(),
     setEditionSize: Joi.string().allow('', null).optional(),

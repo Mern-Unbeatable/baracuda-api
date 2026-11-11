@@ -1312,7 +1312,8 @@ enum ProductCategory {
 model Product {
   id             String          @id @default(uuid())
   userId         String
-  category       ProductCategory
+  category       ProductCategory @default(OTHERS)
+  categories     String[]        @default([])
   title          String
   title_pl       String?
   price          Decimal         @db.Decimal(10, 2)
