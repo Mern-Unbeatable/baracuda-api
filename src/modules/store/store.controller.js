@@ -30,6 +30,14 @@ export class StoreController {
       formatted.images = formatted.images.map(img => UrlUtil.getAbsoluteUrl(req, img));
     }
     
+    if (formatted.categories && Array.isArray(formatted.categories) && formatted.categories.length > 0) {
+      formatted.category = formatted.categories[0];
+    } else if (formatted.category) {
+      formatted.categories = [formatted.category];
+    } else {
+      formatted.categories = [];
+    }
+
     if (formatted.price !== undefined && formatted.price !== null) {
       formatted.price = parseFloat(formatted.price);
     }
@@ -68,8 +76,30 @@ export class StoreController {
 
       await Promise.all(promises);
 
+      let categories = [];
+      if (req.body.categories) {
+        if (Array.isArray(req.body.categories)) {
+          categories = req.body.categories;
+        } else if (typeof req.body.categories === 'string') {
+          try {
+            const parsed = JSON.parse(req.body.categories);
+            categories = Array.isArray(parsed) ? parsed : [req.body.categories];
+          } catch {
+            categories = req.body.categories.includes(',')
+              ? req.body.categories.split(',').map(s => s.trim()).filter(Boolean)
+              : [req.body.categories.trim()];
+          }
+        }
+      } else if (req.body.category) {
+        categories = [req.body.category];
+      }
+      categories = categories.map(c => String(c).trim()).filter(Boolean);
+      if (categories.length === 0) categories = ['Other'];
+
       const data = {
         ...req.body,
+        categories,
+        category: categories[0],
         title: finalTitle,
         title_pl: finalTitlePl,
         description: finalDesc,
@@ -160,7 +190,30 @@ export class StoreController {
       
       await Promise.all(promises);
 
-      if (category !== undefined) updateData.category = category;
+      if (req.body.categories !== undefined || category !== undefined) {
+        let categories = [];
+        if (req.body.categories) {
+          if (Array.isArray(req.body.categories)) {
+            categories = req.body.categories;
+          } else if (typeof req.body.categories === 'string') {
+            try {
+              const parsed = JSON.parse(req.body.categories);
+              categories = Array.isArray(parsed) ? parsed : [req.body.categories];
+            } catch {
+              categories = req.body.categories.includes(',')
+                ? req.body.categories.split(',').map(s => s.trim()).filter(Boolean)
+                : [req.body.categories.trim()];
+            }
+          }
+        } else if (category) {
+          categories = [category];
+        }
+        categories = categories.map(c => String(c).trim()).filter(Boolean);
+        if (categories.length > 0) {
+          updateData.categories = categories;
+          updateData.category = categories[0];
+        }
+      }
       if (price !== undefined) updateData.price = price;
       if (setEditionSize !== undefined) updateData.setEditionSize = setEditionSize;
       if (isActive !== undefined) updateData.isActive = isActive;
