@@ -17,10 +17,18 @@ export class StoreService {
       });
     }
 
+    const validEnums = ['ART_PRINTS', 'HANDMADE_CRAFTS', 'APPAREL', 'PHOTOBOOKS', 'DIGITAL_PRESET', 'OTHERS'];
+    let fallbackCategory = 'OTHERS';
+    const primaryCat = data.categories?.[0] || data.category || '';
+    if (validEnums.includes(primaryCat.toUpperCase())) {
+      fallbackCategory = primaryCat.toUpperCase();
+    }
+
     const product = await prisma.product.create({
       data: {
         userId,
-        category: data.category,
+        category: fallbackCategory,
+        categories: data.categories && data.categories.length > 0 ? data.categories : [fallbackCategory],
         title: data.title,
         title_pl: data.title_pl,
         price: data.price,
@@ -39,8 +47,17 @@ export class StoreService {
   async getAllProducts(filters, skip = 0, take = 10) {
     const where = { isActive: true };
 
-    if (filters.category) {
-      where.category = filters.category;
+    if (filters.category && filters.category.toLowerCase() !== 'all') {
+      const cat = filters.category.trim();
+      const catUpper = cat.toUpperCase();
+      const catSlug = cat.toLowerCase().replace(/\s+/g, '-');
+      const catSpaced = cat.replace(/[-_]/g, ' ');
+      const searchVariations = Array.from(new Set([cat, catUpper, catSlug, catSpaced]));
+
+      where.OR = [
+        { categories: { hasSome: searchVariations } },
+        { category: { in: ['ART_PRINTS', 'HANDMADE_CRAFTS', 'APPAREL', 'PHOTOBOOKS', 'DIGITAL_PRESET', 'OTHERS'].includes(catUpper) ? [catUpper] : [] } }
+      ];
     }
     
     if (filters.userId) {
@@ -56,6 +73,7 @@ export class StoreService {
         select: {
           id: true,
           category: true,
+          categories: true,
           title: true,
           title_pl: true,
           description: true,
@@ -94,6 +112,22 @@ export class StoreService {
     if (existing.userId !== userId) throw new Error('Unauthorized');
 
     const updateData = { ...data };
+    if (data.categories && data.categories.length > 0) {
+      updateData.categories = data.categories;
+      const validEnums = ['ART_PRINTS', 'HANDMADE_CRAFTS', 'APPAREL', 'PHOTOBOOKS', 'DIGITAL_PRESET', 'OTHERS'];
+      const primaryCat = data.categories[0];
+      if (validEnums.includes(primaryCat.toUpperCase())) {
+        updateData.category = primaryCat.toUpperCase();
+      } else {
+        updateData.category = 'OTHERS';
+      }
+    } else if (data.category) {
+      const validEnums = ['ART_PRINTS', 'HANDMADE_CRAFTS', 'APPAREL', 'PHOTOBOOKS', 'DIGITAL_PRESET', 'OTHERS'];
+      if (validEnums.includes(data.category.toUpperCase())) {
+        updateData.category = data.category.toUpperCase();
+      }
+      updateData.categories = [data.category];
+    }
 
     if (files && files['bannerImage'] && files['bannerImage'].length > 0) {
       updateData.bannerImage = `/uploads/${files['bannerImage'][0].filename}`;
@@ -202,7 +236,7 @@ export class StoreService {
       userWhere.OR = [
         { name: { contains: search, mode: 'insensitive' } },
         { products: { some: { title: { contains: search, mode: 'insensitive' } } } },
-        { products: { some: { category: { equals: search } } } }
+        { products: { some: { categories: { has: search } } } }
       ];
     }
     
