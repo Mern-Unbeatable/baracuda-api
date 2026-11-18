@@ -37,6 +37,9 @@ export class StoreService {
         description_pl: data.description_pl || null,
         bannerImage: bannerImageUrl,
         images: otherImageUrls,
+        country: data.country || null,
+        city: data.city || null,
+        shippingScope: data.shippingScope || 'WORLDWIDE',
         isActive: true,
       },
     });
@@ -44,7 +47,7 @@ export class StoreService {
     return product;
   }
 
-  async getAllProducts(filters, skip = 0, take = 10) {
+  async getAllProducts(filters, skip = 0, take = 10, currentUserId = null) {
     const where = { isActive: true };
 
     if (filters.category && filters.category.toLowerCase() !== 'all') {
@@ -72,6 +75,7 @@ export class StoreService {
         orderBy: { createdAt: 'desc' },
         select: {
           id: true,
+          userId: true,
           category: true,
           categories: true,
           title: true,
@@ -81,6 +85,9 @@ export class StoreService {
           bannerImage: true,
           price: true,
           setEditionSize: true,
+          country: true,
+          city: true,
+          shippingScope: true,
           createdAt: true,
           user: {
             select: {
@@ -94,16 +101,49 @@ export class StoreService {
       prisma.product.count({ where })
     ]);
 
+    if (currentUserId && products.length > 0) {
+      const saved = await prisma.savedProduct.findMany({
+        where: {
+          userId: currentUserId,
+          productId: { in: products.map(p => p.id) }
+        },
+        select: { productId: true }
+      });
+      const savedSet = new Set(saved.map(s => s.productId));
+      products.forEach(p => {
+        p.isSaved = savedSet.has(p.id);
+      });
+    } else {
+      products.forEach(p => {
+        p.isSaved = false;
+      });
+    }
+
     return { data: products, total };
   }
 
-  async getProductById(id) {
-    return prisma.product.findUnique({
+  async getProductById(id, currentUserId = null) {
+    const product = await prisma.product.findUnique({
       where: { id },
       include: {
         user: { select: { id: true, name: true, username: true, avatar: true } }
       }
     });
+
+    if (!product) return null;
+
+    if (currentUserId) {
+      const saved = await prisma.savedProduct.findUnique({
+        where: {
+          userId_productId: { userId: currentUserId, productId: id }
+        }
+      });
+      product.isSaved = Boolean(saved);
+    } else {
+      product.isSaved = false;
+    }
+
+    return product;
   }
 
   async updateProduct(id, userId, data, files) {
@@ -112,6 +152,10 @@ export class StoreService {
     if (existing.userId !== userId) throw new Error('Unauthorized');
 
     const updateData = { ...data };
+    if (data.country !== undefined) updateData.country = data.country || null;
+    if (data.city !== undefined) updateData.city = data.city || null;
+    if (data.shippingScope !== undefined) updateData.shippingScope = data.shippingScope;
+
     if (data.categories && data.categories.length > 0) {
       updateData.categories = data.categories;
       const validEnums = ['ART_PRINTS', 'HANDMADE_CRAFTS', 'APPAREL', 'PHOTOBOOKS', 'DIGITAL_PRESET', 'OTHERS'];
@@ -275,6 +319,9 @@ export class StoreService {
               title_pl: true,
               bannerImage: true,
               price: true,
+              country: true,
+              city: true,
+              shippingScope: true,
               promotion: {
                 where: { isActive: true, endsAt: { gt: new Date() } },
                 select: { id: true }
@@ -300,7 +347,10 @@ export class StoreService {
         title: p.title,
         title_pl: p.title_pl,
         bannerImage: p.bannerImage,
-        price: p.price
+        price: p.price,
+        country: p.country || null,
+        city: p.city || null,
+        shippingScope: p.shippingScope || 'WORLDWIDE'
       }));
 
       return {
@@ -320,5 +370,50 @@ export class StoreService {
     }
 
     return { data: formattedData, total };
+  }
+
+  async toggleWatchlist(userId, productId) {
+    const existing = await prisma.savedProduct.findUnique({
+      where: {
+        userId_productId: { userId, productId }
+      }
+    });
+
+    if (existing) {
+      await prisma.savedProduct.delete({
+        where: { id: existing.id }
+      });
+      return { saved: false, message: 'Removed from watchlist' };
+    } else {
+      await prisma.savedProduct.create({
+        data: { userId, productId }
+      });
+      return { saved: true, message: 'Added to watchlist' };
+    }
+  }
+
+  async getWatchlist(userId, skip = 0, take = 10) {
+    const where = { userId };
+    const [items, total] = await Promise.all([
+      prisma.savedProduct.findMany({
+        where,
+        skip,
+        take,
+        orderBy: { createdAt: 'desc' },
+        include: {
+          product: {
+            include: {
+              user: {
+                select: { id: true, name: true, username: true, avatar: true }
+              }
+            }
+          }
+        }
+      }),
+      prisma.savedProduct.count({ where })
+    ]);
+
+    const formatted = items.map(it => it.product).filter(Boolean);
+    return { data: formatted, total };
   }
 }

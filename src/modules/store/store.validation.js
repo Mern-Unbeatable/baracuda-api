@@ -11,6 +11,9 @@ export class StoreValidation {
     price: Joi.number().min(0).required(),
     setEditionSize: Joi.string().allow('', null).optional(),
     description: Joi.string().allow('', null).optional(),
+    country: Joi.string().allow('', null).optional(),
+    city: Joi.string().allow('', null).optional(),
+    shippingScope: Joi.string().valid('NATIONAL', 'WORLDWIDE').default('WORLDWIDE').optional(),
     copyrightConfirmed: Joi.boolean().truthy('1', 1, 'true').falsy('0', 0, 'false').default(false)
   });
 
@@ -24,6 +27,9 @@ export class StoreValidation {
     price: Joi.number().min(0).optional(),
     setEditionSize: Joi.string().allow('', null).optional(),
     description: Joi.string().allow('', null).optional(),
+    country: Joi.string().allow('', null).optional(),
+    city: Joi.string().allow('', null).optional(),
+    shippingScope: Joi.string().valid('NATIONAL', 'WORLDWIDE').optional(),
     isActive: Joi.boolean().truthy('1', 1, 'true').falsy('0', 0, 'false').optional(),
     copyrightConfirmed: Joi.boolean().truthy('1', 1, 'true').falsy('0', 0, 'false').optional()
   });

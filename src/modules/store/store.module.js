@@ -22,7 +22,12 @@ export class StoreModule {
       { name: 'images', maxCount: 10 }
     ]);
 
-    this.router.get('/public', this.storeController.getPublicStores);
+    this.router.get('/public', optionalAuth, this.storeController.getPublicStores);
+    this.router.get('/watchlist', requireAuth, this.storeController.getWatchlist);
+    this.router.post('/watchlist/:id', requireAuth, this.storeController.toggleWatchlist);
+    this.router.delete('/watchlist/:id', requireAuth, this.storeController.toggleWatchlist);
+    this.router.post('/products/:id/watchlist', requireAuth, this.storeController.toggleWatchlist);
+    this.router.post('/:id/watchlist', requireAuth, this.storeController.toggleWatchlist);
 
     this.router.post(
       '/',

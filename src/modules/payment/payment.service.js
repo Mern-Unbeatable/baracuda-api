@@ -718,11 +718,61 @@ class PaymentService {
       throw new Error('Order not found');
     }
 
+    const orderTotal = Number(order.total || 0);
+    const vatAmount = orderTotal * 0.20;
+    const commissionAmount = orderTotal * 0.10;
+    const sellerNetAmount = orderTotal - vatAmount - commissionAmount;
+
     const updatedOrder = await prisma.order.update({
       where: { id: order.id },
-      data: { status: 'COMPLETED' },
+      data: {
+        status: 'COMPLETED',
+        grossAmount: orderTotal,
+        vatAmount,
+        commissionAmount,
+        sellerNetAmount
+      },
       include: { items: { include: { product: true } } }
     });
+
+    // Notify Buyer and Seller
+    try {
+      const firstItem = order.items?.[0];
+      const productTitle = firstItem?.product?.title || 'store item';
+      const sellerId = firstItem?.product?.userId;
+
+      // 1. Notify Buyer
+      if (order.userId) {
+        await prisma.notification.create({
+          data: {
+            userId: order.userId,
+            type: 'SALE',
+            title: 'Order Confirmed!',
+            title_pl: 'Zamówienie potwierdzone!',
+            body: `Your purchase of "${productTitle}" is confirmed. Order ID: #${order.id.slice(0, 8).toUpperCase()}.`,
+            body_pl: `Twój zakup "${productTitle}" został potwierdzony.`,
+            linkUrl: `/user/my-orders/${order.id}`
+          }
+        });
+      }
+
+      // 2. Notify Seller
+      if (sellerId) {
+        await prisma.notification.create({
+          data: {
+            userId: sellerId,
+            type: 'SALE',
+            title: 'New Store Item Sale!',
+            title_pl: 'Nowa sprzedaż w My Store!',
+            body: `Congratulations! You sold "${productTitle}". Net payout: £${sellerNetAmount.toFixed(2)}. Please prepare for dispatch.`,
+            body_pl: `Gratulacje! Sprzedałeś "${productTitle}". Kwota netto: £${sellerNetAmount.toFixed(2)}.`,
+            linkUrl: `/user/orders/${order.id}`
+          }
+        });
+      }
+    } catch (notifErr) {
+      console.error('Failed to dispatch purchase notifications:', notifErr);
+    }
 
     return updatedOrder;
   }

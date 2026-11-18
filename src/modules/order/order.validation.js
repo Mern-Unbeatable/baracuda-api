@@ -5,9 +5,13 @@ export class OrderValidation {
     status: Joi.string().valid(
       'PROCESSING',
       'SHIPPED',
+      'DISPATCHED',
       'DELIVERED',
       'CANCELLED'
-    ).required()
+    ).required(),
+    trackingNumber: Joi.string().allow('', null).optional(),
+    courierName: Joi.string().allow('', null).optional(),
+    trackingUrl: Joi.string().allow('', null).optional()
   });
 
   static validate(schema) {
