@@ -42,6 +42,11 @@ export class StoreController {
       formatted.price = parseFloat(formatted.price);
     }
 
+    formatted.isSaved = Boolean(product.isSaved);
+    formatted.country = product.country || null;
+    formatted.city = product.city || null;
+    formatted.shippingScope = product.shippingScope || 'WORLDWIDE';
+
     return formatted;
   }
 
@@ -136,7 +141,7 @@ export class StoreController {
       
       filters.userId = targetUserId;
 
-      const result = await this.storeService.getAllProducts(filters, skip, take);
+      const result = await this.storeService.getAllProducts(filters, skip, take, req.user?.id);
       
       const formattedProducts = result.data.map(p => this.formatProductUrls(req, p));
 
@@ -151,7 +156,7 @@ export class StoreController {
 
   getProductById = async (req, res) => {
     try {
-      let product = await this.storeService.getProductById(req.params.id);
+      let product = await this.storeService.getProductById(req.params.id, req.user?.id);
       if (!product) return ResponseUtil.error(res, 'Product not found', 404);
       
       product = this.formatProductUrls(req, product);
@@ -215,6 +220,9 @@ export class StoreController {
         }
       }
       if (price !== undefined) updateData.price = price;
+      if (req.body.country !== undefined) updateData.country = req.body.country;
+      if (req.body.city !== undefined) updateData.city = req.body.city;
+      if (req.body.shippingScope !== undefined) updateData.shippingScope = req.body.shippingScope;
       if (setEditionSize !== undefined) updateData.setEditionSize = setEditionSize;
       if (isActive !== undefined) updateData.isActive = isActive;
 
@@ -328,6 +336,29 @@ export class StoreController {
       const { default: paymentService } = await import('../payment/payment.service.js');
       const result = await paymentService.captureStoreProductPurchase(paymentId);
       return ResponseUtil.success(res, 'Product purchase successful', result);
+    } catch (error) {
+      return ResponseUtil.error(res, error.message, 500);
+    }
+  };
+
+  toggleWatchlist = async (req, res) => {
+    try {
+      const result = await this.storeService.toggleWatchlist(req.user.id, req.params.id);
+      return ResponseUtil.success(res, result.message, result);
+    } catch (error) {
+      return ResponseUtil.error(res, error.message, 500);
+    }
+  };
+
+  getWatchlist = async (req, res) => {
+    try {
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 10;
+      const skip = (page - 1) * limit;
+
+      const { data, total } = await this.storeService.getWatchlist(req.user.id, skip, limit);
+      const formatted = data.map(p => this.formatProductUrls(req, p));
+      return ResponseUtil.paginated(res, 'Watchlist retrieved successfully', formatted, page, limit, total);
     } catch (error) {
       return ResponseUtil.error(res, error.message, 500);
     }
