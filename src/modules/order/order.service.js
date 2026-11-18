@@ -27,12 +27,14 @@ export class OrderService {
       });
     });
 
+    const vatAmount = totalSales * 0.20;
     const platformCommission = totalSales * 0.10;
-    const sellerEarnings = totalSales * 0.90;
+    const sellerEarnings = totalSales - vatAmount - platformCommission; // 70% net
 
     return {
       totalOrders,
       totalSales,
+      vatAmount,
       platformCommission,
       sellerEarnings
     };
@@ -90,9 +92,10 @@ export class OrderService {
       order.items.forEach(item => {
         orderTotal += (Number(item.price) * item.quantity);
       });
+      const vatAmount = orderTotal * 0.20;
       const platformCommission = orderTotal * 0.10;
-      const sellerEarnings = orderTotal * 0.90;
-      return { ...order, platformCommission, sellerEarnings, orderTotal };
+      const sellerEarnings = orderTotal - vatAmount - platformCommission; // 70% net
+      return { ...order, vatAmount, platformCommission, sellerEarnings, orderTotal };
     });
 
     // Get status counts for the tabs
@@ -110,6 +113,7 @@ export class OrderService {
     const counts = {
       All: await prisma.order.count({ where: statusWhere }),
       Processing: 0,
+      Dispatched: 0,
       Shipped: 0,
       Delivered: 0,
       Cancelled: 0
@@ -117,7 +121,8 @@ export class OrderService {
 
     statusCounts.forEach(sc => {
       if (sc.status === 'PROCESSING') counts.Processing = sc._count._all;
-      if (sc.status === 'SHIPPED') counts.Shipped = sc._count._all;
+      if (sc.status === 'SHIPPED') { counts.Shipped = sc._count._all; counts.Dispatched = (counts.Dispatched || 0) + sc._count._all; }
+      if (sc.status === 'DISPATCHED') { counts.Dispatched = (counts.Dispatched || 0) + sc._count._all; counts.Shipped = (counts.Shipped || 0) + sc._count._all; }
       if (sc.status === 'DELIVERED') counts.Delivered = sc._count._all;
       if (sc.status === 'CANCELLED') counts.Cancelled = sc._count._all;
     });
@@ -125,24 +130,85 @@ export class OrderService {
     return { data: orders, total, counts };
   }
 
-  async updateSellerOrderStatus(orderId, sellerId, status) {
+  async updateSellerOrderStatus(orderId, sellerId, statusData) {
+    const status = typeof statusData === 'string' ? statusData : statusData.status;
+    const trackingNumber = statusData.trackingNumber || null;
+    const courierName = statusData.courierName || null;
+    let trackingUrl = statusData.trackingUrl || null;
+
     const order = await prisma.order.findFirst({
       where: {
         id: orderId,
         items: { some: { product: { userId: sellerId } } }
+      },
+      include: {
+        user: true,
+        items: { include: { product: true } }
       }
     });
 
     if (!order) throw new Error('Order not found or unauthorized');
 
-    return prisma.order.update({
+    // Auto-resolve courier tracking URL if trackingNumber is present and no custom URL
+    if (trackingNumber && !trackingUrl && courierName) {
+      const c = courierName.toLowerCase().replace(/[^a-z]/g, '');
+      if (c.includes('royalmail')) {
+        trackingUrl = `https://www.royalmail.com/track-your-item#/tracking-details/${encodeURIComponent(trackingNumber)}`;
+      } else if (c.includes('dhl')) {
+        trackingUrl = `https://www.dhl.com/en/express/tracking.html?AWB=${encodeURIComponent(trackingNumber)}`;
+      } else if (c.includes('inpost')) {
+        trackingUrl = `https://inpost.pl/sledzenie-przesylek?number=${encodeURIComponent(trackingNumber)}`;
+      } else if (c.includes('dpd')) {
+        trackingUrl = `https://track.dpd.co.uk/parcels/${encodeURIComponent(trackingNumber)}`;
+      } else if (c.includes('fedex')) {
+        trackingUrl = `https://www.fedex.com/fedextrack/?trknbr=${encodeURIComponent(trackingNumber)}`;
+      } else if (c.includes('ups')) {
+        trackingUrl = `https://www.ups.com/track?tracknum=${encodeURIComponent(trackingNumber)}`;
+      } else {
+        trackingUrl = `https://parcelsapp.com/en/tracking/${encodeURIComponent(trackingNumber)}`;
+      }
+    }
+
+    const updatePayload = {
+      status: status.toUpperCase()
+    };
+    if (trackingNumber !== null) updatePayload.trackingNumber = trackingNumber;
+    if (courierName !== null) updatePayload.courierName = courierName;
+    if (trackingUrl !== null) updatePayload.trackingUrl = trackingUrl;
+    if (status.toUpperCase() === 'DISPATCHED' || status.toUpperCase() === 'SHIPPED') {
+      updatePayload.dispatchedAt = new Date();
+    }
+
+    const updated = await prisma.order.update({
       where: { id: orderId },
-      data: { status: status.toUpperCase() },
+      data: updatePayload,
       include: {
         user: { select: { id: true, name: true, avatar: true } },
         items: { include: { product: true } }
       }
     });
+
+    // Send dispatch notification to buyer
+    if (order.userId && (status.toUpperCase() === 'DISPATCHED' || status.toUpperCase() === 'SHIPPED')) {
+      try {
+        const firstProductTitle = order.items?.[0]?.product?.title || 'your item';
+        await prisma.notification.create({
+          data: {
+            userId: order.userId,
+            type: 'SALE',
+            title: 'Item Dispatched!',
+            title_pl: 'Przedmiot został wysłany!',
+            body: `Your order for "${firstProductTitle}" has been dispatched via ${courierName || 'courier'}. Tracking: ${trackingNumber || 'Available in order details'}.`,
+            body_pl: `Twoje zamówienie na "${firstProductTitle}" zostało wysłane za pośrednictwem ${courierName || 'kuriera'}.`,
+            linkUrl: `/user/my-orders/${orderId}`
+          }
+        });
+      } catch (err) {
+        console.error('Failed to create dispatch notification:', err);
+      }
+    }
+
+    return updated;
   }
 
   async getSellerOrderDetails(orderId, sellerId) {
@@ -166,10 +232,11 @@ export class OrderService {
     order.items.forEach(item => {
       orderTotal += (Number(item.price) * item.quantity);
     });
+    const vatAmount = orderTotal * 0.20;
     const platformCommission = orderTotal * 0.10;
-    const sellerEarnings = orderTotal * 0.90;
+    const sellerEarnings = orderTotal - vatAmount - platformCommission; // 70% net
 
-    return { ...order, platformCommission, sellerEarnings, orderTotal };
+    return { ...order, vatAmount, platformCommission, sellerEarnings, orderTotal };
   }
 
   async getBuyerStatusCard(buyerId) {

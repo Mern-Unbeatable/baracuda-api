@@ -212,6 +212,7 @@ enum OrderStatus {
   COMPLETED
   PROCESSING
   SHIPPED
+  DISPATCHED
   DELIVERED
   CANCELLED
 }
@@ -309,6 +310,7 @@ model User {
   chatMessages         ChatMessage[]
   savedArtworks        SavedArtwork[]
   savedPremiumPhotos   SavedPremiumPhoto[]
+  savedProducts        SavedProduct[]
   reports              Report[]
   moderationAudits     ModerationAudit[]
   products             Product[]
@@ -1041,18 +1043,26 @@ model PremiumPhotoMedia {
 }
 
 model Order {
-  id            String      @id @default(uuid())
-  userId        String?
-  email         String
-  fullName      String
-  address       String?
-  total         Decimal     @db.Decimal(10, 2)
-  currency      String      @default("GBP")
-  status        OrderStatus @default(PENDING)
-  paymentMethod String?
-  paymentId     String?
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
+  id               String      @id @default(uuid())
+  userId           String?
+  email            String
+  fullName         String
+  address          String?
+  total            Decimal     @db.Decimal(10, 2)
+  currency         String      @default("GBP")
+  status           OrderStatus @default(PENDING)
+  paymentMethod    String?
+  paymentId        String?
+  trackingNumber   String?
+  courierName      String?
+  trackingUrl      String?
+  dispatchedAt     DateTime?
+  grossAmount      Decimal?    @db.Decimal(10, 2)
+  vatAmount        Decimal?    @db.Decimal(10, 2)
+  commissionAmount Decimal?    @db.Decimal(10, 2)
+  sellerNetAmount  Decimal?    @db.Decimal(10, 2)
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
 
   user  User?       @relation(fields: [userId], references: [id])
   items OrderItem[]
@@ -1322,6 +1332,9 @@ model Product {
   description_pl String?         @db.Text
   bannerImage    String
   images         String[]
+  country        String?
+  city           String?
+  shippingScope  String          @default("WORLDWIDE")
   isActive       Boolean         @default(true)
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
@@ -1329,6 +1342,7 @@ model Product {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   promotion PromotedAlbum?
   orderItems OrderItem[]
+  savedBy SavedProduct[]
 
   @@index([category, isActive])
   @@map("products")
@@ -1387,4 +1401,19 @@ model SlideshowItem {
 
   @@index([slideshowId, sortOrder])
   @@map("slideshow_items")
+}
+
+model SavedProduct {
+  id        String   @id @default(uuid())
+  userId    String
+  productId String
+  createdAt DateTime @default(now())
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId], map: "saved_products_user_product_unique")
+  @@index([userId])
+  @@index([productId])
+  @@map("saved_products")
 }

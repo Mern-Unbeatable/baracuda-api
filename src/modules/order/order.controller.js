@@ -163,8 +163,15 @@ export class OrderController {
             category: item.product.category
           } : null
         })),
+        tracking: {
+          courierName: result.courierName || null,
+          trackingNumber: result.trackingNumber || null,
+          trackingUrl: result.trackingUrl || null,
+          dispatchedAt: result.dispatchedAt || null
+        },
         paymentBreakdown: {
           orderTotal: Number(result.orderTotal || result.total),
+          vatAmount: Number(result.vatAmount || 0),
           platformCommission: Number(result.platformCommission || 0),
           sellerEarnings: Number(result.sellerEarnings || result.total)
         }
@@ -224,7 +231,10 @@ export class OrderController {
           total: Number(order.total),
           paymentStatus: order.status === 'PENDING' ? 'Pending' : 'Paid',
           paymentMethod: order.paymentMethod || 'PayPal',
-          delivery: estimatedDelivery
+          delivery: estimatedDelivery,
+          courierName: order.courierName || null,
+          trackingNumber: order.trackingNumber || null,
+          trackingUrl: order.trackingUrl || null
         };
       });
 
@@ -266,6 +276,12 @@ export class OrderController {
         date: result.createdAt,
         status: result.status,
         paymentStatus: result.status === 'PENDING' ? 'Pending' : 'Paid',
+        tracking: {
+          courierName: result.courierName || null,
+          trackingNumber: result.trackingNumber || null,
+          trackingUrl: result.trackingUrl || null,
+          dispatchedAt: result.dispatchedAt || null
+        },
         shippingInformation: {
           address: parsedAddress || null,
           estimatedDelivery
