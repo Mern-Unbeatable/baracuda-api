@@ -4,7 +4,7 @@ export class OrderService {
   async getSellerStatusCard(sellerId) {
     const orders = await prisma.order.findMany({
       where: {
-        status: { in: ['PAID', 'COMPLETED', 'PROCESSING', 'SHIPPED', 'DELIVERED'] },
+        status: { in: ['PAID', 'COMPLETED', 'PROCESSING', 'DISPATCHED', 'SHIPPED', 'DELIVERED'] },
         items: {
           some: {
             product: { userId: sellerId }
@@ -41,7 +41,7 @@ export class OrderService {
   }
 
   async getSellerOrders(sellerId, filters, skip, take) {
-    const { dateFilter, status } = filters;
+    const { dateFilter, status, startDate, endDate } = filters;
     
     const where = {
       status: { not: 'PENDING' },
@@ -51,10 +51,27 @@ export class OrderService {
     };
 
     if (status && status !== 'All') {
-      where.status = status.toUpperCase();
+      const s = status.toUpperCase();
+      if (s === 'PROCESSING') {
+        where.status = { in: ['PROCESSING', 'PAID'] };
+      } else {
+        where.status = s;
+      }
     }
 
-    if (dateFilter) {
+    if (startDate || endDate) {
+      where.createdAt = {};
+      if (startDate) {
+        const start = new Date(startDate);
+        start.setHours(0, 0, 0, 0);
+        where.createdAt.gte = start;
+      }
+      if (endDate) {
+        const end = new Date(endDate);
+        end.setHours(23, 59, 59, 999);
+        where.createdAt.lte = end;
+      }
+    } else if (dateFilter && dateFilter !== 'All') {
       const now = new Date();
       if (dateFilter === 'Today') {
         now.setHours(0, 0, 0, 0);
@@ -98,11 +115,14 @@ export class OrderService {
       return { ...order, vatAmount, platformCommission, sellerEarnings, orderTotal };
     });
 
-    // Get status counts for the tabs
+    // Get status counts for the tabs (reflecting active date filter so tabs match table)
     const statusWhere = {
       status: { not: 'PENDING' },
       items: { some: { product: { userId: sellerId } } }
     };
+    if (where.createdAt) {
+      statusWhere.createdAt = where.createdAt;
+    }
     
     const statusCounts = await prisma.order.groupBy({
       by: ['status'],
@@ -120,11 +140,17 @@ export class OrderService {
     };
 
     statusCounts.forEach(sc => {
-      if (sc.status === 'PROCESSING') counts.Processing = sc._count._all;
-      if (sc.status === 'SHIPPED') { counts.Shipped = sc._count._all; counts.Dispatched = (counts.Dispatched || 0) + sc._count._all; }
-      if (sc.status === 'DISPATCHED') { counts.Dispatched = (counts.Dispatched || 0) + sc._count._all; counts.Shipped = (counts.Shipped || 0) + sc._count._all; }
-      if (sc.status === 'DELIVERED') counts.Delivered = sc._count._all;
-      if (sc.status === 'CANCELLED') counts.Cancelled = sc._count._all;
+      if (sc.status === 'PROCESSING' || sc.status === 'PAID') {
+        counts.Processing = (counts.Processing || 0) + sc._count._all;
+      } else if (sc.status === 'DISPATCHED') {
+        counts.Dispatched = (counts.Dispatched || 0) + sc._count._all;
+      } else if (sc.status === 'SHIPPED') {
+        counts.Shipped = (counts.Shipped || 0) + sc._count._all;
+      } else if (sc.status === 'DELIVERED') {
+        counts.Delivered = (counts.Delivered || 0) + sc._count._all;
+      } else if (sc.status === 'CANCELLED') {
+        counts.Cancelled = (counts.Cancelled || 0) + sc._count._all;
+      }
     });
 
     return { data: orders, total, counts };
