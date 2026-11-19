@@ -96,7 +96,17 @@ export class OrderController {
           total: order.orderTotal,
           adminCommission: order.platformCommission,
           sellerEarnings: order.sellerEarnings,
-          status: order.status
+          status: order.status,
+          courierName: order.courierName || null,
+          trackingNumber: order.trackingNumber || null,
+          trackingUrl: order.trackingUrl || null,
+          dispatchedAt: order.dispatchedAt || null,
+          tracking: {
+            courierName: order.courierName || null,
+            trackingNumber: order.trackingNumber || null,
+            trackingUrl: order.trackingUrl || null,
+            dispatchedAt: order.dispatchedAt || null
+          }
         };
       });
 
@@ -114,9 +124,9 @@ export class OrderController {
     try {
       const sellerId = req.user.id;
       const { id } = req.params;
-      const { status } = req.body;
+      const statusData = req.body;
 
-      let result = await this.orderService.updateSellerOrderStatus(id, sellerId, status);
+      let result = await this.orderService.updateSellerOrderStatus(id, sellerId, statusData);
       result = this.formatOrderUrls(req, result);
 
       return ResponseUtil.success(res, 'Order status updated successfully', result);

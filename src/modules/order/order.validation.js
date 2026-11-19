@@ -8,7 +8,7 @@ export class OrderValidation {
       'DISPATCHED',
       'DELIVERED',
       'CANCELLED'
-    ).required(),
+    ).optional(),
     trackingNumber: Joi.string().allow('', null).optional(),
     courierName: Joi.string().allow('', null).optional(),
     trackingUrl: Joi.string().allow('', null).optional()
