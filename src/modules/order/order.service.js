@@ -131,10 +131,10 @@ export class OrderService {
   }
 
   async updateSellerOrderStatus(orderId, sellerId, statusData) {
-    const status = typeof statusData === 'string' ? statusData : statusData.status;
-    const trackingNumber = statusData.trackingNumber || null;
-    const courierName = statusData.courierName || null;
-    let trackingUrl = statusData.trackingUrl || null;
+    const rawStatus = typeof statusData === 'string' ? statusData : statusData?.status;
+    const trackingNumber = statusData?.trackingNumber !== undefined ? statusData.trackingNumber : null;
+    const courierName = statusData?.courierName !== undefined ? statusData.courierName : null;
+    let trackingUrl = statusData?.trackingUrl !== undefined ? statusData.trackingUrl : null;
 
     const order = await prisma.order.findFirst({
       where: {
@@ -148,6 +148,8 @@ export class OrderService {
     });
 
     if (!order) throw new Error('Order not found or unauthorized');
+
+    const status = (rawStatus || order.status).toUpperCase();
 
     // Auto-resolve courier tracking URL if trackingNumber is present and no custom URL
     if (trackingNumber && !trackingUrl && courierName) {
@@ -170,12 +172,12 @@ export class OrderService {
     }
 
     const updatePayload = {
-      status: status.toUpperCase()
+      status
     };
     if (trackingNumber !== null) updatePayload.trackingNumber = trackingNumber;
     if (courierName !== null) updatePayload.courierName = courierName;
     if (trackingUrl !== null) updatePayload.trackingUrl = trackingUrl;
-    if (status.toUpperCase() === 'DISPATCHED' || status.toUpperCase() === 'SHIPPED') {
+    if ((status === 'DISPATCHED' || status === 'SHIPPED') && !order.dispatchedAt) {
       updatePayload.dispatchedAt = new Date();
     }
 
