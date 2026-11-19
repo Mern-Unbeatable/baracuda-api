@@ -69,11 +69,11 @@ export class OrderController {
   getSellerOrders = async (req, res) => {
     try {
       const sellerId = req.user.id;
-      const { date, status, page = 1, limit = 10 } = req.query;
+      const { date, status, page = 1, limit = 10, startDate, endDate } = req.query;
       const skip = (Number(page) - 1) * Number(limit);
       const take = Number(limit);
 
-      const filters = { dateFilter: date, status };
+      const filters = { dateFilter: date, status, startDate, endDate };
       const { data, total, counts } = await this.orderService.getSellerOrders(sellerId, filters, skip, take);
 
       const formattedData = data.map(order => this.formatOrderUrls(req, order));
@@ -96,7 +96,8 @@ export class OrderController {
           total: order.orderTotal,
           adminCommission: order.platformCommission,
           sellerEarnings: order.sellerEarnings,
-          status: order.status,
+          status: order.status === 'PAID' ? 'PROCESSING' : order.status,
+          rawStatus: order.status,
           courierName: order.courierName || null,
           trackingNumber: order.trackingNumber || null,
           trackingUrl: order.trackingUrl || null,
