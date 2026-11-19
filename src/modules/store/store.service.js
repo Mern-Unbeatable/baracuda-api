@@ -373,6 +373,19 @@ export class StoreService {
   }
 
   async toggleWatchlist(userId, productId) {
+    const product = await prisma.storeProduct.findUnique({
+      where: { id: productId },
+      select: { id: true, userId: true }
+    });
+
+    if (!product) {
+      throw new Error('Product not found');
+    }
+
+    if (product.userId === userId) {
+      throw new Error('You cannot add your own product to watchlist');
+    }
+
     const existing = await prisma.savedProduct.findUnique({
       where: {
         userId_productId: { userId, productId }

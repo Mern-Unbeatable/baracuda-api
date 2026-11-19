@@ -346,7 +346,13 @@ export class StoreController {
       const result = await this.storeService.toggleWatchlist(req.user.id, req.params.id);
       return ResponseUtil.success(res, result.message, result);
     } catch (error) {
-      return ResponseUtil.error(res, error.message, 500);
+      const statusCode =
+        error.message === 'Product not found'
+          ? 404
+          : error.message.includes('own product')
+            ? 400
+            : 500;
+      return ResponseUtil.error(res, error.message, statusCode);
     }
   };
 
