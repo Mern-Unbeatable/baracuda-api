@@ -129,16 +129,26 @@ export class StoreController {
       }
       
       let targetUserId = req.user?.id;
+      if (req.query.userId) {
+        targetUserId = String(req.query.userId);
+      }
       if (req.query.username) {
-        const user = await prisma.user.findUnique({ where: { username: req.query.username }, select: { id: true } });
+        const user = await prisma.user.findUnique({
+          where: { username: String(req.query.username).replace(/^@/, '') },
+          select: { id: true },
+        });
         if (!user) return ResponseUtil.error(res, 'User not found', 404);
         targetUserId = user.id;
       }
 
       if (!targetUserId) {
-        return ResponseUtil.error(res, 'Authentication required to view your own store', 401);
+        return ResponseUtil.error(
+          res,
+          'Authentication required to view your own store',
+          401,
+        );
       }
-      
+
       filters.userId = targetUserId;
 
       const result = await this.storeService.getAllProducts(filters, skip, take, req.user?.id);
