@@ -373,9 +373,9 @@ export class StoreService {
   }
 
   async toggleWatchlist(userId, productId) {
-    const product = await prisma.storeProduct.findUnique({
+    const product = await prisma.product.findUnique({
       where: { id: productId },
-      select: { id: true, userId: true }
+      select: { id: true, userId: true },
     });
 
     if (!product) {
@@ -388,21 +388,21 @@ export class StoreService {
 
     const existing = await prisma.savedProduct.findUnique({
       where: {
-        userId_productId: { userId, productId }
-      }
+        userId_productId: { userId, productId },
+      },
     });
 
     if (existing) {
       await prisma.savedProduct.delete({
-        where: { id: existing.id }
+        where: { id: existing.id },
       });
       return { saved: false, message: 'Removed from watchlist' };
-    } else {
-      await prisma.savedProduct.create({
-        data: { userId, productId }
-      });
-      return { saved: true, message: 'Added to watchlist' };
     }
+
+    await prisma.savedProduct.create({
+      data: { userId, productId },
+    });
+    return { saved: true, message: 'Added to watchlist' };
   }
 
   async getWatchlist(userId, skip = 0, take = 10) {
