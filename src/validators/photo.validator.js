@@ -23,7 +23,7 @@ export const basePhotoSchema = Joi.object({
     otherwise: Joi.string().valid(null, '').optional()
   }),
   zodiacSigns: Joi.any().optional(), // Allow array/JSON of signs for TWELVE and SIX
-  categoryId: Joi.string().uuid().optional().allow(null, ''),
+  categoryId: Joi.string().optional().allow(null, ''),
   title: Joi.string().required().messages({ 'any.required': 'Title is required' }),
   story: Joi.string().optional().allow(null, ''),
   camera: Joi.string().optional().allow(null, ''),

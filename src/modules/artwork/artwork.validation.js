@@ -6,7 +6,9 @@ export const ArtworkValidation = {
   createSchema: basePhotoSchema.keys({
     visibility: Joi.string().valid('PUBLIC', 'PRIVATE_BUSINESS').optional().allow(null, ''),
     competitionState: Joi.string().valid('PROFILE_ONLY', 'IN_COMPETITION', 'ENDED').optional().allow(null, ''),
-    subcategoryId: Joi.string().uuid().optional().allow(null, ''),
+    // Accept any string; controller coerces invalid values to null
+    categoryId: Joi.string().optional().allow(null, ''),
+    subcategoryId: Joi.string().optional().allow(null, ''),
     tags: Joi.any().optional().allow(null, ''),
     isAiGenerated: Joi.any().optional(),
     copyrightConfirmed: Joi.any().optional(),

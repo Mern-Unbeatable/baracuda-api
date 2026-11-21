@@ -170,14 +170,20 @@ export class ArtworkController {
 
       const sourceLang = req.headers['accept-language']?.split(',')[0]?.split('-')[0] || req.headers['x-lang'] || 'en';
 
+      const isUuid = (value) =>
+        typeof value === 'string' &&
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+          value.trim(),
+        );
+
       const data = {
         kind,
         theme: theme || null,
         zodiacSign: zodiacSign || null,
         visibility: visibility || 'PUBLIC',
         competitionState: competitionState || 'PROFILE_ONLY',
-        categoryId: categoryId || null,
-        subcategoryId: subcategoryId || null,
+        categoryId: isUuid(categoryId) ? categoryId.trim() : null,
+        subcategoryId: isUuid(subcategoryId) ? subcategoryId.trim() : null,
         title: title,
         story: story || null,
         tags: tags ? (Array.isArray(tags) ? tags : JSON.parse(tags)) : [],

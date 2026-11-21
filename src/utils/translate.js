@@ -3,6 +3,9 @@ export class TranslateUtil {
     if (!text || !targetLang || (sourceLang === 'en' && targetLang === 'en')) return text;
 
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 2500);
+
       const res = await fetch('https://translate.baracuda260.maktechgroup.tech/translate', {
         method: 'POST',
         body: JSON.stringify({
@@ -12,9 +15,12 @@ export class TranslateUtil {
           format: 'text',
           api_key: ''
         }),
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' },
+        signal: controller.signal,
       });
-      
+
+      clearTimeout(timeoutId);
+
       const data = await res.json();
       return data.translatedText || text;
     } catch (error) {
