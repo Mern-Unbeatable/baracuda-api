@@ -18,14 +18,13 @@ export class CompetitionService {
       }
     });
 
-    if (!competition) {
-      // First day of current month (UTC)
-      const startsAt = new Date(Date.UTC(year, month - 1, 1, 0, 0, 0));
-      // First day of next month minus 1 millisecond = end of current month
-      const endsAt = new Date(Date.UTC(year, month, 1, 0, 0, 0) - 1);
-      
-      const monthName = now.toLocaleString('en-US', { month: 'long', timeZone: 'UTC' });
+    const monthName = now.toLocaleString('en-US', { month: 'long', timeZone: 'UTC' });
+    // First day of current month (UTC)
+    const startsAt = new Date(Date.UTC(year, month - 1, 1, 0, 0, 0));
+    // First day of next month minus 1 millisecond = end of current month
+    const endsAt = new Date(Date.UTC(year, month, 1, 0, 0, 0) - 1);
 
+    if (!competition) {
       competition = await prisma.competition.create({
         data: {
           title: `${monthName} ${year} Competition`,
@@ -43,9 +42,16 @@ export class CompetitionService {
       // Activate it if it was upcoming
       competition = await prisma.competition.update({
         where: { id: competition.id },
-        data: { status: 'OPEN' }
+        data: { status: 'OPEN', startsAt, endsAt }
       });
       console.log(`[CompetitionService] Activated upcoming competition: ${competition.id}`);
+    } else if (competition.status !== 'OPEN') {
+      // Current calendar month should stay joinable — reopen if somehow closed early
+      competition = await prisma.competition.update({
+        where: { id: competition.id },
+        data: { status: 'OPEN', startsAt, endsAt }
+      });
+      console.log(`[CompetitionService] Reopened competition for current month: ${competition.id}`);
     }
 
     return competition;

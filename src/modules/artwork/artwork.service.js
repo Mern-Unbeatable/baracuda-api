@@ -456,7 +456,15 @@ export class ArtworkService {
           select: { name: true, name_pl: true }
         },
         competition: {
-          select: { title: true, title_pl: true, status: true, endsAt: true }
+          select: {
+            id: true,
+            title: true,
+            title_pl: true,
+            status: true,
+            endsAt: true,
+            year: true,
+            month: true,
+          },
         },
         promotion: {
           select: { endsAt: true }
@@ -722,12 +730,19 @@ export class ArtworkService {
       throw new Error('Artwork is already in a competition or has ended');
     }
 
-    const activeComp = await prisma.competition.findFirst({
+    let activeComp = await prisma.competition.findFirst({
       where: { status: 'OPEN' },
       orderBy: { startsAt: 'desc' }
     });
-    
+
+    // Auto-start the current month's competition if none is open yet
     if (!activeComp) {
+      const { CompetitionService } = await import('../competition/competition.service.js');
+      const competitionService = new CompetitionService();
+      activeComp = await competitionService.startMonthlyCompetition();
+    }
+
+    if (!activeComp || activeComp.status !== 'OPEN') {
       throw new Error('No active competition available to join right now');
     }
 
@@ -758,12 +773,19 @@ export class ArtworkService {
       throw new Error('Only ENDED or REJECTED artworks can be resubmitted');
     }
 
-    const activeComp = await prisma.competition.findFirst({
+    let activeComp = await prisma.competition.findFirst({
       where: { status: 'OPEN' },
       orderBy: { startsAt: 'desc' }
     });
-    
+
+    // Auto-start the current month's competition if none is open yet
     if (!activeComp) {
+      const { CompetitionService } = await import('../competition/competition.service.js');
+      const competitionService = new CompetitionService();
+      activeComp = await competitionService.startMonthlyCompetition();
+    }
+
+    if (!activeComp || activeComp.status !== 'OPEN') {
       throw new Error('No active competition available to join right now');
     }
 
@@ -1037,8 +1059,14 @@ export class ArtworkService {
 
   async toggleLikeArtwork(id, userId) {
     const submission = await prisma.submission.findUnique({ where: { id } });
-    if (!submission || submission.competitionState !== 'PROFILE_ONLY') {
-      throw new Error('Can only like artworks that are profile only');
+    if (!submission) {
+      throw new Error('Artwork not found');
+    }
+    // Active competition entries use votes, not likes
+    if (submission.competitionState === 'IN_COMPETITION') {
+      throw new Error(
+        'This artwork is in a live competition — use Vote instead of Like',
+      );
     }
 
     const existingLike = await prisma.like.findUnique({

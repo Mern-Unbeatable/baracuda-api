@@ -118,7 +118,7 @@ export class MarketplaceController {
         categoryId: categoryId || null,
         subcategoryId: subcategoryId || null,
         title: title || '',
-        story: req.validatedBody?.story || req.body.story || null,
+        story: req.validatedBody?.story || req.body?.story || null,
         price: parseFloat(price),
         resolution: resolution || null,
         quality: quality || null,
@@ -184,30 +184,75 @@ export class MarketplaceController {
   updatePremiumPhoto = async (req, res) => {
     try {
       const userId = req.user?.id || 'TEST_USER_ID';
-      
-      const { title, story, price } = req.validatedBody || req.body;
+      const body = req.validatedBody || req.body || {};
+
+      const {
+        title,
+        story,
+        price,
+        resolution,
+        quality,
+        camera,
+        license,
+        isAiGenerated,
+        copyrightConfirmed,
+        zodiacSign,
+        theme,
+        categoryId,
+        subcategoryId,
+      } = body;
+
       const updateData = {
-        price: price ? parseFloat(price) : undefined,
-        camera: req.body.camera,
-        resolution: req.body.resolution,
-        license: req.body.license,
+        price: price !== undefined && price !== null && price !== ''
+          ? parseFloat(price)
+          : undefined,
+        resolution: resolution !== undefined ? resolution || null : undefined,
+        quality: quality !== undefined ? quality || null : undefined,
+        // Camera is optional — sell upload form does not collect it
+        camera: camera !== undefined ? camera || null : undefined,
+        license: license !== undefined ? license || null : undefined,
+        zodiacSign: zodiacSign !== undefined ? zodiacSign || null : undefined,
+        theme: theme !== undefined ? theme || null : undefined,
+        categoryId: categoryId !== undefined ? categoryId || null : undefined,
       };
+
+      if (isAiGenerated !== undefined) {
+        updateData.isAiGenerated =
+          isAiGenerated === 'true' || isAiGenerated === true;
+      }
+
+      if (copyrightConfirmed !== undefined) {
+        updateData.copyrightConfirmed =
+          copyrightConfirmed === 'true' || copyrightConfirmed === true;
+      }
 
       const sourceLang = req.headers['accept-language']?.split(',')[0]?.split('-')[0] || req.headers['x-lang'] || 'en';
 
       if (title !== undefined) {
         updateData.title = title || '';
       }
-      
+
       if (story !== undefined) {
         updateData.story = story || null;
       }
 
-      // Remove undefined keys
-      Object.keys(updateData).forEach(key => updateData[key] === undefined && delete updateData[key]);
+      // subcategoryId is validated on create but PremiumPhoto has no column — ignore safely
+      void subcategoryId;
 
-      const photo = await this.marketplaceService.updatePremiumPhoto(req.params.id, userId, updateData, sourceLang);
-      return ResponseUtil.success(res, 'Premium photo updated successfully', { id: photo.id });
+      // Remove undefined keys
+      Object.keys(updateData).forEach(
+        (key) => updateData[key] === undefined && delete updateData[key],
+      );
+
+      const photo = await this.marketplaceService.updatePremiumPhoto(
+        req.params.id,
+        userId,
+        updateData,
+        sourceLang,
+      );
+      return ResponseUtil.success(res, 'Premium photo updated successfully', {
+        id: photo.id,
+      });
     } catch (error) {
       return ResponseUtil.error(res, error.message, 400);
     }

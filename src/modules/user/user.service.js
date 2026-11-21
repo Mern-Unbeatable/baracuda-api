@@ -701,6 +701,24 @@ export class UserService {
                   select: { url: true, format: true },
                   orderBy: { slotIndex: 'asc' },
                   take: 1
+                },
+                competition: {
+                  select: {
+                    id: true,
+                    status: true,
+                    endsAt: true,
+                    title: true,
+                  },
+                },
+                likes: {
+                  where: { userId },
+                  select: { id: true },
+                  take: 1
+                },
+                votes: {
+                  where: { userId },
+                  select: { id: true },
+                  take: 1
                 }
               }
             }
@@ -713,22 +731,46 @@ export class UserService {
         .filter(item => item.submission)
         .map(item => {
           const art = item.submission;
+          const isLiked = Array.isArray(art.likes) && art.likes.length > 0;
+          const isVoted = Array.isArray(art.votes) && art.votes.length > 0;
+          const { likes, votes, ...submissionRest } = art;
+          const competitionStatus = String(
+            submissionRest.competition?.status || '',
+          ).toUpperCase();
+          const votingClosed =
+            submissionRest.competitionState === 'ENDED' ||
+            (Boolean(competitionStatus) && competitionStatus !== 'OPEN');
           return {
-            id: art.id,
-            kind: art.kind,
-            title: art.title,
-            title_pl: art.title_pl,
-            story: art.story,
-            story_pl: art.story_pl,
-            viewsCount: art.viewsCount,
-            likesCount: art.likesCount,
-            votesCount: art.votesCount,
-            createdAt: art.createdAt,
-            competitionState: art.competitionState,
-            status: art.status,
-            media: art.media,
-            user: art.user,
-            isSaved: true
+            id: submissionRest.id,
+            kind: submissionRest.kind,
+            title: submissionRest.title,
+            title_pl: submissionRest.title_pl,
+            story: submissionRest.story,
+            story_pl: submissionRest.story_pl,
+            viewsCount: submissionRest.viewsCount,
+            likesCount: submissionRest.likesCount,
+            votesCount: submissionRest.votesCount,
+            createdAt: submissionRest.createdAt,
+            competitionState: submissionRest.competitionState,
+            status: submissionRest.status,
+            media: submissionRest.media,
+            user: submissionRest.user,
+            competition: submissionRest.competition
+              ? {
+                  id: submissionRest.competition.id,
+                  status: submissionRest.competition.status,
+                  endsAt: submissionRest.competition.endsAt,
+                  title: submissionRest.competition.title,
+                }
+              : null,
+            coverImage: submissionRest.media?.[0]?.url || null,
+            image: submissionRest.media?.[0]?.url || null,
+            isSaved: true,
+            isLiked,
+            liked: isLiked,
+            isVoted,
+            voted: isVoted,
+            votingClosed,
           };
         });
 

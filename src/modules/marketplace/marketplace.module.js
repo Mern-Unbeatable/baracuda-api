@@ -42,6 +42,8 @@ export class MarketplaceModule {
     this.router.put(
       '/premium-photos/:id',
       requireAuth,
+      photoUploadFields,
+      moderateUploadedContent,
       MarketplaceValidation.validate(MarketplaceValidation.updateSchema),
       this.marketplaceController.updatePremiumPhoto
     );

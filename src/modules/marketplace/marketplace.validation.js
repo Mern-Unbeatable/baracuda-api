@@ -14,7 +14,9 @@ const commonRequired = {
   categoryId: Joi.string().uuid().required().messages({ 'any.required': 'categoryId is required' }),
   subcategoryId: Joi.string().uuid().required().messages({ 'any.required': 'subcategoryId is required' }),
   images: Joi.any().required().messages({ 'any.required': 'At least one image is required' }),
-  video: Joi.any().required().messages({ 'any.required': 'Video is required' }),
+  // Video is optional on sell/upload forms
+  video: Joi.any().optional().allow(null, ''),
+  story: Joi.any().optional().allow(null, ''),
 };
 
 const singleCreateSchema = Joi.object({
@@ -52,10 +54,23 @@ export const MarketplaceValidation = {
   }).unknown(true), // Pre-check kind, full validation done in validate()
 
   updateSchema: Joi.object({
+    kind: Joi.string().valid('SINGLE', 'SIX', 'TWELVE').optional(),
     title: Joi.any().optional(),
+    story: Joi.any().optional().allow(null, ''),
     resolution: Joi.string().optional().allow(null, ''),
     quality: Joi.string().optional().allow(null, ''),
     price: Joi.number().min(0.01).optional(),
+    camera: Joi.string().optional().allow(null, ''),
+    license: Joi.string().optional().allow(null, ''),
+    isAiGenerated: Joi.any().optional(),
+    copyrightConfirmed: Joi.any().optional(),
+    zodiacSign: Joi.string().optional().allow(null, ''),
+    theme: Joi.string().optional().allow(null, ''),
+    categoryId: Joi.string().uuid().optional().allow(null, ''),
+    subcategoryId: Joi.string().uuid().optional().allow(null, ''),
+    images: Joi.any().optional(),
+    video: Joi.any().optional().allow(null, ''),
+    zodiacSigns: Joi.any().optional(),
   }),
 
   promoteSchema: Joi.object({
@@ -64,7 +79,7 @@ export const MarketplaceValidation = {
 
   validate: (schema) => {
     return (req, res, next) => {
-      const payload = { ...req.body };
+      const payload = { ...(req.body || {}) };
 
       if (req.files) {
         if (req.files['images'] && req.files['images'].length > 0) {
@@ -72,6 +87,14 @@ export const MarketplaceValidation = {
         }
         if (req.files['video'] && req.files['video'].length > 0) {
           payload.video = req.files['video'][0];
+        }
+      }
+
+      // Coerce multipart string numbers for price
+      if (payload.price !== undefined && payload.price !== null && payload.price !== '') {
+        const parsedPrice = Number(payload.price);
+        if (!Number.isNaN(parsedPrice)) {
+          payload.price = parsedPrice;
         }
       }
 
