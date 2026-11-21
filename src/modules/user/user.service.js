@@ -698,7 +698,7 @@ export class UserService {
                   }
                 },
                 media: {
-                  select: { url: true, format: true },
+                  select: { url: true, thumbnailUrl: true, format: true },
                   orderBy: { slotIndex: 'asc' },
                   take: 1
                 },
@@ -763,8 +763,14 @@ export class UserService {
                   title: submissionRest.competition.title,
                 }
               : null,
-            coverImage: submissionRest.media?.[0]?.url || null,
-            image: submissionRest.media?.[0]?.url || null,
+            coverImage:
+              submissionRest.media?.[0]?.thumbnailUrl ||
+              submissionRest.media?.[0]?.url ||
+              null,
+            image:
+              submissionRest.media?.[0]?.thumbnailUrl ||
+              submissionRest.media?.[0]?.url ||
+              null,
             isSaved: true,
             isLiked,
             liked: isLiked,

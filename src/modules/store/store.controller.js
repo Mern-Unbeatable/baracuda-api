@@ -364,7 +364,10 @@ export class StoreController {
 
       const { data, total } = await this.storeService.getWatchlist(req.user.id, skip, limit);
       const formatted = data.map(p => this.formatProductUrls(req, p));
-      return ResponseUtil.paginated(res, 'Watchlist retrieved successfully', formatted, page, limit, total);
+      return ResponseUtil.success(res, 'Watchlist retrieved successfully', {
+        data: formatted,
+        meta: PaginationUtil.getMetadata(total, page, limit),
+      });
     } catch (error) {
       return ResponseUtil.error(res, error.message, 500);
     }

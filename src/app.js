@@ -26,6 +26,7 @@ import { ChatModule } from './modules/chat/chat.module.js';
 import { AppreciationModule } from './modules/appreciation/appreciation.module.js';
 import { SlideshowModule } from './modules/slideshow/slideshow.module.js';
 import { AdminPromotionModule } from './modules/admin-promotion/admin-promotion.module.js';
+import { uploadThumbMiddleware } from './middlewares/uploadThumb.middleware.js';
 
 /**
  * Main Application Class
@@ -54,7 +55,13 @@ class App {
     this.app.use(express.urlencoded({ extended: true }));
     this.app.use(translationMiddleware);
 
-    // Serve uploaded files statically
+    // Card/grid thumbnails: /uploads/photo.jpg?w=480 (sharp resize + disk cache)
+    // then fall through to original static files.
+    this.app.use('/uploads', (req, res, next) => {
+      res.setHeader('Access-Control-Allow-Origin', '*');
+      next();
+    });
+    this.app.use('/uploads', uploadThumbMiddleware);
     this.app.use('/uploads', express.static('uploads'));
   }
 
