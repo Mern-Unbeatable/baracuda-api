@@ -372,7 +372,12 @@ export class UserService {
             select: { url: true, format: true },
             take: 1,
             orderBy: { slotIndex: 'asc' },
-          }
+          },
+          winners: {
+            select: { rank: true, isWinner: true },
+            take: 1,
+            orderBy: { rank: 'asc' },
+          },
         },
         orderBy: {
           createdAt: 'desc',
@@ -380,51 +385,114 @@ export class UserService {
         take: 10,
       });
 
-      // Map competitions
-      const participatingCompetitions = participatingSubmissions.map(sub => {
-        let tag = 'In Review';
-        let rankStr = 'Pending...';
-        
-        if (sub.competitionState === 'ENDED') {
-          tag = sub.rank === 1 ? 'Winner' : 'Completed';
-          rankStr = sub.rank ? `#${sub.rank} Place` : 'Completed';
-        } else if (sub.competitionState === 'IN_COMPETITION') {
-          tag = sub.rank ? (sub.rank <= 5 ? 'Top 5%' : 'Active') : 'In Review';
-          rankStr = sub.rank ? `#${sub.rank} Place` : 'Pending...';
+      // Resolve a real place for each submission (never trust stale seeded submission.rank alone).
+      const resolveSubmissionRank = async (sub) => {
+        const competitionStatus = sub.competition?.status;
+        const isClosed =
+          competitionStatus === 'CLOSED' ||
+          competitionStatus === 'ARCHIVED' ||
+          sub.competitionState === 'ENDED';
+
+        if (isClosed) {
+          if (sub.winners?.length && sub.winners[0].rank > 0) {
+            return sub.winners[0].rank;
+          }
+
+          // Fallback only when competition is actually finished and rank looks intentional.
+          if (
+            sub.competitionState === 'ENDED' &&
+            Number.isInteger(sub.rank) &&
+            sub.rank > 0
+          ) {
+            return sub.rank;
+          }
+          return null;
         }
 
-        return {
-          id: sub.competitionId,
-          title: sub.competition?.title || 'Unknown Competition',
-          title_pl: sub.competition?.title_pl,
-          status: sub.competition?.status,
-          endsAt: sub.competition?.endsAt,
-          coverImage: sub.media && sub.media.length > 0 ? sub.media[0].url : null,
-          tag,
-          rankStr,
-          participantsCount: Math.floor(Math.random() * 1000) + 100 // placeholder since real count needs aggregation
-        };
-      });
+        if (
+          sub.competitionState !== 'IN_COMPETITION' ||
+          competitionStatus !== 'OPEN'
+        ) {
+          return null;
+        }
 
-      // Calculate Rank: Best position in any competition
-      let currentRank = 0;
-      try {
-        const bestRankSubmission = await prisma.submission.findFirst({
+        // Live place among same competition + album kind (only entries with votes).
+        if (!sub.votesCount || sub.votesCount <= 0) return null;
+
+        const betterCount = await prisma.submission.count({
           where: {
-            userId: userId,
-            competitionId: { not: null },
-            rank: { not: null, gt: 0 }
+            competitionId: sub.competitionId,
+            kind: sub.kind,
+            status: 'APPROVED',
+            votesCount: { gt: sub.votesCount },
           },
-          orderBy: {
-            rank: 'asc'
-          },
-          select: {
-            rank: true
-          }
         });
-        
-        if (bestRankSubmission) {
-          currentRank = bestRankSubmission.rank;
+
+        return betterCount + 1;
+      };
+
+      const rankedParticipating = await Promise.all(
+        participatingSubmissions.map(async (sub) => {
+          const place = await resolveSubmissionRank(sub);
+          let tag = 'In Review';
+          let rankStr = 'Pending...';
+
+          const isClosed =
+            sub.competition?.status === 'CLOSED' ||
+            sub.competition?.status === 'ARCHIVED' ||
+            sub.competitionState === 'ENDED';
+
+          if (isClosed) {
+            tag = place === 1 ? 'Winner' : 'Completed';
+            rankStr = place ? `#${place} Place` : 'Completed';
+          } else if (sub.competitionState === 'IN_COMPETITION') {
+            tag = place ? (place <= 5 ? 'Top 5%' : 'Active') : 'In Review';
+            rankStr = place ? `#${place} Place` : 'Pending...';
+          }
+
+          return {
+            id: sub.competitionId,
+            title: sub.competition?.title || 'Unknown Competition',
+            title_pl: sub.competition?.title_pl,
+            status: sub.competition?.status,
+            endsAt: sub.competition?.endsAt,
+            coverImage: sub.media && sub.media.length > 0 ? sub.media[0].url : null,
+            tag,
+            rankStr,
+            place,
+            participantsCount: Math.floor(Math.random() * 1000) + 100, // placeholder since real count needs aggregation
+          };
+        }),
+      );
+
+      const participatingCompetitions = rankedParticipating.map(
+        ({ place, ...comp }) => comp,
+      );
+
+      // Current Rank = best real place across participating competitions (and overall winners).
+      const placesFromList = rankedParticipating
+        .map((comp) => comp.place)
+        .filter((place) => Number.isInteger(place) && place > 0);
+
+      let currentRank = placesFromList.length
+        ? Math.min(...placesFromList)
+        : null;
+
+      try {
+        const bestWinner = await prisma.winner.findFirst({
+          where: {
+            userId,
+            rank: { gt: 0 },
+          },
+          orderBy: { rank: 'asc' },
+          select: { rank: true },
+        });
+
+        if (bestWinner?.rank > 0) {
+          currentRank =
+            currentRank == null
+              ? bestWinner.rank
+              : Math.min(currentRank, bestWinner.rank);
         }
       } catch (e) {
         console.error('Error calculating rank:', e);
