@@ -243,6 +243,43 @@ export class ArtworkController {
     }
   };
 
+  updateVideoComment = async (req, res, next) => {
+    try {
+      const userId = req.user.id;
+      const { id } = req.params;
+      const videoFile = req.files?.video ? req.files.video[0] : null;
+      const sourceLang =
+        req.headers['accept-language']?.split(',')[0]?.split('-')[0] ||
+        req.headers['x-lang'] ||
+        'en';
+      const data = req.validatedBody || req.body;
+
+      if (!data?.title && data?.story === undefined && !videoFile) {
+        return ResponseUtil.error(
+          res,
+          'Provide a title, description, and/or a new video file to update',
+          400,
+        );
+      }
+
+      const result = await this.artworkService.updateVideoComment(
+        id,
+        userId,
+        data,
+        videoFile,
+        sourceLang,
+      );
+
+      return ResponseUtil.actionSuccess(
+        res,
+        '1-minute video updated successfully',
+        this.formatMediaUrls(req, result),
+      );
+    } catch (error) {
+      next(error);
+    }
+  };
+
   getAllArtworks = async (req, res) => {
     try {
       const { kind, promoted, status, sort, username } = req.query;

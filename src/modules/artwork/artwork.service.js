@@ -259,6 +259,139 @@ export class ArtworkService {
     return { data: videos, total };
   }
 
+  async updateVideoComment(id, userId, data = {}, videoFile = null, sourceLang = 'en') {
+    const submission = await prisma.submission.findUnique({
+      where: { id },
+      include: { media: true },
+    });
+
+    if (!submission || submission.userId !== userId || submission.kind !== 'VIDEO') {
+      throw new Error('Video update not found or unauthorized');
+    }
+
+    const updateData = {};
+    const translationPromises = [];
+
+    if (data.title !== undefined && data.title !== null && String(data.title).trim() !== '') {
+      updateData.title = String(data.title).trim();
+      if (sourceLang === 'pl') {
+        updateData.title_pl = updateData.title;
+        translationPromises.push(
+          TranslateUtil.translateText(updateData.title, 'en', 'pl').then((res) => {
+            updateData.title = res;
+          }),
+        );
+      } else {
+        translationPromises.push(
+          TranslateUtil.translateText(updateData.title, 'pl', 'en').then((res) => {
+            updateData.title_pl = res;
+          }),
+        );
+      }
+    }
+
+    if (data.story !== undefined) {
+      if (data.story === null || data.story === '') {
+        updateData.story = null;
+        updateData.story_pl = null;
+      } else {
+        updateData.story = String(data.story);
+        if (sourceLang === 'pl') {
+          updateData.story_pl = updateData.story;
+          translationPromises.push(
+            TranslateUtil.translateText(updateData.story, 'en', 'pl').then((res) => {
+              updateData.story = res;
+            }),
+          );
+        } else {
+          translationPromises.push(
+            TranslateUtil.translateText(updateData.story, 'pl', 'en').then((res) => {
+              updateData.story_pl = res;
+            }),
+          );
+        }
+      }
+    }
+
+    if (translationPromises.length > 0) {
+      await Promise.all(translationPromises);
+    }
+
+    let mediaUpdate = null;
+    if (videoFile) {
+      const videoFilePath = path.join(process.cwd(), 'uploads', videoFile.filename);
+      const duration = await VideoUtil.getDuration(videoFilePath);
+      if (duration && duration > 65) {
+        try { fs.unlinkSync(videoFilePath); } catch (e) {}
+        throw new Error(
+          `Video duration (${Math.round(duration)}s) exceeds the 1-minute limit. Maximum allowed duration is 60 seconds.`,
+        );
+      }
+
+      const uploadsDir = path.join(process.cwd(), 'uploads');
+      const thumbnailUrl = await VideoUtil.generateThumbnail(
+        videoFilePath,
+        uploadsDir,
+        videoFile.filename.replace(/\.[^/.]+$/, ''),
+      );
+
+      updateData.featuredImage = thumbnailUrl || null;
+      mediaUpdate = {
+        url: `/uploads/${videoFile.filename}`,
+        thumbnailUrl: thumbnailUrl || null,
+        duration: duration || null,
+        bytes: videoFile.size || null,
+        format: videoFile.mimetype || 'video/mp4',
+      };
+    }
+
+    const updated = await prisma.$transaction(async (tx) => {
+      const next = await tx.submission.update({
+        where: { id },
+        data: updateData,
+        include: {
+          media: true,
+          user: {
+            select: { id: true, name: true, username: true, avatar: true },
+          },
+        },
+      });
+
+      if (mediaUpdate) {
+        const existingVideo = submission.media?.find((m) => m.kind === 'VIDEO') || submission.media?.[0];
+        if (existingVideo) {
+          await tx.submissionMedia.update({
+            where: { id: existingVideo.id },
+            data: mediaUpdate,
+          });
+        } else {
+          await tx.submissionMedia.create({
+            data: {
+              submissionId: id,
+              kind: 'VIDEO',
+              slotIndex: 0,
+              ...mediaUpdate,
+            },
+          });
+        }
+
+        return tx.submission.findUnique({
+          where: { id },
+          include: {
+            media: true,
+            user: {
+              select: { id: true, name: true, username: true, avatar: true },
+            },
+          },
+        });
+      }
+
+      return next;
+    });
+
+    return updated;
+  }
+
   async getAllArtworks(userId, filters = {}, sort = 'newest', skip = 0, take = 10) {
     const where = { userId };
     
@@ -271,11 +404,32 @@ export class ArtworkService {
     }
     
     if (filters.status && filters.status.toLowerCase() !== 'all') {
-      where.competitionState = filters.status.toUpperCase();
+      const statusKey = String(filters.status).trim();
+      const statusMap = {
+        profileonly: 'PROFILE_ONLY',
+        profile_only: 'PROFILE_ONLY',
+        PROFILE_ONLY: 'PROFILE_ONLY',
+        incompetition: 'IN_COMPETITION',
+        in_competition: 'IN_COMPETITION',
+        IN_COMPETITION: 'IN_COMPETITION',
+        ended: 'ENDED',
+        ENDED: 'ENDED',
+      };
+      const normalizedStatus =
+        statusMap[statusKey] ||
+        statusMap[statusKey.toLowerCase()] ||
+        statusKey.toUpperCase();
+
+      if (['PROFILE_ONLY', 'IN_COMPETITION', 'ENDED'].includes(normalizedStatus)) {
+        where.competitionState = normalizedStatus;
+      }
     }
     
-    if (filters.promoted === 'true') {
-      where.promotion = { isNot: null };
+    if (filters.promoted === 'true' || filters.promoted === true) {
+      where.promotion = {
+        isActive: true,
+        endsAt: { gt: new Date() },
+      };
     }
 
     // Fetch ALL matching submissions for this user to apply complex custom sorting

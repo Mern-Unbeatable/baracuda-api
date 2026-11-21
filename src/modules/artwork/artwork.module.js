@@ -35,6 +35,7 @@ export class ArtworkModule {
 
     // Standalone 1-minute video comment routes (must be registered before /:id)
     this.router.post('/video-comment', requireAuth, upload.fields([{ name: 'video', maxCount: 1 }]), moderateUploadedContent, ArtworkValidation.validate(ArtworkValidation.createVideoCommentSchema), this.artworkController.createVideoComment);
+    this.router.put('/video-comment/:id', requireAuth, upload.fields([{ name: 'video', maxCount: 1 }]), moderateUploadedContent, ArtworkValidation.validate(ArtworkValidation.updateVideoCommentSchema), this.artworkController.updateVideoComment);
     this.router.get('/video-comments', requireAuth, this.artworkController.getMyVideoComments);
 
     // Endpoints
