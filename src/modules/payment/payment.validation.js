@@ -20,9 +20,20 @@ const paymentValidation = {
   }),
 
   payoutRequestSchema: Joi.object({
-    type: Joi.string().valid('Prize Money', 'Prize', 'Donation', 'Donations', 'Photo Sales', 'Premium').required(),
+    type: Joi.string()
+      .valid(
+        'Prize Money',
+        'Prize',
+        'Donation',
+        'Donations',
+        'Photo Sales',
+        'Premium',
+        'Store Sales',
+        'Store',
+      )
+      .required(),
     amount: Joi.number().min(0.01).required(),
-    accountNumber: Joi.string().required()
+    accountNumber: Joi.string().required(),
   }),
 
   updatePayoutStatusSchema: Joi.object({
