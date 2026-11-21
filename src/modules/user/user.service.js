@@ -9,6 +9,36 @@ export class UserService {
   /**
    * Get all users with pagination and filtering
    */
+  async searchUsers(query, limit = 8, excludeUserId = null) {
+    const q = String(query || '').trim().replace(/^@/, '');
+    if (q.length < 2) return [];
+
+    const where = {
+      role: 'USER',
+      status: { in: ['ACTIVE', 'PENDING'] },
+      OR: [
+        { username: { contains: q, mode: 'insensitive' } },
+        { name: { contains: q, mode: 'insensitive' } },
+      ],
+    };
+
+    if (excludeUserId) {
+      where.id = { not: excludeUserId };
+    }
+
+    return prisma.user.findMany({
+      where,
+      take: Math.min(Math.max(Number(limit) || 8, 1), 20),
+      orderBy: [{ username: 'asc' }],
+      select: {
+        id: true,
+        name: true,
+        username: true,
+        avatar: true,
+      },
+    });
+  }
+
   async getAllUsers(page = 1, limit = 10, status) {
     try {
       const skip = (page - 1) * limit;

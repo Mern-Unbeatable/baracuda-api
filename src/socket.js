@@ -16,10 +16,16 @@ export const initSocket = (server) => {
 
   io.use(async (socket, next) => {
     try {
-      const token = socket.handshake.auth.token;
+      const rawToken =
+        socket.handshake.auth?.token ||
+        socket.handshake.auth?.accessToken ||
+        socket.handshake.headers?.authorization ||
+        socket.handshake.headers?.Authorization ||
+        '';
+      const token = String(rawToken).replace(/^Bearer\s+/i, '').trim();
       if (!token) return next(new Error('Authentication error: Token missing'));
-      
-      const decoded = await JwtUtil.verifyToken(token);
+
+      const decoded = JwtUtil.verifyToken(token);
       socket.user = decoded; // { id, role, ... }
       next();
     } catch (err) {
@@ -30,62 +36,81 @@ export const initSocket = (server) => {
   io.on('connection', (socket) => {
     const userId = socket.user.id;
     console.log(`User connected: ${userId} (Socket: ${socket.id})`);
-    
-    // Store user socket mapping
-    connectedUsers.set(userId, socket.id);
 
-    // Broadcast online status to others
-    socket.broadcast.emit('user_online', { userId });
+    // Support multiple tabs: userId -> Set<socketId>
+    const existing = connectedUsers.get(userId);
+    if (existing instanceof Set) {
+      existing.add(socket.id);
+    } else if (existing) {
+      connectedUsers.set(userId, new Set([existing, socket.id]));
+    } else {
+      connectedUsers.set(userId, new Set([socket.id]));
+      socket.broadcast.emit('user_online', { userId });
+    }
 
-    // Send the list of currently online users to the newly connected user (optional but helpful)
     socket.emit('online_users', Array.from(connectedUsers.keys()));
 
-    // Join a specific chat room
-    socket.on('join_room', ({ roomId }) => {
-      socket.join(roomId);
+    socket.on('get_online_users', () => {
+      socket.emit('online_users', Array.from(connectedUsers.keys()));
+    });
+
+    socket.on('join_room', (payload = {}) => {
+      const roomId = payload?.roomId || payload;
+      if (!roomId) return;
+      socket.join(String(roomId));
       console.log(`User ${userId} joined room ${roomId}`);
     });
 
-    // Leave a specific chat room
-    socket.on('leave_room', ({ roomId }) => {
-      socket.leave(roomId);
+    socket.on('leave_room', (payload = {}) => {
+      const roomId = payload?.roomId || payload;
+      if (!roomId) return;
+      socket.leave(String(roomId));
       console.log(`User ${userId} left room ${roomId}`);
     });
 
-    // Typing indicators
     socket.on('typing', ({ roomId }) => {
+      if (!roomId) return;
       socket.to(roomId).emit('user_typing', { userId, roomId });
     });
 
     socket.on('stop_typing', ({ roomId }) => {
+      if (!roomId) return;
       socket.to(roomId).emit('user_stopped_typing', { userId, roomId });
     });
 
-    // New message event
     socket.on('send_message', (message) => {
-      // Broadcast to the specific room
+      if (!message?.roomId) return;
       socket.to(message.roomId).emit('receive_message', message);
     });
 
-    // Edit message event
     socket.on('edit_message', (data) => {
+      if (!data?.roomId) return;
       socket.to(data.roomId).emit('message_edited', data);
     });
 
-    // Delete message event
     socket.on('delete_message', (data) => {
+      if (!data?.roomId) return;
       socket.to(data.roomId).emit('message_deleted', data);
     });
 
-    // Mark messages as read event
     socket.on('mark_read', (data) => {
-      socket.to(data.roomId).emit('messages_read', data); // data could be { roomId, readerId }
+      if (!data?.roomId) return;
+      socket.to(data.roomId).emit('messages_read', data);
     });
 
     socket.on('disconnect', () => {
       console.log(`User disconnected: ${userId} (Socket: ${socket.id})`);
-      connectedUsers.delete(userId);
-      socket.broadcast.emit('user_offline', { userId });
+      const sockets = connectedUsers.get(userId);
+      if (sockets instanceof Set) {
+        sockets.delete(socket.id);
+        if (sockets.size === 0) {
+          connectedUsers.delete(userId);
+          socket.broadcast.emit('user_offline', { userId });
+        }
+      } else {
+        connectedUsers.delete(userId);
+        socket.broadcast.emit('user_offline', { userId });
+      }
     });
   });
 
@@ -104,5 +129,8 @@ export const getConnectedUsers = () => {
 };
 
 export const isUserOnline = (userId) => {
-  return connectedUsers.has(userId);
+  const entry = connectedUsers.get(userId);
+  if (!entry) return false;
+  if (entry instanceof Set) return entry.size > 0;
+  return Boolean(entry);
 };

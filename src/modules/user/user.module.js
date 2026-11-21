@@ -45,6 +45,9 @@ export class UserModule {
       { name: 'introVideo', maxCount: 1 }
     ]), moderateUploadedContent, this.userController.updateProfile);
 
+    // User search (chat compose suggestions) — before parameterized routes
+    this.publicRouter.get('/search', requireAuth, this.userController.searchUsers);
+
     // Follow Routes
     this.publicRouter.post('/follow/:username', requireAuth, this.userController.toggleFollow);
     this.publicRouter.get('/following', requireAuth, this.userController.getFollowingList);

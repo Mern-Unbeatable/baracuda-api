@@ -93,6 +93,7 @@ export class StoreService {
             select: {
               id: true,
               name: true,
+              username: true,
               avatar: true
             }
           }

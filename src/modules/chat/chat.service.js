@@ -167,6 +167,51 @@ export class ChatService {
     return list;
   }
 
+  // Reply include shape reused by list + send
+  get replyInclude() {
+    return {
+      replyTo: {
+        select: {
+          id: true,
+          content: true,
+          fileUrl: true,
+          fileType: true,
+          fileName: true,
+          isDeleted: true,
+          senderId: true,
+          sender: {
+            select: { id: true, name: true, username: true, avatar: true },
+          },
+        },
+      },
+      sender: {
+        select: { id: true, name: true, username: true, avatar: true },
+      },
+    };
+  }
+
+  _formatMessageMedia(req, msg) {
+    if (!msg) return msg;
+    if (msg.fileUrl && !msg.fileUrl.startsWith('http')) {
+      msg.fileUrl = UrlUtil.getAbsoluteUrl(req, msg.fileUrl);
+    }
+    if (msg.sender?.avatar && !msg.sender.avatar.startsWith('http')) {
+      msg.sender.avatar = UrlUtil.getAbsoluteUrl(req, msg.sender.avatar);
+    }
+    if (msg.replyTo) {
+      if (msg.replyTo.fileUrl && !msg.replyTo.fileUrl.startsWith('http')) {
+        msg.replyTo.fileUrl = UrlUtil.getAbsoluteUrl(req, msg.replyTo.fileUrl);
+      }
+      if (msg.replyTo.sender?.avatar && !msg.replyTo.sender.avatar.startsWith('http')) {
+        msg.replyTo.sender.avatar = UrlUtil.getAbsoluteUrl(
+          req,
+          msg.replyTo.sender.avatar,
+        );
+      }
+    }
+    return msg;
+  }
+
   // 3. Get Messages in a Room
   async getMessages(req, roomId, page = 1, limit = 50) {
     const skip = (page - 1) * limit;
@@ -176,22 +221,10 @@ export class ChatService {
       orderBy: { createdAt: 'desc' }, // Descending to get latest, but client might reverse
       skip,
       take: limit,
-      include: {
-        sender: {
-          select: { id: true, name: true, username: true, avatar: true }
-        }
-      }
+      include: this.replyInclude,
     });
 
-    // Format media
-    messages.forEach(msg => {
-      if (msg.fileUrl && !msg.fileUrl.startsWith('http')) {
-        msg.fileUrl = UrlUtil.getAbsoluteUrl(req, msg.fileUrl);
-      }
-      if (msg.sender && msg.sender.avatar && !msg.sender.avatar.startsWith('http')) {
-        msg.sender.avatar = UrlUtil.getAbsoluteUrl(req, msg.sender.avatar);
-      }
-    });
+    messages.forEach((msg) => this._formatMessageMedia(req, msg));
 
     const total = await prisma.chatMessage.count({ where: { roomId } });
 
@@ -204,13 +237,25 @@ export class ChatService {
   }
 
   // 4. Send Message (Text or File)
-  async sendMessage(req, userId, roomId, content, file) {
+  async sendMessage(req, userId, roomId, content, file, replyToId = null) {
     // Verify room
     const participant = await prisma.chatParticipant.findUnique({
       where: { roomId_userId: { roomId, userId } }
     });
     if (!participant) {
       throw new Error("You are not a participant in this chat room");
+    }
+
+    let resolvedReplyToId = null;
+    if (replyToId) {
+      const parent = await prisma.chatMessage.findFirst({
+        where: { id: String(replyToId), roomId },
+        select: { id: true },
+      });
+      if (!parent) {
+        throw new Error('Reply target message not found in this chat');
+      }
+      resolvedReplyToId = parent.id;
     }
 
     let fileUrl = null;
@@ -240,13 +285,10 @@ export class ChatService {
         content,
         fileUrl,
         fileType,
-        fileName
+        fileName,
+        replyToId: resolvedReplyToId,
       },
-      include: {
-        sender: {
-          select: { id: true, name: true, username: true, avatar: true }
-        }
-      }
+      include: this.replyInclude,
     });
 
     // Update room updatedAt
@@ -255,13 +297,7 @@ export class ChatService {
       data: { updatedAt: new Date() }
     });
 
-    // Format for response
-    if (newMessage.fileUrl && !newMessage.fileUrl.startsWith('http')) {
-      newMessage.fileUrl = UrlUtil.getAbsoluteUrl(req, newMessage.fileUrl);
-    }
-    if (newMessage.sender.avatar && !newMessage.sender.avatar.startsWith('http')) {
-      newMessage.sender.avatar = UrlUtil.getAbsoluteUrl(req, newMessage.sender.avatar);
-    }
+    this._formatMessageMedia(req, newMessage);
 
     // Broadcast using Socket.IO (optional to do it here, but convenient)
     const io = getIO();

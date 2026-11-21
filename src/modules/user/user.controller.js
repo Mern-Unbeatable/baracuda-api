@@ -274,6 +274,22 @@ export class UserController {
     }
   }
 
+  /**
+   * Search users by username or display name (for chat compose, etc.)
+   * @route GET /api/v1/users/search?q=
+   */
+  searchUsers = async (req, res, next) => {
+    try {
+      const q = String(req.query.q || req.query.search || '').trim();
+      const limit = Number(req.query.limit) || 8;
+      const users = await this.userService.searchUsers(q, limit, req.user?.id);
+      const formatted = users.map((user) => UrlUtil.formatUserMedia(req, user));
+      return ResponseUtil.success(res, 'Users fetched successfully', formatted);
+    } catch (error) {
+      next(error);
+    }
+  };
+
   getFollowingList = async (req, res, next) => {
     try {
       const userId = req.user.id;

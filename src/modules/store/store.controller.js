@@ -131,13 +131,26 @@ export class StoreController {
       let targetUserId = req.user?.id;
       if (req.query.userId) {
         targetUserId = String(req.query.userId);
-      }
-      if (req.query.username) {
-        const user = await prisma.user.findUnique({
-          where: { username: String(req.query.username).replace(/^@/, '') },
+      } else if (req.query.username) {
+        const normalizedUsername = String(req.query.username)
+          .trim()
+          .replace(/^@/, '');
+        const user = await prisma.user.findFirst({
+          where: {
+            username: {
+              equals: normalizedUsername,
+              mode: 'insensitive',
+            },
+          },
           select: { id: true },
         });
-        if (!user) return ResponseUtil.error(res, 'User not found', 404);
+        // Unknown public username → empty store, not a hard 404
+        if (!user) {
+          return ResponseUtil.success(res, 'Products fetched successfully', {
+            data: [],
+            meta: PaginationUtil.getMetadata(0, page, limit),
+          });
+        }
         targetUserId = user.id;
       }
 

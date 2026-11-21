@@ -914,17 +914,21 @@ model ChatMessage {
   fileUrl   String?
   fileType  String?
   fileName  String?
+  replyToId String?
   isRead    Boolean  @default(false)
   isEdited  Boolean  @default(false)
   isDeleted Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  room   ChatRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
-  sender User     @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  room    ChatRoom     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  sender  User         @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  replyTo ChatMessage? @relation("ChatMessageReplies", fields: [replyToId], references: [id], onDelete: SetNull)
+  replies ChatMessage[] @relation("ChatMessageReplies")
 
   @@index([roomId, createdAt])
   @@index([senderId])
+  @@index([replyToId])
   @@map("chat_messages")
 }
 

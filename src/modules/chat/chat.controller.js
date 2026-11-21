@@ -44,10 +44,17 @@ export class ChatController {
   sendMessage = async (req, res, next) => {
     try {
       const { roomId } = req.params;
-      const { content } = req.body;
+      const { content, replyToId } = req.body;
       const file = req.file;
 
-      const message = await this.chatService.sendMessage(req, req.user.id, roomId, content, file);
+      const message = await this.chatService.sendMessage(
+        req,
+        req.user.id,
+        roomId,
+        content,
+        file,
+        replyToId || null,
+      );
       return ResponseUtil.success(res, 'Message sent successfully', message, 201);
     } catch (error) {
       next(error);
