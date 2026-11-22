@@ -51,6 +51,12 @@ export class OrderModule {
     );
 
     this.router.get(
+      '/buyer/:id/invoice',
+      requireAuth,
+      this.orderController.downloadBuyerOrderInvoice
+    );
+
+    this.router.get(
       '/buyer/:id',
       requireAuth,
       this.orderController.getBuyerOrderDetails

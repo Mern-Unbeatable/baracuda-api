@@ -258,6 +258,32 @@ export class OrderController {
     }
   };
 
+  downloadBuyerOrderInvoice = async (req, res) => {
+    try {
+      const buyerId = req.user.id;
+      const { id } = req.params;
+      if (!id) {
+        return ResponseUtil.error(res, 'Order ID is required', 400);
+      }
+
+      const pdfBuffer = await this.orderService.getBuyerOrderInvoicePdf(
+        id,
+        buyerId,
+      );
+      const shortId = String(id).split('-')[0].toUpperCase();
+
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader(
+        'Content-Disposition',
+        `attachment; filename="invoice-${shortId}.pdf"`,
+      );
+      return res.send(pdfBuffer);
+    } catch (error) {
+      const status = /not found|unauthorized/i.test(error.message) ? 404 : 500;
+      return ResponseUtil.error(res, error.message, status);
+    }
+  };
+
   getBuyerOrderDetails = async (req, res) => {
     try {
       const buyerId = req.user.id;

@@ -2,6 +2,9 @@ import prisma from '../../config/prisma.js';
 import { PaginationUtil } from '../../utils/pagination.js';
 import { UrlUtil } from '../../utils/urlUtil.js';
 
+/** Platform commission rate for donations, photo sales, and store sales */
+const PLATFORM_COMMISSION_RATE = 0.1;
+
 export class UserPaymentService {
   /**
    * Get Prize Money Stats and Paginated List
@@ -90,7 +93,7 @@ export class UserPaymentService {
     });
 
     const totalDonations = allDonations.reduce((sum, d) => sum + Number(d.amount), 0);
-    const platformFee = totalDonations * 0.10;
+    const platformFee = totalDonations * PLATFORM_COMMISSION_RATE;
     const yourEarnings = totalDonations - platformFee;
 
     const payouts = await prisma.payout.findMany({
@@ -120,7 +123,7 @@ export class UserPaymentService {
 
     const formattedList = paginatedDonations.map(d => {
       const amount = Number(d.amount);
-      const fee = amount * 0.10;
+      const fee = amount * PLATFORM_COMMISSION_RATE;
       return {
         id: d.id,
         date: d.createdAt,
@@ -169,8 +172,8 @@ export class UserPaymentService {
 
     const totalSales = allSales.reduce((sum, item) => sum + Number(item.price), 0);
     const photosSold = allSales.length;
-    const platformFee = 0; // 0% fee for photo sales, 100% goes to user
-    const yourEarnings = totalSales;
+    const platformFee = totalSales * PLATFORM_COMMISSION_RATE;
+    const yourEarnings = totalSales - platformFee;
 
     const payouts = await prisma.payout.findMany({
       where: { userId, kind: 'PREMIUM' }
@@ -211,7 +214,7 @@ export class UserPaymentService {
 
     const formattedList = paginatedResult.map(item => {
       const price = Number(item.price);
-      const fee = 0; // 0% fee for photo sales
+      const fee = price * PLATFORM_COMMISSION_RATE;
       
       const photoMedia = mediaItems.filter(m => m.premiumPhotoId === item.premiumPhoto.id);
       const photoUrl = photoMedia[0]?.url ? UrlUtil.getAbsoluteUrl(req, photoMedia[0].url) : null;
@@ -225,6 +228,7 @@ export class UserPaymentService {
         photo: item.premiumPhoto.title?.en || item.premiumPhoto.title || 'Unknown',
         photoUrl,
         salePrice: price,
+        platformFee: fee,
         yourEarnings: price - fee
       };
     });
@@ -308,7 +312,7 @@ export class UserPaymentService {
 
     const totalSales = allSales.reduce((sum, item) => sum + Number(item.price * item.quantity), 0);
     const itemsSold = allSales.reduce((sum, item) => sum + item.quantity, 0);
-    const platformFee = 0; // 0% fee currently for store sales (adjust if needed)
+    const platformFee = totalSales * PLATFORM_COMMISSION_RATE;
     const yourEarnings = totalSales - platformFee;
 
     const payouts = await prisma.payout.findMany({
@@ -345,7 +349,7 @@ export class UserPaymentService {
     const formattedList = paginatedResult.map(item => {
       const price = Number(item.price);
       const totalItemPrice = price * item.quantity;
-      const fee = 0; // 0% fee
+      const fee = totalItemPrice * PLATFORM_COMMISSION_RATE;
       
       const photoUrl = item.product.images && item.product.images.length > 0 ? UrlUtil.getAbsoluteUrl(req, item.product.images[0]) : null;
 
@@ -359,6 +363,7 @@ export class UserPaymentService {
         photoUrl,
         quantity: item.quantity,
         salePrice: totalItemPrice,
+        platformFee: fee,
         yourEarnings: totalItemPrice - fee
       };
     });

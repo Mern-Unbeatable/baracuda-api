@@ -1,4 +1,5 @@
 import prisma from '../../config/prisma.js';
+import { OrderInvoicePdfGenerator } from './order.invoice.pdf.js';
 
 export class OrderService {
   async getSellerStatusCard(sellerId) {
@@ -329,5 +330,29 @@ export class OrderService {
 
     if (!order) throw new Error('Order not found or unauthorized');
     return order;
+  }
+
+  /**
+   * Generate invoice PDF for a buyer order.
+   * Includes store products and premium photo line items when present.
+   */
+  async getBuyerOrderInvoicePdf(orderId, buyerId) {
+    const order = await prisma.order.findFirst({
+      where: {
+        id: orderId,
+        userId: buyerId,
+      },
+      include: {
+        items: {
+          include: {
+            product: { select: { id: true, title: true } },
+            premiumPhoto: { select: { id: true, title: true } },
+          },
+        },
+      },
+    });
+
+    if (!order) throw new Error('Order not found or unauthorized');
+    return OrderInvoicePdfGenerator.generate(order);
   }
 }
