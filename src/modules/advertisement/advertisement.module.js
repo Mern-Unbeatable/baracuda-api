@@ -29,16 +29,16 @@ export class AdvertisementModule {
       this.advertisementController.capturePayment
     );
 
-    this.router.get(
-      '/:id/invoice',
-      this.advertisementController.downloadInvoice
-    );
-
-    // --- PUBLIC ROUTE ---
+    // --- PUBLIC ROUTE (before /:id routes) ---
     this.router.get(
       '/public',
       AdvertisementValidation.validateQuery(AdvertisementValidation.publicAdsQuerySchema),
       this.advertisementController.getPublicAds
+    );
+
+    this.router.get(
+      '/:id/invoice',
+      this.advertisementController.downloadInvoice
     );
 
     // --- ADMIN ROUTES ---

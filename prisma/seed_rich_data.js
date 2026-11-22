@@ -760,7 +760,7 @@ async function seedRichData() {
 
   // 18. Seed Active Public Advertisements
   console.log('📢 Seeding Active Public Advertisements for Home & Gallery...');
-  const adPages = ['Home', 'Gallery', 'Competitions'];
+  const adPages = ['home', 'gallery', 'competitions'];
   for (let i = 0; i < adPages.length; i++) {
     const p = adPages[i];
     await prisma.advertisement.create({

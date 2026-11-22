@@ -894,7 +894,10 @@ export class ArtworkService {
       },
       user: { select: { id: true, name: true, avatar: true } },
       category: { select: { name: true, name_pl: true } },
-      ...(viewerId && { saves: { where: { userId: viewerId }, select: { id: true } } })
+      ...(viewerId && {
+        saves: { where: { userId: viewerId }, select: { id: true } },
+        likes: { where: { userId: viewerId }, select: { id: true } },
+      })
     };
 
     const [promotedCount, unpromotedCount] = await Promise.all([
@@ -929,7 +932,9 @@ export class ArtworkService {
       const formatted = { ...item };
       if (viewerId) {
         formatted.isSaved = item.saves && item.saves.length > 0;
+        formatted.isLiked = item.likes && item.likes.length > 0;
         delete formatted.saves;
+        delete formatted.likes;
       }
       return formatted;
     });
@@ -986,12 +991,41 @@ export class ArtworkService {
       });
     }
 
+    let isLiked = false;
+    let isSaved = false;
+    if (validViewerUserId) {
+      const [existingLike, existingSave] = await Promise.all([
+        prisma.like.findUnique({
+          where: {
+            submissionId_userId: {
+              submissionId: id,
+              userId: validViewerUserId,
+            },
+          },
+          select: { id: true },
+        }),
+        prisma.savedArtwork.findUnique({
+          where: {
+            submissionId_userId: {
+              submissionId: id,
+              userId: validViewerUserId,
+            },
+          },
+          select: { id: true },
+        }),
+      ]);
+      isLiked = Boolean(existingLike);
+      isSaved = Boolean(existingSave);
+    }
+
     return {
       ...artwork,
       categoryName: artwork.category?.name || null,
       subcategoryName: subcategory?.name || null,
       subcategory,
-      appreciation: appreciationStats
+      appreciation: appreciationStats,
+      isLiked,
+      isSaved,
     };
   }
 
