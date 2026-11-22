@@ -33,6 +33,17 @@ function safeUploadPath(relativePath) {
   return absolute;
 }
 
+function sendCachedFile(res, cachePath, next) {
+  res.type('image/jpeg');
+  // Callback form — sendFile errors are async and bypass try/catch.
+  return res.sendFile(cachePath, (err) => {
+    if (!err) return;
+    if (res.headersSent) return;
+    console.warn('[uploadThumb] cache miss after resize, serving original:', err.message);
+    return next();
+  });
+}
+
 /**
  * Serves resized image variants for card grids.
  * Usage: GET /uploads/photo.jpg?w=480
@@ -53,7 +64,10 @@ export async function uploadThumbMiddleware(req, res, next) {
     if (!IMAGE_EXT.has(ext)) return next();
 
     const sourcePath = safeUploadPath(relativePath);
-    if (!sourcePath || !fs.existsSync(sourcePath)) return next();
+    if (!sourcePath || !fs.existsSync(sourcePath)) {
+      // Missing original — quiet 404 (avoid sendFile NotFoundError spam).
+      return res.status(404).end();
+    }
 
     ensureCacheDir();
     const cacheName = `w${width}-${relativePath.replace(/[/\\]/g, '__')}`;
@@ -63,20 +77,22 @@ export async function uploadThumbMiddleware(req, res, next) {
     res.setHeader('Cache-Control', 'public, max-age=604800, immutable');
     res.setHeader('Vary', 'Accept');
 
-    if (!fs.existsSync(cachePath)) {
-      await sharp(sourcePath)
-        .rotate()
-        .resize({
-          width,
-          withoutEnlargement: true,
-          fit: 'inside',
-        })
-        .jpeg({ quality: 78, mozjpeg: true })
-        .toFile(cachePath);
+    if (fs.existsSync(cachePath)) {
+      return sendCachedFile(res, cachePath, next);
     }
 
-    res.type('image/jpeg');
-    return res.sendFile(cachePath);
+    await sharp(sourcePath)
+      .rotate()
+      .resize({
+        width,
+        withoutEnlargement: true,
+        fit: 'inside',
+      })
+      .jpeg({ quality: 78, mozjpeg: true })
+      .toFile(cachePath);
+
+    if (!fs.existsSync(cachePath)) return next();
+    return sendCachedFile(res, cachePath, next);
   } catch (err) {
     console.warn('[uploadThumb] resize failed, falling back to original:', err?.message);
     return next();
