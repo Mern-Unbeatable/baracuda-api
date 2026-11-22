@@ -183,11 +183,24 @@ export class UserService {
     }
 
     // Aggregate stats
-    const [followersCount, followingCount, totalArtwork, totalVideos, competitionEntries, submissionVotesAgg, premiumLikesAgg, isFollowingData, appreciationStats, standaloneVideos] = await Promise.all([
+    const [
+      followersCount,
+      followingCount,
+      totalArtwork,
+      totalVideos,
+      premiumPhotos,
+      competitionEntries,
+      submissionVotesAgg,
+      premiumLikesAgg,
+      isFollowingData,
+      appreciationStats,
+      standaloneVideos,
+    ] = await Promise.all([
       prisma.follow.count({ where: { followingId: user.id } }),
       prisma.follow.count({ where: { followerId: user.id } }),
       prisma.submission.count({ where: { userId: user.id, kind: { in: ['SINGLE', 'SIX', 'TWELVE'] } } }),
       prisma.submission.count({ where: { userId: user.id, kind: 'VIDEO' } }),
+      prisma.premiumPhoto.count({ where: { userId: user.id } }),
       prisma.submission.count({ where: { userId: user.id, competitionState: 'IN_COMPETITION' } }),
       prisma.submission.aggregate({
         _sum: { votesCount: true },
@@ -227,6 +240,7 @@ export class UserService {
         profileVisitors: user.profileViews,
         totalArtwork,
         totalVideos,
+        premiumPhotos,
         competitionEntries,
         totalHearts
       },
