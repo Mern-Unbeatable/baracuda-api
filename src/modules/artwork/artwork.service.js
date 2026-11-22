@@ -887,6 +887,7 @@ export class ArtworkService {
       votesCount: true,
       createdAt: true,
       competitionState: true,
+      competitionId: true,
       status: true,
       media: {
         select: { url: true, format: true, kind: true, slotIndex: true },
@@ -894,6 +895,9 @@ export class ArtworkService {
       },
       user: { select: { id: true, name: true, avatar: true } },
       category: { select: { name: true, name_pl: true } },
+      competition: {
+        select: { id: true, title: true, status: true, endsAt: true, year: true, month: true },
+      },
       ...(viewerId && {
         saves: { where: { userId: viewerId }, select: { id: true } },
         likes: { where: { userId: viewerId }, select: { id: true } },
@@ -928,6 +932,7 @@ export class ArtworkService {
       rawData = rawData.concat(unpromotedData);
     }
     
+    const nowMs = now.getTime();
     const data = rawData.map(item => {
       const formatted = { ...item };
       if (viewerId) {
@@ -936,6 +941,17 @@ export class ArtworkService {
         delete formatted.saves;
         delete formatted.likes;
       }
+
+      const competitionStatus = String(item.competition?.status || '').toUpperCase();
+      const endsAtMs = item.competition?.endsAt
+        ? new Date(item.competition.endsAt).getTime()
+        : NaN;
+      formatted.votingClosed = Boolean(
+        item.competitionState === 'ENDED' ||
+          (competitionStatus && competitionStatus !== 'OPEN') ||
+          (Number.isFinite(endsAtMs) && endsAtMs <= nowMs),
+      );
+
       return formatted;
     });
 
@@ -950,6 +966,9 @@ export class ArtworkService {
         media: { orderBy: { slotIndex: 'asc' } },
         user: { select: { id: true, name: true, username: true, avatar: true } },
         category: { select: { id: true, name: true, name_pl: true } },
+        competition: {
+          select: { id: true, title: true, status: true, endsAt: true, year: true, month: true },
+        },
         comments: {
           where: { status: 'APPROVED' },
           include: { user: { select: { id: true, name: true, username: true, avatar: true } } },
@@ -1018,6 +1037,16 @@ export class ArtworkService {
       isSaved = Boolean(existingSave);
     }
 
+    const competitionStatus = String(artwork.competition?.status || '').toUpperCase();
+    const endsAtMs = artwork.competition?.endsAt
+      ? new Date(artwork.competition.endsAt).getTime()
+      : NaN;
+    const votingClosed = Boolean(
+      artwork.competitionState === 'ENDED' ||
+        (competitionStatus && competitionStatus !== 'OPEN') ||
+        (Number.isFinite(endsAtMs) && endsAtMs <= Date.now()),
+    );
+
     return {
       ...artwork,
       categoryName: artwork.category?.name || null,
@@ -1026,6 +1055,7 @@ export class ArtworkService {
       appreciation: appreciationStats,
       isLiked,
       isSaved,
+      votingClosed,
     };
   }
 
