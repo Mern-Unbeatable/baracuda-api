@@ -2,6 +2,15 @@ import prisma from '../../config/prisma.js';
 import fs from 'fs';
 import path from 'path';
 
+const PAID_ORDER_STATUSES = [
+  'PAID',
+  'COMPLETED',
+  'PROCESSING',
+  'SHIPPED',
+  'DISPATCHED',
+  'DELIVERED',
+];
+
 export class StoreService {
   async createProduct(userId, data, files) {
     let bannerImageUrl = '';
@@ -18,33 +27,44 @@ export class StoreService {
     }
 
     const validEnums = ['ART_PRINTS', 'HANDMADE_CRAFTS', 'APPAREL', 'PHOTOBOOKS', 'DIGITAL_PRESET', 'OTHERS'];
-    let fallbackCategory = 'OTHERS';
-    const primaryCat = data.categories?.[0] || data.category || '';
-    if (validEnums.includes(primaryCat.toUpperCase())) {
-      fallbackCategory = primaryCat.toUpperCase();
+    let category = data.category || 'OTHERS';
+    if (!validEnums.includes(category)) {
+      // Keep free-text categories in categories[]; enum falls back to OTHERS
+      category = 'OTHERS';
     }
 
-    const product = await prisma.product.create({
+    let categories = [];
+    if (data.categories) {
+      try {
+        categories = typeof data.categories === 'string'
+          ? JSON.parse(data.categories)
+          : data.categories;
+      } catch {
+        categories = Array.isArray(data.categories) ? data.categories : [data.categories];
+      }
+    }
+    if (!Array.isArray(categories) || categories.length === 0) {
+      categories = data.category ? [data.category] : ['OTHERS'];
+    }
+
+    return prisma.product.create({
       data: {
         userId,
-        category: fallbackCategory,
-        categories: data.categories && data.categories.length > 0 ? data.categories : [fallbackCategory],
+        category,
+        categories,
         title: data.title,
-        title_pl: data.title_pl,
-        price: data.price,
-        setEditionSize: data.setEditionSize || null,
+        title_pl: data.title_pl || null,
         description: data.description || null,
         description_pl: data.description_pl || null,
+        price: data.price,
+        setEditionSize: data.setEditionSize || null,
         bannerImage: bannerImageUrl,
         images: otherImageUrls,
         country: data.country || null,
         city: data.city || null,
         shippingScope: data.shippingScope || 'WORLDWIDE',
-        isActive: true,
       },
     });
-
-    return product;
   }
 
   async getAllProducts(filters, skip = 0, take = 10, currentUserId = null) {
@@ -153,45 +173,27 @@ export class StoreService {
     if (existing.userId !== userId) throw new Error('Unauthorized');
 
     const updateData = { ...data };
-    if (data.country !== undefined) updateData.country = data.country || null;
-    if (data.city !== undefined) updateData.city = data.city || null;
-    if (data.shippingScope !== undefined) updateData.shippingScope = data.shippingScope;
-
-    if (data.categories && data.categories.length > 0) {
-      updateData.categories = data.categories;
-      const validEnums = ['ART_PRINTS', 'HANDMADE_CRAFTS', 'APPAREL', 'PHOTOBOOKS', 'DIGITAL_PRESET', 'OTHERS'];
-      const primaryCat = data.categories[0];
-      if (validEnums.includes(primaryCat.toUpperCase())) {
-        updateData.category = primaryCat.toUpperCase();
-      } else {
-        updateData.category = 'OTHERS';
+    if (updateData.categories && typeof updateData.categories === 'string') {
+      try {
+        updateData.categories = JSON.parse(updateData.categories);
+      } catch {
+        updateData.categories = [updateData.categories];
       }
-    } else if (data.category) {
-      const validEnums = ['ART_PRINTS', 'HANDMADE_CRAFTS', 'APPAREL', 'PHOTOBOOKS', 'DIGITAL_PRESET', 'OTHERS'];
-      if (validEnums.includes(data.category.toUpperCase())) {
-        updateData.category = data.category.toUpperCase();
-      }
-      updateData.categories = [data.category];
     }
 
     if (files && files['bannerImage'] && files['bannerImage'].length > 0) {
       updateData.bannerImage = `/uploads/${files['bannerImage'][0].filename}`;
-      // delete old banner image
       if (existing.bannerImage) {
         const oldFilePath = path.join(process.cwd(), existing.bannerImage);
         if (fs.existsSync(oldFilePath)) fs.unlinkSync(oldFilePath);
       }
     }
-
     if (files && files['images'] && files['images'].length > 0) {
       const otherImageUrls = [];
       files['images'].forEach(file => {
         otherImageUrls.push(`/uploads/${file.filename}`);
       });
-      // The requirement doesn't specify if it appends or replaces, typically we replace
       updateData.images = otherImageUrls;
-      
-      // Delete old images
       if (existing.images && existing.images.length > 0) {
         existing.images.forEach(img => {
           const oldFilePath = path.join(process.cwd(), img);
@@ -200,13 +202,7 @@ export class StoreService {
       }
     }
 
-    return prisma.product.update({
-      where: { id },
-      data: updateData,
-      include: {
-        user: { select: { id: true, name: true, avatar: true } }
-      }
-    });
+    return prisma.product.update({ where: { id }, data: updateData });
   }
 
   async deleteProduct(id, userId) {
@@ -214,12 +210,10 @@ export class StoreService {
     if (!existing) throw new Error('Product not found');
     if (existing.userId !== userId) throw new Error('Unauthorized');
 
-    // Delete associated files
     if (existing.bannerImage) {
       const oldFilePath = path.join(process.cwd(), existing.bannerImage);
       if (fs.existsSync(oldFilePath)) fs.unlinkSync(oldFilePath);
     }
-    
     if (existing.images && existing.images.length > 0) {
       existing.images.forEach(img => {
         const oldFilePath = path.join(process.cwd(), img);
@@ -235,18 +229,13 @@ export class StoreService {
     if (!product || product.userId !== userId) {
       throw new Error('Product not found or unauthorized');
     }
-    
-    let amountPaid = 0;
-    if (durationDays === 7) amountPaid = 40;
-    else if (durationDays === 15) amountPaid = 60;
-    else if (durationDays === 30) amountPaid = 100;
-    else throw new Error('Invalid promotion duration. Must be 7, 15, or 30 days.');
 
+    const amountPaid = 0;
     const endsAt = new Date();
-    endsAt.setDate(endsAt.getDate() + durationDays);
+    endsAt.setDate(endsAt.getDate() + Number(durationDays || 7));
 
     const promotion = await prisma.promotedAlbum.upsert({
-      where: { productId: product.id },
+      where: { productId: id },
       update: {
         durationDays,
         startsAt: new Date(),
@@ -255,7 +244,7 @@ export class StoreService {
         isActive: true
       },
       create: {
-        productId: product.id,
+        productId: id,
         userId,
         durationDays,
         startsAt: new Date(),
@@ -268,8 +257,14 @@ export class StoreService {
     return promotion;
   }
 
+  /**
+   * Public marketplace stores.
+   * Sort: promoted stores first, then best-selling (paid order qty), then rest.
+   * Pagination happens AFTER that global sort.
+   */
   async getPublicStores(filters, skip, take) {
     const { search, promoted } = filters;
+    const now = new Date();
     
     const userWhere = {
       products: {
@@ -290,55 +285,108 @@ export class StoreService {
     if (promoted === 'true') {
       userWhere.products.some.promotion = {
         isActive: true,
-        endsAt: { gt: new Date() }
+        endsAt: { gt: now }
       };
     }
 
-    const [users, total] = await Promise.all([
-      prisma.user.findMany({
-        where: userWhere,
-        skip,
-        take,
-        select: {
-          id: true,
-          name: true,
-          username: true,
-          avatar: true,
-          bio: true,
-          products: {
-            where: { isActive: true },
-            take: 4,
-            orderBy: { createdAt: 'desc' },
-            select: {
-              id: true,
-              title: true,
-              title_pl: true,
-              bannerImage: true,
-              price: true,
-              country: true,
-              city: true,
-              shippingScope: true,
-              promotion: {
-                where: { isActive: true, endsAt: { gt: new Date() } },
-                select: { id: true }
-              }
+    // 1) All matching seller ids (sort before paginating)
+    const matchingUsers = await prisma.user.findMany({
+      where: userWhere,
+      select: { id: true },
+    });
+    const allIds = matchingUsers.map((u) => u.id);
+    const total = allIds.length;
+
+    if (total === 0) {
+      return { data: [], total: 0 };
+    }
+
+    // 2) Which sellers have an active product promotion
+    const promotedRows = await prisma.promotedAlbum.findMany({
+      where: {
+        userId: { in: allIds },
+        productId: { not: null },
+        isActive: true,
+        endsAt: { gt: now },
+      },
+      select: { userId: true },
+      distinct: ['userId'],
+    });
+    const promotedSet = new Set(promotedRows.map((r) => r.userId));
+
+    // 3) Best-seller score = sum of paid order quantities for their products
+    const soldItems = await prisma.orderItem.findMany({
+      where: {
+        productId: { not: null },
+        product: { userId: { in: allIds } },
+        order: { status: { in: PAID_ORDER_STATUSES } },
+      },
+      select: {
+        quantity: true,
+        product: { select: { userId: true } },
+      },
+    });
+    const salesByUser = {};
+    for (const item of soldItems) {
+      const uid = item.product?.userId;
+      if (!uid) continue;
+      salesByUser[uid] = (salesByUser[uid] || 0) + Number(item.quantity || 0);
+    }
+
+    // 4) Global order: promoted → best-selling → rest
+    const rankedIds = [...allIds].sort((a, b) => {
+      const aPromo = promotedSet.has(a) ? 1 : 0;
+      const bPromo = promotedSet.has(b) ? 1 : 0;
+      if (bPromo !== aPromo) return bPromo - aPromo;
+      const aSales = salesByUser[a] || 0;
+      const bSales = salesByUser[b] || 0;
+      if (bSales !== aSales) return bSales - aSales;
+      return a.localeCompare(b);
+    });
+
+    const pageIds = rankedIds.slice(skip, skip + take);
+    if (pageIds.length === 0) {
+      return { data: [], total };
+    }
+
+    // 5) Hydrate page users + product previews
+    const users = await prisma.user.findMany({
+      where: { id: { in: pageIds } },
+      select: {
+        id: true,
+        name: true,
+        username: true,
+        avatar: true,
+        bio: true,
+        products: {
+          where: { isActive: true },
+          take: 8,
+          orderBy: { createdAt: 'desc' },
+          select: {
+            id: true,
+            title: true,
+            title_pl: true,
+            bannerImage: true,
+            price: true,
+            country: true,
+            city: true,
+            shippingScope: true,
+            promotion: {
+              where: { isActive: true, endsAt: { gt: now } },
+              select: { id: true }
             }
           }
         }
-      }),
-      prisma.user.count({ where: userWhere })
-    ]);
+      }
+    });
 
-    // Real gold/silver/bronze awards (same source as public profile counters)
-    const userIds = users.map((user) => user.id);
-    const appreciationRows =
-      userIds.length > 0
-        ? await prisma.artworkAppreciation.groupBy({
-            by: ['receiverId', 'tier'],
-            where: { receiverId: { in: userIds } },
-            _count: { tier: true },
-          })
-        : [];
+    const userById = new Map(users.map((u) => [u.id, u]));
+
+    const appreciationRows = await prisma.artworkAppreciation.groupBy({
+      by: ['receiverId', 'tier'],
+      where: { receiverId: { in: pageIds } },
+      _count: { tier: true },
+    });
 
     const appreciationByUser = {};
     for (const row of appreciationRows) {
@@ -355,39 +403,48 @@ export class StoreService {
       }
     }
 
-    const formattedData = users.map(user => {
-      const isPromoted = user.products.some(p => p.promotion !== null);
+    // Preserve ranked order
+    const formattedData = pageIds
+      .map((id) => userById.get(id))
+      .filter(Boolean)
+      .map((user) => {
+        // Prefer promoted products in the preview strip, then newest
+        const sortedProducts = [...user.products]
+          .sort((a, b) => {
+            const aPromo = a.promotion ? 1 : 0;
+            const bPromo = b.promotion ? 1 : 0;
+            return bPromo - aPromo;
+          })
+          .slice(0, 4);
 
-      const mappedProducts = user.products.map(p => ({
-        id: p.id,
-        title: p.title,
-        title_pl: p.title_pl,
-        bannerImage: p.bannerImage,
-        price: p.price,
-        country: p.country || null,
-        city: p.city || null,
-        shippingScope: p.shippingScope || 'WORLDWIDE'
-      }));
+        const mappedProducts = sortedProducts.map((p) => ({
+          id: p.id,
+          title: p.title,
+          title_pl: p.title_pl,
+          bannerImage: p.bannerImage,
+          price: p.price,
+          country: p.country || null,
+          city: p.city || null,
+          shippingScope: p.shippingScope || 'WORLDWIDE',
+          isPromoted: Boolean(p.promotion),
+        }));
 
-      return {
-        id: user.id,
-        name: user.name,
-        username: user.username,
-        avatar: user.avatar,
-        bio: user.bio,
-        isPromoted,
-        artworkAppreciation: appreciationByUser[user.id] || {
-          gold: 0,
-          silver: 0,
-          bronze: 0,
-        },
-        products: mappedProducts
-      };
-    });
-
-    if (!promoted) {
-      formattedData.sort((a, b) => (b.isPromoted ? 1 : 0) - (a.isPromoted ? 1 : 0));
-    }
+        return {
+          id: user.id,
+          name: user.name,
+          username: user.username,
+          avatar: user.avatar,
+          bio: user.bio,
+          isPromoted: promotedSet.has(user.id),
+          totalSales: salesByUser[user.id] || 0,
+          artworkAppreciation: appreciationByUser[user.id] || {
+            gold: 0,
+            silver: 0,
+            bronze: 0,
+          },
+          products: mappedProducts,
+        };
+      });
 
     return { data: formattedData, total };
   }
@@ -398,12 +455,9 @@ export class StoreService {
       select: { id: true, userId: true },
     });
 
-    if (!product) {
-      throw new Error('Product not found');
-    }
-
+    if (!product) throw new Error('Product not found');
     if (product.userId === userId) {
-      throw new Error('You cannot add your own product to watchlist');
+      throw new Error('Cannot watchlist your own product');
     }
 
     const existing = await prisma.savedProduct.findUnique({
@@ -416,18 +470,18 @@ export class StoreService {
       await prisma.savedProduct.delete({
         where: { id: existing.id },
       });
-      return { saved: false, message: 'Removed from watchlist' };
+      return { saved: false };
     }
 
     await prisma.savedProduct.create({
       data: { userId, productId },
     });
-    return { saved: true, message: 'Added to watchlist' };
+    return { saved: true };
   }
 
   async getWatchlist(userId, skip = 0, take = 10) {
     const where = { userId };
-    const [items, total] = await Promise.all([
+    const [rows, total] = await Promise.all([
       prisma.savedProduct.findMany({
         where,
         skip,
@@ -446,7 +500,14 @@ export class StoreService {
       prisma.savedProduct.count({ where })
     ]);
 
-    const formatted = items.map(it => it.product).filter(Boolean);
-    return { data: formatted, total };
+    return {
+      data: rows.map((row) => ({
+        ...row.product,
+        isSaved: true,
+        savedAt: row.createdAt,
+      })),
+      total,
+    };
   }
 }
+

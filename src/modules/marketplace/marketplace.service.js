@@ -301,11 +301,17 @@ export class MarketplaceService {
       ];
     }
 
-    let orderBy = { createdAt: 'desc' };
+    // Within each bucket (promoted, then unpromoted): best-sellers first by default.
+    // Explicit UI sorts can override; promoted items still appear before unpromoted.
+    let orderBy = [{ totalSales: 'desc' }, { createdAt: 'desc' }];
     if (sort === 'popular') {
-      orderBy = { viewsCount: 'desc' };
+      orderBy = [{ viewsCount: 'desc' }, { createdAt: 'desc' }];
     } else if (sort === 'most_liked') {
-      orderBy = { likesCount: 'desc' };
+      orderBy = [{ likesCount: 'desc' }, { createdAt: 'desc' }];
+    } else if (sort === 'newest') {
+      orderBy = [{ createdAt: 'desc' }];
+    } else if (sort === 'bestselling' || sort === 'relevance' || !sort) {
+      orderBy = [{ totalSales: 'desc' }, { createdAt: 'desc' }];
     }
 
     const now = new Date();
@@ -325,6 +331,7 @@ export class MarketplaceService {
       price: true,
       likesCount: true,
       viewsCount: true,
+      totalSales: true,
       createdAt: true,
       media: {
         select: { url: true, format: true },
@@ -333,6 +340,11 @@ export class MarketplaceService {
       },
       user: { select: { id: true, name: true, avatar: true } },
       category: { select: { name: true } },
+      promotions: {
+        where: activePromoCondition,
+        select: { id: true, endsAt: true },
+        take: 1
+      },
       ...(viewerId && { 
         premiumPhotoLikes: { where: { userId: viewerId }, select: { id: true } },
         savedPremiumPhotos: { where: { userId: viewerId }, select: { id: true } }
@@ -367,13 +379,15 @@ export class MarketplaceService {
       photos = photos.concat(unpromotedData);
     }
     
-    // Map isLiked and isSaved
+    // Map isLiked, isSaved, and active promotion flag
     const formattedPhotos = photos.map(photo => {
       const isLiked = photo.premiumPhotoLikes && photo.premiumPhotoLikes.length > 0;
       const isSaved = photo.savedPremiumPhotos && photo.savedPremiumPhotos.length > 0;
+      const isPromoted = Array.isArray(photo.promotions) && photo.promotions.length > 0;
       delete photo.premiumPhotoLikes;
       delete photo.savedPremiumPhotos;
-      return { ...photo, isLiked, isSaved };
+      delete photo.promotions;
+      return { ...photo, isLiked, isSaved, isPromoted };
     });
 
     return { data: formattedPhotos, total };

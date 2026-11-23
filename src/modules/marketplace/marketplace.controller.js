@@ -352,7 +352,7 @@ export class MarketplaceController {
 
       const result = await this.marketplaceService.getPublicPremiumPhotos(
         { kind, categoryId, subcategoryId, search },
-        sort || 'newest',
+        sort || 'bestselling',
         skip,
         take,
         viewerId
