@@ -278,10 +278,12 @@ export class StoreService {
     };
     
     if (search) {
+      const q = String(search).trim().replace(/^@/, '');
       userWhere.OR = [
-        { name: { contains: search, mode: 'insensitive' } },
-        { products: { some: { title: { contains: search, mode: 'insensitive' } } } },
-        { products: { some: { categories: { has: search } } } }
+        { name: { contains: q, mode: 'insensitive' } },
+        { username: { contains: q, mode: 'insensitive' } },
+        { products: { some: { title: { contains: q, mode: 'insensitive' } } } },
+        { products: { some: { categories: { has: q } } } }
       ];
     }
     
@@ -303,13 +305,6 @@ export class StoreService {
           username: true,
           avatar: true,
           bio: true,
-          _count: {
-            select: {
-              premiumPhotos: true,
-              submissions: true,
-              followers: true
-            }
-          },
           products: {
             where: { isActive: true },
             take: 4,
@@ -334,14 +329,34 @@ export class StoreService {
       prisma.user.count({ where: userWhere })
     ]);
 
+    // Real gold/silver/bronze awards (same source as public profile counters)
+    const userIds = users.map((user) => user.id);
+    const appreciationRows =
+      userIds.length > 0
+        ? await prisma.artworkAppreciation.groupBy({
+            by: ['receiverId', 'tier'],
+            where: { receiverId: { in: userIds } },
+            _count: { tier: true },
+          })
+        : [];
+
+    const appreciationByUser = {};
+    for (const row of appreciationRows) {
+      if (!appreciationByUser[row.receiverId]) {
+        appreciationByUser[row.receiverId] = {
+          gold: 0,
+          silver: 0,
+          bronze: 0,
+        };
+      }
+      const tierKey = String(row.tier || '').toLowerCase();
+      if (tierKey in appreciationByUser[row.receiverId]) {
+        appreciationByUser[row.receiverId][tierKey] = row._count.tier;
+      }
+    }
+
     const formattedData = users.map(user => {
       const isPromoted = user.products.some(p => p.promotion !== null);
-      
-      const artworkAppreciation = {
-        premiumPhotos: user._count.premiumPhotos,
-        submissions: user._count.submissions,
-        followers: user._count.followers
-      };
 
       const mappedProducts = user.products.map(p => ({
         id: p.id,
@@ -361,7 +376,11 @@ export class StoreService {
         avatar: user.avatar,
         bio: user.bio,
         isPromoted,
-        artworkAppreciation,
+        artworkAppreciation: appreciationByUser[user.id] || {
+          gold: 0,
+          silver: 0,
+          bronze: 0,
+        },
         products: mappedProducts
       };
     });

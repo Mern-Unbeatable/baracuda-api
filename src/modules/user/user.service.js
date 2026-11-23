@@ -267,6 +267,12 @@ export class UserService {
 
     // Check unique constraints
     if (data.username) {
+      data.username = String(data.username).trim().replace(/^@/, '');
+      if (!/^[a-zA-Z0-9._-]{3,30}$/.test(data.username)) {
+        throw new Error(
+          'Username can only use letters, numbers, dots, underscores, or hyphens (3–30 chars, no spaces)',
+        );
+      }
       const existingUser = await prisma.user.findUnique({ where: { username: data.username } });
       if (existingUser && existingUser.id !== userId) {
         throw new Error('Username is already taken');
