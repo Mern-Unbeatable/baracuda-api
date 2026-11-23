@@ -67,6 +67,10 @@ export class ArtworkModule {
     // ADMIN ROUTES
     this.adminRouter.use(requireAuth, requireAdmin);
     this.adminRouter.get('/', this.adminArtworkController.getAllArtworks);
+    this.adminRouter.patch(
+      '/:id/status',
+      this.adminArtworkController.updateArtworkStatus,
+    );
     this.adminRouter.get('/:id', this.adminArtworkController.getArtworkDetails);
     this.adminRouter.delete('/:id', this.adminArtworkController.deleteArtwork);
   }

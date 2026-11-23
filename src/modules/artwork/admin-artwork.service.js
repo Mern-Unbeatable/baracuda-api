@@ -3,12 +3,19 @@ import { UrlUtil } from '../../utils/urlUtil.js';
 
 export class AdminArtworkService {
   /**
-   * Get all artworks with optional filter for competitionState
+   * Get all artworks with optional filters.
+   * Default status is APPROVED (live gallery/competition lists).
+   * Pass status=PENDING for the moderation queue.
    */
   async getAllArtworks(skip, take, filters = {}) {
-    const where = {
-      status: 'APPROVED'
-    };
+    const where = {};
+
+    const statusFilter = filters.status
+      ? String(filters.status).toUpperCase()
+      : 'APPROVED';
+    if (statusFilter !== 'ALL') {
+      where.status = statusFilter;
+    }
 
     if (filters.kind) {
       where.kind = filters.kind;
@@ -38,12 +45,42 @@ export class AdminArtworkService {
           media: true,
           category: true,
           promotion: true,
-          user: { select: { id: true, name: true, avatar: true, username: true } }
-        }
-      })
+          user: {
+            select: {
+              id: true,
+              name: true,
+              avatar: true,
+              username: true,
+              country: true,
+            },
+          },
+        },
+      }),
     ]);
 
     return { total, data: artworks };
+  }
+
+  /**
+   * Approve or reject a pending submission.
+   * @param {string} id
+   * @param {'APPROVED' | 'REJECTED'} status
+   */
+  async updateArtworkStatus(id, status) {
+    const nextStatus = String(status || '').toUpperCase();
+    if (!['APPROVED', 'REJECTED'].includes(nextStatus)) {
+      throw new Error('Status must be APPROVED or REJECTED');
+    }
+
+    const artwork = await prisma.submission.findUnique({ where: { id } });
+    if (!artwork) {
+      throw new Error('Artwork not found');
+    }
+
+    return prisma.submission.update({
+      where: { id },
+      data: { status: nextStatus },
+    });
   }
 
   /**

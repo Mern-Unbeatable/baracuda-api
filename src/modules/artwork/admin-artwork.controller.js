@@ -77,10 +77,10 @@ export class AdminArtworkController {
 
   getAllArtworks = async (req, res) => {
     try {
-      const { kind, competitionState, isPromoted } = req.query;
+      const { kind, competitionState, isPromoted, status } = req.query;
       const { skip, take, page, limit } = PaginationUtil.getPaginationOptions(req.query);
 
-      const filters = { kind, competitionState, isPromoted };
+      const filters = { kind, competitionState, isPromoted, status };
       const { total, data } = await this.adminArtworkService.getAllArtworks(skip, take, filters);
 
       const formattedData = data.map(item => {
@@ -117,6 +117,7 @@ export class AdminArtworkController {
           story: storyStr,
           story_pl: formatted.story_pl,
           createdAt: formatted.createdAt,
+          status: formatted.status,
           viewsCount: formatted.viewsCount,
           votesCount: formatted.competitionState === 'IN_COMPETITION' ? formatted.votesCount : undefined,
           likesCount: formatted.competitionState === 'PROFILE_ONLY' ? formatted.likesCount : undefined,
@@ -124,7 +125,10 @@ export class AdminArtworkController {
           coverImage: coverImage,
           additionalPhotos: additionalPhotos,
           isPromoted: isItemPromoted,
-          promotion: formatted.promotion || null
+          promotion: formatted.promotion || null,
+          author: formatted.user?.name || null,
+          country: formatted.user?.country || null,
+          username: formatted.user?.username || null,
         };
       });
 
@@ -134,6 +138,22 @@ export class AdminArtworkController {
       });
     } catch (error) {
       return ResponseUtil.error(res, error.message, 500);
+    }
+  }
+
+  updateArtworkStatus = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { status } = req.body || {};
+      const updated = await this.adminArtworkService.updateArtworkStatus(id, status);
+      return ResponseUtil.success(
+        res,
+        `Artwork ${String(status).toLowerCase()} successfully`,
+        { id: updated.id, status: updated.status },
+      );
+    } catch (error) {
+      const code = error.message === 'Artwork not found' ? 404 : 400;
+      return ResponseUtil.error(res, error.message, code);
     }
   }
 

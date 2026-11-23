@@ -106,7 +106,8 @@ export class ArtworkService {
         albumTypeId: albumType.id,
         competitionId: activeCompetitionId,
         userId,
-        status: 'APPROVED',
+        // Competition + gallery/profile require admin approval before public
+        status: 'PENDING',
         prizeMoney: data.competitionState === 'IN_COMPETITION' ? albumType.prizeMoney : null,
         media: {
           create: [
@@ -202,7 +203,8 @@ export class ArtworkService {
         categoryId: data.categoryId || null,
         subcategoryId: data.subcategoryId || null,
         visibility: data.visibility || 'PUBLIC',
-        status: 'APPROVED',
+        // Profile/gallery videos require admin approval before public
+        status: 'PENDING',
         title: data.title,
         title_pl: data.title_pl || null,
         story: data.story || null,
@@ -978,7 +980,9 @@ export class ArtworkService {
       data: {
         competitionState: 'IN_COMPETITION',
         competitionId: activeComp.id,
-        likesCount: 0
+        likesCount: 0,
+        // Re-enter moderation when moving gallery/profile → competition
+        status: 'PENDING',
       }
     });
   }
