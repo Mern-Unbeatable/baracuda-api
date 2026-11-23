@@ -506,23 +506,83 @@ export class ArtworkService {
     };
   }
 
+  static ZODIAC_SIGNS = [
+    'ARIES',
+    'TAURUS',
+    'GEMINI',
+    'CANCER',
+    'LEO',
+    'VIRGO',
+    'LIBRA',
+    'SCORPIO',
+    'SAGITTARIUS',
+    'CAPRICORN',
+    'AQUARIUS',
+    'PISCES',
+  ];
+
+  /** Title-case astro sign for zip filenames, e.g. ARIES → Aries */
+  formatAstroSignName(sign) {
+    const raw = String(sign || '').trim();
+    if (!raw) return null;
+    const lower = raw.toLowerCase();
+    return lower.charAt(0).toUpperCase() + lower.slice(1);
+  }
+
+  /**
+   * File base name for a media item:
+   * - VIDEO → VIDEO
+   * - SIX / TWELVE images → Aries…Pisces (by slot / theme)
+   * - SINGLE → submission/media zodiac sign, else PHOTO
+   */
+  resolveDownloadBaseName(source, submission) {
+    const kind = String(source?.kind || '').toUpperCase();
+    const slot = Number(source?.slotIndex);
+    if (kind === 'VIDEO' || (Number.isFinite(slot) && slot >= 99)) {
+      return 'VIDEO';
+    }
+
+    const albumKind = String(submission?.kind || '').toUpperCase();
+    const theme = String(submission?.theme || '').toUpperCase();
+    const signs = ArtworkService.ZODIAC_SIGNS;
+
+    if (albumKind === 'TWELVE' && Number.isFinite(slot) && signs[slot]) {
+      return this.formatAstroSignName(signs[slot]);
+    }
+
+    if (albumKind === 'SIX' && Number.isFinite(slot)) {
+      let signIndex = slot;
+      // Older rows store SIX as 0–5; BLUE theme maps to Libra–Pisces.
+      if (slot < 6 && theme === 'BLUE') signIndex = slot + 6;
+      if (signs[signIndex]) return this.formatAstroSignName(signs[signIndex]);
+    }
+
+    const explicit =
+      this.formatAstroSignName(source?.zodiacSign) ||
+      this.formatAstroSignName(submission?.zodiacSign);
+    if (explicit) return explicit;
+
+    if (albumKind === 'SINGLE') return 'PHOTO';
+    if (Number.isFinite(slot)) return `IMAGE_${slot}`;
+    return 'PHOTO';
+  }
+
   /**
    * Resolve a media URL to a zip entry (local disk or remote HTTP(S)).
    * Seeded artworks often use Unsplash URLs rather than /uploads files.
    */
-  async resolveMediaDownloadSource(source) {
+  async resolveMediaDownloadSource(source, submission, usedNames) {
     const rawUrl = String(source?.url || '').trim();
     if (!rawUrl) return null;
 
-    const baseName = (() => {
-      if (source.kind === 'VIDEO') return 'VIDEO';
-      if (source.zodiacSign) return String(source.zodiacSign);
-      const slot =
-        source.slotIndex === 0 || source.slotIndex
-          ? source.slotIndex
-          : 0;
-      return `IMAGE_${slot}`;
-    })();
+    let baseName = this.resolveDownloadBaseName(source, submission);
+    if (usedNames.has(baseName.toLowerCase())) {
+      const slot = Number.isFinite(Number(source?.slotIndex))
+        ? source.slotIndex
+        : usedNames.size;
+      baseName = `${baseName}_${slot}`;
+    }
+    usedNames.add(baseName.toLowerCase());
 
     const extFromType = (contentType = '', fallbackUrl = '') => {
       const type = String(contentType).toLowerCase();
@@ -539,20 +599,32 @@ export class ArtworkService {
       } catch {
         /* ignore */
       }
-      return '.jpg';
+      return source?.kind === 'VIDEO' ? '.mp4' : '.jpg';
     };
 
     // Remote URL (seed / CDN)
     if (/^https?:\/\//i.test(rawUrl)) {
       try {
-        const response = await fetch(rawUrl);
+        const response = await fetch(rawUrl, {
+          headers: {
+            'User-Agent': 'My12PhotosArtworkDownload/1.0',
+            Accept: '*/*',
+          },
+          redirect: 'follow',
+        });
         if (!response.ok) {
           console.warn(`[download] remote fetch failed ${response.status}: ${rawUrl}`);
           return null;
         }
+        const contentType = response.headers.get('content-type') || '';
+        // Reject HTML/XML error bodies that some CDNs return with odd statuses
+        if (/text\/html|application\/xml|text\/xml/i.test(contentType)) {
+          console.warn(`[download] remote URL returned non-media type (${contentType}): ${rawUrl}`);
+          return null;
+        }
         const buffer = Buffer.from(await response.arrayBuffer());
         if (!buffer.length) return null;
-        const ext = extFromType(response.headers.get('content-type'), rawUrl);
+        const ext = extFromType(contentType, rawUrl);
         return { name: `${baseName}${ext}`, buffer };
       } catch (err) {
         console.warn(`[download] remote fetch error for ${rawUrl}:`, err.message);
@@ -567,7 +639,7 @@ export class ArtworkService {
       console.warn(`[download] local file missing: ${filePath}`);
       return null;
     }
-    const ext = path.extname(filePath) || '.jpg';
+    const ext = path.extname(filePath) || (source?.kind === 'VIDEO' ? '.mp4' : '.jpg');
     return { name: `${baseName}${ext}`, filePath };
   }
 
@@ -581,17 +653,21 @@ export class ArtworkService {
       throw new Error('Artwork not found');
     }
 
-    const sources = [];
-    for (const media of submission.media || []) {
-      if (media?.url) {
-        sources.push({
-          url: media.url,
-          kind: media.kind,
-          zodiacSign: media.zodiacSign,
-          slotIndex: media.slotIndex,
-        });
-      }
-    }
+    const mediaRows = Array.isArray(submission.media) ? submission.media : [];
+    const imageRows = mediaRows.filter(
+      (m) => m?.url && String(m.kind || '').toUpperCase() !== 'VIDEO',
+    );
+    const videoRows = mediaRows.filter(
+      (m) => m?.url && String(m.kind || '').toUpperCase() === 'VIDEO',
+    );
+
+    // Images first (astro order), then video — always include every available file.
+    const sources = [...imageRows, ...videoRows].map((media) => ({
+      url: media.url,
+      kind: media.kind,
+      zodiacSign: media.zodiacSign,
+      slotIndex: media.slotIndex,
+    }));
 
     // Seeded donations artwork may only have featuredImage (no media rows).
     if (sources.length === 0 && submission.featuredImage) {
@@ -607,9 +683,14 @@ export class ArtworkService {
       throw new Error('No media files found for this artwork');
     }
 
+    const usedNames = new Set();
     const resolved = [];
     for (const source of sources) {
-      const entry = await this.resolveMediaDownloadSource(source);
+      const entry = await this.resolveMediaDownloadSource(
+        source,
+        submission,
+        usedNames,
+      );
       if (entry) resolved.push(entry);
     }
 
@@ -617,9 +698,15 @@ export class ArtworkService {
       throw new Error('No downloadable media files found for this artwork');
     }
 
+    const safeTitle = String(submission.title || 'Artwork')
+      .replace(/[^\w\-]+/g, '_')
+      .replace(/_+/g, '_')
+      .replace(/^_|_$/g, '')
+      .slice(0, 60) || 'Artwork';
+
     res.writeHead(200, {
       'Content-Type': 'application/zip',
-      'Content-Disposition': `attachment; filename="Artwork-${id}.zip"`,
+      'Content-Disposition': `attachment; filename="${safeTitle}.zip"`,
     });
 
     const archive = new ZipArchive({
