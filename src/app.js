@@ -27,6 +27,7 @@ import { AppreciationModule } from './modules/appreciation/appreciation.module.j
 import { SlideshowModule } from './modules/slideshow/slideshow.module.js';
 import { AdminPromotionModule } from './modules/admin-promotion/admin-promotion.module.js';
 import { uploadThumbMiddleware } from './middlewares/uploadThumb.middleware.js';
+import { UPLOADS_DIR } from './utils/upload.js';
 
 /**
  * Main Application Class
@@ -62,7 +63,7 @@ class App {
       next();
     });
     this.app.use('/uploads', uploadThumbMiddleware);
-    this.app.use('/uploads', express.static('uploads'));
+    this.app.use('/uploads', express.static(UPLOADS_DIR));
   }
 
   initializeModules() {

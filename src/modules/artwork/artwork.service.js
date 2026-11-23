@@ -4,6 +4,7 @@ import fs from 'fs';
 import path from 'path';
 
 import { TranslateUtil } from '../../utils/translate.js';
+import { UPLOADS_DIR } from '../../utils/upload.js';
 import { appreciationService } from '../appreciation/appreciation.service.js';
 import { VideoUtil } from '../../utils/videoUtil.js';
 
@@ -568,8 +569,28 @@ export class ArtworkService {
   }
 
   /**
+   * Extract "/uploads/..." relative path from absolute or relative media URLs.
+   */
+  extractUploadsRelativePath(rawUrl) {
+    const normalized = String(rawUrl || '').replace(/\\/g, '/').trim();
+    if (!normalized) return null;
+
+    const uploadsIdx = normalized.indexOf('/uploads/');
+    if (uploadsIdx !== -1) {
+      return normalized.slice(uploadsIdx + '/uploads/'.length).replace(/^\/+/, '');
+    }
+    if (normalized.startsWith('uploads/')) {
+      return normalized.slice('uploads/'.length);
+    }
+    if (!/^https?:\/\//i.test(normalized) && !normalized.includes('://')) {
+      return normalized.replace(/^\/+/, '');
+    }
+    return null;
+  }
+
+  /**
    * Resolve a media URL to a zip entry (local disk or remote HTTP(S)).
-   * Seeded artworks often use Unsplash URLs rather than /uploads files.
+   * Always prefer the same absolute uploads dir multer writes to.
    */
   async resolveMediaDownloadSource(source, submission, usedNames) {
     const rawUrl = String(source?.url || '').trim();
@@ -602,45 +623,75 @@ export class ArtworkService {
       return source?.kind === 'VIDEO' ? '.mp4' : '.jpg';
     };
 
-    // Remote URL (seed / CDN)
-    if (/^https?:\/\//i.test(rawUrl)) {
+    const tryLocalFile = (relativeInsideUploads) => {
+      if (!relativeInsideUploads) return null;
+      const safeRel = path
+        .normalize(relativeInsideUploads)
+        .replace(/^(\.\.(\/|\\|$))+/, '');
+      const filePath = path.join(UPLOADS_DIR, safeRel);
+      if (!filePath.startsWith(UPLOADS_DIR)) return null;
+      if (!fs.existsSync(filePath)) return null;
+      const ext =
+        path.extname(filePath) ||
+        (source?.kind === 'VIDEO' ? '.mp4' : '.jpg');
+      return { name: `${baseName}${ext}`, filePath };
+    };
+
+    const tryRemoteFetch = async (url) => {
       try {
-        const response = await fetch(rawUrl, {
-          headers: {
-            'User-Agent': 'My12PhotosArtworkDownload/1.0',
-            Accept: '*/*',
-          },
-          redirect: 'follow',
-        });
-        if (!response.ok) {
-          console.warn(`[download] remote fetch failed ${response.status}: ${rawUrl}`);
-          return null;
+        const candidates = [url];
+        if (url.startsWith('http://')) {
+          candidates.unshift(url.replace(/^http:\/\//i, 'https://'));
         }
-        const contentType = response.headers.get('content-type') || '';
-        // Reject HTML/XML error bodies that some CDNs return with odd statuses
-        if (/text\/html|application\/xml|text\/xml/i.test(contentType)) {
-          console.warn(`[download] remote URL returned non-media type (${contentType}): ${rawUrl}`);
-          return null;
+        for (const candidate of candidates) {
+          const response = await fetch(candidate, {
+            headers: {
+              'User-Agent': 'My12PhotosArtworkDownload/1.0',
+              Accept: '*/*',
+            },
+            redirect: 'follow',
+          });
+          if (!response.ok) {
+            console.warn(
+              `[download] remote fetch failed ${response.status}: ${candidate}`,
+            );
+            continue;
+          }
+          const contentType = response.headers.get('content-type') || '';
+          if (
+            /text\/html|application\/xml|text\/xml|application\/json/i.test(
+              contentType,
+            )
+          ) {
+            console.warn(
+              `[download] remote URL returned non-media type (${contentType}): ${candidate}`,
+            );
+            continue;
+          }
+          const buffer = Buffer.from(await response.arrayBuffer());
+          if (!buffer.length) continue;
+          const ext = extFromType(contentType, candidate);
+          return { name: `${baseName}${ext}`, buffer };
         }
-        const buffer = Buffer.from(await response.arrayBuffer());
-        if (!buffer.length) return null;
-        const ext = extFromType(contentType, rawUrl);
-        return { name: `${baseName}${ext}`, buffer };
       } catch (err) {
-        console.warn(`[download] remote fetch error for ${rawUrl}:`, err.message);
-        return null;
+        console.warn(`[download] remote fetch error for ${url}:`, err.message);
       }
+      return null;
+    };
+
+    // 1) Local uploads file (handles "/uploads/x", absolute host/uploads/x, etc.)
+    const uploadsRel = this.extractUploadsRelativePath(rawUrl);
+    const localEntry = tryLocalFile(uploadsRel);
+    if (localEntry) return localEntry;
+
+    // 2) Remote / CDN / absolute URL
+    if (/^https?:\/\//i.test(rawUrl)) {
+      const remote = await tryRemoteFetch(rawUrl);
+      if (remote) return remote;
     }
 
-    // Local upload path: "/uploads/file.jpg" or "uploads/file.jpg"
-    const relative = rawUrl.startsWith('/') ? rawUrl.slice(1) : rawUrl;
-    const filePath = path.resolve(process.cwd(), relative);
-    if (!fs.existsSync(filePath)) {
-      console.warn(`[download] local file missing: ${filePath}`);
-      return null;
-    }
-    const ext = path.extname(filePath) || (source?.kind === 'VIDEO' ? '.mp4' : '.jpg');
-    return { name: `${baseName}${ext}`, filePath };
+    console.warn(`[download] unresolved media: ${rawUrl}`);
+    return null;
   }
 
   async downloadArtworkAsZip(id, res) {
@@ -695,7 +746,9 @@ export class ArtworkService {
     }
 
     if (resolved.length === 0) {
-      throw new Error('No downloadable media files found for this artwork');
+      throw new Error(
+        'Media files are missing from server storage. Re-upload the artwork photos/video, then try again.',
+      );
     }
 
     const safeTitle = String(submission.title || 'Artwork')

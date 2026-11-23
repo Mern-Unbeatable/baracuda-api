@@ -1,8 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 import sharp from 'sharp';
+import { UPLOADS_DIR } from '../utils/upload.js';
 
-const UPLOADS_DIR = path.resolve(process.cwd(), 'uploads');
 const CACHE_DIR = path.join(UPLOADS_DIR, '.thumb-cache');
 const MAX_WIDTH = 1600;
 const IMAGE_EXT = new Set([
