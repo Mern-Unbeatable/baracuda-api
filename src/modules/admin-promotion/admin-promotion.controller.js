@@ -197,4 +197,21 @@ export class AdminPromotionController {
       return ResponseUtil.error(res, error.message, 500);
     }
   };
+
+  /**
+   * DELETE /api/v1/admin/promotions/:id
+   * Remove an expired (or deactivated) promotion record.
+   */
+  deletePromotion = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const deleted = await this.adminPromotionService.deletePromotion(id);
+      return ResponseUtil.success(res, 'Expired promotion deleted successfully', {
+        id: deleted.id,
+      });
+    } catch (error) {
+      const status = error.statusCode || 500;
+      return ResponseUtil.error(res, error.message, status);
+    }
+  };
 }

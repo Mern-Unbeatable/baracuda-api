@@ -21,5 +21,8 @@ export class AdminPromotionModule {
 
     // Update / Toggle promotion status (active / inactive)
     this.router.patch('/:id/status', this.controller.updatePromotionStatus);
+
+    // Delete expired / deactivated promotion
+    this.router.delete('/:id', this.controller.deletePromotion);
   }
 }

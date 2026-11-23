@@ -163,4 +163,30 @@ export class AdminPromotionService {
       }
     });
   }
+
+  /**
+   * Delete a promotion record. Only expired (or deactivated) promotions can be removed.
+   */
+  async deletePromotion(id) {
+    const promotion = await prisma.promotedAlbum.findUnique({ where: { id } });
+    if (!promotion) {
+      const err = new Error('Promotion not found');
+      err.statusCode = 404;
+      throw err;
+    }
+
+    const now = new Date();
+    const isExpired =
+      !promotion.isActive || new Date(promotion.endsAt).getTime() < now.getTime();
+
+    if (!isExpired) {
+      const err = new Error(
+        'Only expired promotions can be deleted. Deactivate or wait until the promotion ends.',
+      );
+      err.statusCode = 400;
+      throw err;
+    }
+
+    return prisma.promotedAlbum.delete({ where: { id } });
+  }
 }
