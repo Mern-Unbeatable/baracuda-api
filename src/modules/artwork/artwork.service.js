@@ -853,6 +853,24 @@ export class ArtworkService {
     if (filters.subcategoryId) {
       where.subcategoryId = filters.subcategoryId;
     }
+
+    const searchQuery = String(filters.search || '').trim();
+    if (searchQuery) {
+      where.AND = [
+        ...(where.AND || []),
+        {
+          OR: [
+            { title: { contains: searchQuery, mode: 'insensitive' } },
+            { title_pl: { contains: searchQuery, mode: 'insensitive' } },
+            { story: { contains: searchQuery, mode: 'insensitive' } },
+            { story_pl: { contains: searchQuery, mode: 'insensitive' } },
+            { user: { name: { contains: searchQuery, mode: 'insensitive' } } },
+            { user: { username: { contains: searchQuery, mode: 'insensitive' } } },
+            { category: { name: { contains: searchQuery, mode: 'insensitive' } } },
+          ],
+        },
+      ];
+    }
     
     let orderBy = { createdAt: 'desc' };
     if (sort === 'popular') {
@@ -869,9 +887,14 @@ export class ArtworkService {
     // For unpromoted, it can either have no promotion, or an inactive/expired one
     const unpromotedWhere = { 
       ...where, 
-      OR: [
-        { promotion: null },
-        { promotion: { isNot: activePromoCondition } }
+      AND: [
+        ...(where.AND || []),
+        {
+          OR: [
+            { promotion: null },
+            { promotion: { isNot: activePromoCondition } }
+          ]
+        }
       ]
     };
 

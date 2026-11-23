@@ -448,10 +448,10 @@ export class ArtworkController {
 
   getPublicArtworks = async (req, res, next) => {
     try {
-      const { status, sort, categoryId, subcategoryId, kind } = req.query;
+      const { status, sort, categoryId, subcategoryId, kind, search } = req.query;
       const viewerId = req.user?.id;
       const { skip, take, page, limit } = PaginationUtil.getPaginationOptions(req.query);
-      const filters = { status, categoryId, subcategoryId, kind };
+      const filters = { status, categoryId, subcategoryId, kind, search };
       const artworks = await this.artworkService.getPublicArtworks(filters, sort || 'newest', skip, take, viewerId);
       
       const formattedData = artworks.data.map(a => {
