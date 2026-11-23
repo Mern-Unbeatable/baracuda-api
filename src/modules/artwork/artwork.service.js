@@ -506,53 +506,137 @@ export class ArtworkService {
     };
   }
 
+  /**
+   * Resolve a media URL to a zip entry (local disk or remote HTTP(S)).
+   * Seeded artworks often use Unsplash URLs rather than /uploads files.
+   */
+  async resolveMediaDownloadSource(source) {
+    const rawUrl = String(source?.url || '').trim();
+    if (!rawUrl) return null;
+
+    const baseName = (() => {
+      if (source.kind === 'VIDEO') return 'VIDEO';
+      if (source.zodiacSign) return String(source.zodiacSign);
+      const slot =
+        source.slotIndex === 0 || source.slotIndex
+          ? source.slotIndex
+          : 0;
+      return `IMAGE_${slot}`;
+    })();
+
+    const extFromType = (contentType = '', fallbackUrl = '') => {
+      const type = String(contentType).toLowerCase();
+      if (type.includes('png')) return '.png';
+      if (type.includes('webp')) return '.webp';
+      if (type.includes('gif')) return '.gif';
+      if (type.includes('jpeg') || type.includes('jpg')) return '.jpg';
+      if (type.includes('mp4')) return '.mp4';
+      if (type.includes('webm')) return '.webm';
+      try {
+        const pathname = new URL(fallbackUrl, 'http://localhost').pathname;
+        const ext = path.extname(pathname);
+        if (ext && ext.length <= 5) return ext;
+      } catch {
+        /* ignore */
+      }
+      return '.jpg';
+    };
+
+    // Remote URL (seed / CDN)
+    if (/^https?:\/\//i.test(rawUrl)) {
+      try {
+        const response = await fetch(rawUrl);
+        if (!response.ok) {
+          console.warn(`[download] remote fetch failed ${response.status}: ${rawUrl}`);
+          return null;
+        }
+        const buffer = Buffer.from(await response.arrayBuffer());
+        if (!buffer.length) return null;
+        const ext = extFromType(response.headers.get('content-type'), rawUrl);
+        return { name: `${baseName}${ext}`, buffer };
+      } catch (err) {
+        console.warn(`[download] remote fetch error for ${rawUrl}:`, err.message);
+        return null;
+      }
+    }
+
+    // Local upload path: "/uploads/file.jpg" or "uploads/file.jpg"
+    const relative = rawUrl.startsWith('/') ? rawUrl.slice(1) : rawUrl;
+    const filePath = path.resolve(process.cwd(), relative);
+    if (!fs.existsSync(filePath)) {
+      console.warn(`[download] local file missing: ${filePath}`);
+      return null;
+    }
+    const ext = path.extname(filePath) || '.jpg';
+    return { name: `${baseName}${ext}`, filePath };
+  }
+
   async downloadArtworkAsZip(id, res) {
     const submission = await prisma.submission.findUnique({
       where: { id },
-      include: { media: true }
+      include: { media: { orderBy: { slotIndex: 'asc' } } },
     });
-    
+
     if (!submission) {
       throw new Error('Artwork not found');
     }
-    
-    if (!submission.media || submission.media.length === 0) {
+
+    const sources = [];
+    for (const media of submission.media || []) {
+      if (media?.url) {
+        sources.push({
+          url: media.url,
+          kind: media.kind,
+          zodiacSign: media.zodiacSign,
+          slotIndex: media.slotIndex,
+        });
+      }
+    }
+
+    // Seeded donations artwork may only have featuredImage (no media rows).
+    if (sources.length === 0 && submission.featuredImage) {
+      sources.push({
+        url: submission.featuredImage,
+        kind: 'IMAGE',
+        zodiacSign: submission.zodiacSign || null,
+        slotIndex: 0,
+      });
+    }
+
+    if (sources.length === 0) {
       throw new Error('No media files found for this artwork');
+    }
+
+    const resolved = [];
+    for (const source of sources) {
+      const entry = await this.resolveMediaDownloadSource(source);
+      if (entry) resolved.push(entry);
+    }
+
+    if (resolved.length === 0) {
+      throw new Error('No downloadable media files found for this artwork');
     }
 
     res.writeHead(200, {
       'Content-Type': 'application/zip',
-      'Content-Disposition': `attachment; filename="Artwork-${id}.zip"`
+      'Content-Disposition': `attachment; filename="Artwork-${id}.zip"`,
     });
 
     const archive = new ZipArchive({
-      zlib: { level: 9 } // Sets the compression level
+      zlib: { level: 9 },
     });
 
     archive.on('error', (err) => {
       throw err;
     });
 
-    // Pipe archive data to the response
     archive.pipe(res);
 
-    for (const media of submission.media) {
-      // media.url usually looks like '/uploads/filename.jpg'
-      // We need to map it to absolute filesystem path
-      const filePath = path.join(process.cwd(), media.url);
-      
-      if (fs.existsSync(filePath)) {
-        const ext = path.extname(filePath);
-        let zipFileName = '';
-        
-        if (media.kind === 'VIDEO') {
-          zipFileName = `VIDEO${ext}`;
-        } else {
-          // Name the file based on zodiac sign, otherwise fallback to slot index
-          zipFileName = media.zodiacSign ? `${media.zodiacSign}${ext}` : `IMAGE_${media.slotIndex}${ext}`;
-        }
-        
-        archive.file(filePath, { name: zipFileName });
+    for (const entry of resolved) {
+      if (entry.buffer) {
+        archive.append(entry.buffer, { name: entry.name });
+      } else if (entry.filePath) {
+        archive.file(entry.filePath, { name: entry.name });
       }
     }
 

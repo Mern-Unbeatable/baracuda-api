@@ -188,6 +188,8 @@ async function seedUserPayments() {
     });
 
     if (userSubmissions.length === 0) {
+      const coverUrl =
+        'https://images.unsplash.com/photo-1506744038136-46273834b3fb';
       const newSub = await prisma.submission.create({
         data: {
           userId: user.id,
@@ -198,10 +200,54 @@ async function seedUserPayments() {
           prizeMoney: 250,
           viewsCount: 350,
           likesCount: 95,
-          featuredImage: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb'
-        }
+          featuredImage: coverUrl,
+          media: {
+            create: [
+              {
+                kind: 'IMAGE',
+                slotIndex: 0,
+                url: coverUrl,
+                format: 'image/jpeg',
+              },
+            ],
+          },
+        },
+        include: { media: true },
       });
       userSubmissions = [newSub];
+    } else {
+      // Ensure donation showcase artwork remains downloadable (media + featuredImage).
+      for (const sub of userSubmissions) {
+        if (sub.title !== 'Fine Art Portfolio Masterpiece') continue;
+        const coverUrl =
+          sub.featuredImage ||
+          'https://images.unsplash.com/photo-1506744038136-46273834b3fb';
+        const mediaCount = await prisma.submissionMedia.count({
+          where: { submissionId: sub.id },
+        });
+        if (!sub.featuredImage || mediaCount === 0) {
+          await prisma.submission.update({
+            where: { id: sub.id },
+            data: {
+              featuredImage: coverUrl,
+              ...(mediaCount === 0
+                ? {
+                    media: {
+                      create: [
+                        {
+                          kind: 'IMAGE',
+                          slotIndex: 0,
+                          url: coverUrl,
+                          format: 'image/jpeg',
+                        },
+                      ],
+                    },
+                  }
+                : {}),
+            },
+          });
+        }
+      }
     }
 
     await prisma.donation.deleteMany({
