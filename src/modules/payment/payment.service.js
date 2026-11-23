@@ -591,8 +591,17 @@ class PaymentService {
     return { success: false, status: data.status };
   }
 
-  async createPayPalOrder({ userId, amount, currency, description, customId }) {
+  async createPayPalOrder({
+    userId,
+    amount,
+    currency,
+    description,
+    customId,
+    returnUrl,
+    cancelUrl,
+  }) {
     const accessToken = await this.generateAccessToken();
+    const frontendBase = process.env.FRONTEND_URL || "http://localhost:3000";
 
     const orderPayload = {
       intent: "CAPTURE",
@@ -609,12 +618,8 @@ class PaymentService {
       payment_source: {
         paypal: {
           experience_context: {
-            return_url: process.env.FRONTEND_URL
-              ? `${process.env.FRONTEND_URL}/payment/success`
-              : `http://localhost:3000/payment/success`,
-            cancel_url: process.env.FRONTEND_URL
-              ? `${process.env.FRONTEND_URL}/payment/cancel`
-              : `http://localhost:3000/payment/cancel`,
+            return_url: returnUrl || `${frontendBase}/payment/success`,
+            cancel_url: cancelUrl || `${frontendBase}/payment/cancel`,
             landing_page: "GUEST_CHECKOUT",
             user_action: "PAY_NOW",
             payment_method_preference: "UNRESTRICTED"
@@ -635,10 +640,18 @@ class PaymentService {
     const data = await response.json();
     if (!response.ok) {
       console.error("PayPal Order Error Details:", JSON.stringify(data, null, 2));
-      throw new Error(data.message || "Failed to create PayPal order");
+      const detailMsg = Array.isArray(data.details)
+        ? data.details
+            .map((d) => d?.description || d?.issue)
+            .filter(Boolean)
+            .join('; ')
+        : '';
+      throw new Error(
+        detailMsg || data.message || "Failed to create PayPal order",
+      );
     }
 
-    const approveLink = data.links.find(
+    const approveLink = (data.links || []).find(
       (link) => link.rel === "approve" || link.rel === "payer-action"
     );
 
@@ -652,20 +665,46 @@ class PaymentService {
     const product = await prisma.product.findUnique({ where: { id: productId } });
     if (!product) throw new Error('Product not found');
 
-    const quantity = parseInt(orderDetails.quantity) || 1;
-    const price = Number(product.price);
+    const shippingScope = String(product.shippingScope || 'WORLDWIDE').toUpperCase();
+    const productCountry = String(product.country || '').trim();
+    const buyerCountry = String(orderDetails.country || '').trim();
+
+    if (shippingScope === 'NATIONAL') {
+      if (!productCountry) {
+        throw new Error(
+          'This product is domestic-only, but the seller has not set a country.',
+        );
+      }
+      if (!buyerCountry) {
+        throw new Error('Delivery country is required for domestic-only products.');
+      }
+      if (productCountry.toLowerCase() !== buyerCountry.toLowerCase()) {
+        throw new Error(
+          `This product ships only within ${productCountry}. International delivery is not available.`,
+        );
+      }
+    }
+
+    const quantity = parseInt(orderDetails.quantity, 10) || 1;
+    const price = parseFloat(String(product.price));
+    if (!Number.isFinite(price) || price <= 0) {
+      throw new Error('Invalid product price');
+    }
     const subtotal = price * quantity;
-    const delivery = 20; // flat delivery fee as per UI
+    const delivery = 0;
     const total = subtotal + delivery;
 
     const customData = JSON.stringify({ productId, type: 'STORE_PRODUCT' });
+    const frontendBase = process.env.FRONTEND_URL || 'http://localhost:3000';
     
     const orderData = await this.createPayPalOrder({
       userId,
       amount: total,
       currency: 'GBP',
       description: `Purchase Product - ${product.id}`,
-      customId: customData
+      customId: customData,
+      returnUrl: `${frontendBase}/photographer/store/checkout`,
+      cancelUrl: `${frontendBase}/photographer/store/checkout?cancelled=1`,
     });
 
     const order = await prisma.order.create({
@@ -675,6 +714,7 @@ class PaymentService {
         fullName: orderDetails.fullName || 'Guest User',
         address: JSON.stringify({
           mobile: orderDetails.mobile,
+          country: orderDetails.country || '',
           city: orderDetails.city,
           state: orderDetails.state,
           zipCode: orderDetails.zipCode,
@@ -699,6 +739,7 @@ class PaymentService {
     return { 
       paymentId: orderData.order.id,
       checkoutUrl: orderData.approvalUrl,
+      approvalUrl: orderData.approvalUrl,
       dbOrderId: order.id 
     };
   }

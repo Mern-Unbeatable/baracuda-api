@@ -334,20 +334,57 @@ export class StoreController {
 
   buyProduct = async (req, res) => {
     try {
-      const { email, fullName, mobile, city, state, zipCode, deliveryAddress, quantity, size } = req.body;
-      if (!email || !fullName || !mobile || !city || !state || !zipCode || !deliveryAddress) {
+      const {
+        email,
+        fullName,
+        mobile,
+        country,
+        city,
+        state,
+        zipCode,
+        deliveryAddress,
+        quantity,
+        size,
+      } = req.body;
+      if (
+        !email ||
+        !fullName ||
+        !mobile ||
+        !country ||
+        !city ||
+        !zipCode ||
+        !deliveryAddress
+      ) {
         return ResponseUtil.error(res, 'All delivery details are required', 400);
       }
       
       const userId = req.user.id;
-      const orderDetails = { email, fullName, mobile, city, state, zipCode, deliveryAddress, quantity, size };
+      const orderDetails = {
+        email,
+        fullName,
+        mobile,
+        country,
+        city,
+        state,
+        zipCode,
+        deliveryAddress,
+        quantity,
+        size,
+      };
       
       const { default: paymentService } = await import('../payment/payment.service.js');
       const result = await paymentService.createStoreProductPurchase(req.params.id, userId, orderDetails);
       
       return ResponseUtil.success(res, 'Product checkout created', result);
     } catch (error) {
-      return ResponseUtil.error(res, error.message, 500);
+      const message = error.message || 'Failed to create product checkout';
+      const statusCode =
+        message.includes('domestic') ||
+        message.includes('ships only') ||
+        message.includes('International')
+          ? 400
+          : 500;
+      return ResponseUtil.error(res, message, statusCode);
     }
   };
 
