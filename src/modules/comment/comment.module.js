@@ -19,6 +19,7 @@ export class CommentModule {
     this.router.use(requireAuth, requireAdmin);
 
     this.router.get('/', this.commentController.getComments);
+    this.router.get('/stats', this.commentController.getCommentStats);
     this.router.patch('/bulk-status', CommentValidation.validate(CommentValidation.bulkStatusSchema), this.commentController.bulkUpdateStatus);
     this.router.get('/:publicCode', this.commentController.getCommentDetails);
   }

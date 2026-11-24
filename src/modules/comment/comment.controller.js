@@ -6,6 +6,23 @@ export class CommentController {
   }
 
   /**
+   * Comment dashboard stats for admin cards.
+   * @route GET /api/v1/admin/comments/stats
+   */
+  getCommentStats = async (req, res, next) => {
+    try {
+      const stats = await this.commentService.getCommentStats();
+      res.status(200).json({
+        success: true,
+        data: stats,
+        message: 'Comment stats fetched successfully',
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  /**
    * Get paginated comments list for Admin
    * @route GET /api/v1/admin/comments
    */

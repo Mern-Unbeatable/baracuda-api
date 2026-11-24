@@ -3,6 +3,37 @@ import { PaginationUtil } from '../../utils/pagination.js';
 
 export class CommentService {
   /**
+   * Aggregate counts for admin comment dashboard cards.
+   */
+  async getCommentStats() {
+    const startOfToday = new Date();
+    startOfToday.setHours(0, 0, 0, 0);
+
+    const [total, approved, pending, hidden, deleted, today] =
+      await Promise.all([
+        prisma.comment.count(),
+        prisma.comment.count({ where: { status: 'APPROVED' } }),
+        prisma.comment.count({ where: { status: 'PENDING' } }),
+        prisma.comment.count({ where: { status: 'HIDDEN' } }),
+        prisma.comment.count({ where: { status: 'DELETED' } }),
+        prisma.comment.count({
+          where: { createdAt: { gte: startOfToday } },
+        }),
+      ]);
+
+    return {
+      total,
+      approved,
+      pending,
+      hidden,
+      deleted,
+      today,
+      approvedRate:
+        total > 0 ? Math.round((approved / total) * 100) : 0,
+    };
+  }
+
+  /**
    * Get paginated comments with status filtering, formatted for the UI
    */
   async getComments(status, page = 1, limit = 10) {
