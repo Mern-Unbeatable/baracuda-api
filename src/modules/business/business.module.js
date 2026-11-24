@@ -45,6 +45,13 @@ export class BusinessModule {
       this.businessController.getBusinessAlbumDetails
     );
 
+    this.router.delete(
+      '/admin/:id',
+      requireAuth,
+      requireAdmin,
+      this.businessController.deleteBusinessAlbum
+    );
+
     // Public share link — /api/v1/business-links/public/:albumId (ALB-xxxxx)
     this.router.get(
       '/public/:albumId',

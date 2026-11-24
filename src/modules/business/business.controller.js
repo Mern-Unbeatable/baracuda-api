@@ -166,6 +166,19 @@ export class BusinessController {
     }
   }
 
+  deleteBusinessAlbum = async (req, res) => {
+    try {
+      await this.businessService.deleteBusinessAlbum(req.params.id);
+      return ResponseUtil.success(res, 'Business Album deleted successfully');
+    } catch (error) {
+      return ResponseUtil.error(
+        res,
+        error.message,
+        error.statusCode || 500,
+      );
+    }
+  };
+
   getPublicBusinessAlbum = async (req, res) => {
     try {
       const album = await this.businessService.getPublicBusinessAlbumByAlbumId(

@@ -177,6 +177,29 @@ export class BusinessService {
     });
   }
 
+  async deleteBusinessAlbum(id) {
+    const cleanId = String(id || '').trim();
+    if (!cleanId) {
+      const err = new Error('Business Album id is required');
+      err.statusCode = 400;
+      throw err;
+    }
+
+    const existing = await prisma.businessAlbum.findUnique({
+      where: { id: cleanId },
+      select: { id: true },
+    });
+    if (!existing) {
+      const err = new Error('Business Album not found');
+      err.statusCode = 404;
+      throw err;
+    }
+
+    return prisma.businessAlbum.delete({
+      where: { id: cleanId },
+    });
+  }
+
   /**
    * Public share view — lookup by human album code (ALB-xxxxx).
    * Anyone with the link can view; no approval gate.
