@@ -77,12 +77,20 @@ export class AnnouncementService {
   async getPublic() {
     const announcements = await prisma.announcement.findMany({
       where: { activeState: 'active' },
-      orderBy: { createdAt: 'desc' }
+      orderBy: { createdAt: 'desc' },
     });
 
+    const priorityRank = { high: 0, medium: 1, low: 2 };
+
     return announcements
-      .map(ann => ({ ...ann, displayStatus: this.computeDisplayStatus(ann) }))
-      .filter(ann => ann.displayStatus === 'Active');
+      .map((ann) => ({ ...ann, displayStatus: this.computeDisplayStatus(ann) }))
+      .filter((ann) => ann.displayStatus === 'Active')
+      .sort((a, b) => {
+        const aRank = priorityRank[a.priority] ?? 9;
+        const bRank = priorityRank[b.priority] ?? 9;
+        if (aRank !== bRank) return aRank - bRank;
+        return new Date(b.createdAt) - new Date(a.createdAt);
+      });
   }
 
   async getStats() {
