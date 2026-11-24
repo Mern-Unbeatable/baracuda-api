@@ -1295,6 +1295,8 @@ enum ModerationAction {
   WARN
   SUSPEND
   BAN
+  UNSUSPEND
+  UNBAN
 }
 
 model ModerationAudit {

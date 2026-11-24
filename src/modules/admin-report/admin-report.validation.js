@@ -7,7 +7,17 @@ export class AdminReportValidation {
   });
 
   static actionSchema = Joi.object({
-    action: Joi.string().valid('CONTENT_REMOVED', 'WARN', 'SUSPEND', 'BAN', 'MARK_RESOLVED').required()
+    action: Joi.string()
+      .valid(
+        'CONTENT_REMOVED',
+        'WARN',
+        'SUSPEND',
+        'BAN',
+        'UNSUSPEND',
+        'UNBAN',
+        'MARK_RESOLVED',
+      )
+      .required(),
   });
 
   static validate(schema) {

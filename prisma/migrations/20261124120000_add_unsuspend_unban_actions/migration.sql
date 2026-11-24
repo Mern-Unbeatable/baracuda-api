@@ -1,0 +1,3 @@
+-- AlterEnum
+ALTER TYPE "ModerationAction" ADD VALUE IF NOT EXISTS 'UNSUSPEND';
+ALTER TYPE "ModerationAction" ADD VALUE IF NOT EXISTS 'UNBAN';

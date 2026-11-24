@@ -366,10 +366,50 @@ export class AdminReportService {
             data: { status: 'BANNED' }
           });
           break;
+        case 'UNSUSPEND':
+          await tx.user.update({
+            where: { id: targetUserId },
+            data: {
+              status: 'ACTIVE',
+              suspensionEndsAt: null,
+            },
+          });
+          await tx.notification.create({
+            data: {
+              userId: targetUserId,
+              type: 'SYSTEM',
+              title: 'Account Restored',
+              title_pl: 'Konto przywrócone',
+              body: 'Your account suspension has been lifted. You can use the platform again.',
+              body_pl:
+                'Zawieszenie Twojego konta zostało zniesione. Możesz ponownie korzystać z platformy.',
+            },
+          });
+          break;
+        case 'UNBAN':
+          await tx.user.update({
+            where: { id: targetUserId },
+            data: {
+              status: 'ACTIVE',
+              suspensionEndsAt: null,
+            },
+          });
+          await tx.notification.create({
+            data: {
+              userId: targetUserId,
+              type: 'SYSTEM',
+              title: 'Account Unblocked',
+              title_pl: 'Konto odblokowane',
+              body: 'Your account ban has been lifted. You can use the platform again.',
+              body_pl:
+                'Blokada Twojego konta została zniesiona. Możesz ponownie korzystać z platformy.',
+            },
+          });
+          break;
       }
 
-      // Mark report as resolved if action is taken
-      if (action !== 'WARN') {
+      // Punitive actions close the report; reverse / warn keep it open for review.
+      if (!['WARN', 'UNSUSPEND', 'UNBAN'].includes(action)) {
         await tx.report.update({
           where: { id: report.id },
           data: { status: 'RESOLVED' }
