@@ -609,7 +609,7 @@ model BusinessAlbum {
   country_pl String?
 
   businessLink String?   @unique
-  isPublished  Boolean   @default(false)
+  isPublished  Boolean   @default(true)
   reviewedAt   DateTime?
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt

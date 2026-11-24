@@ -165,4 +165,27 @@ export class BusinessController {
       return ResponseUtil.error(res, error.message, 500);
     }
   }
+
+  getPublicBusinessAlbum = async (req, res) => {
+    try {
+      const album = await this.businessService.getPublicBusinessAlbumByAlbumId(
+        req.params.albumId,
+      );
+      if (!album) {
+        return ResponseUtil.error(res, 'Business Album not found', 404);
+      }
+
+      const formattedAlbum = this.formatMediaUrls(req, album);
+      // Public payload: drop private contact fields
+      delete formattedAlbum.email;
+      delete formattedAlbum.phone;
+      if (formattedAlbum.user) {
+        delete formattedAlbum.user.email;
+      }
+
+      return ResponseUtil.success(res, 'Business Album fetched', formattedAlbum);
+    } catch (error) {
+      return ResponseUtil.error(res, error.message, 500);
+    }
+  }
 }

@@ -44,5 +44,11 @@ export class BusinessModule {
       requireAdmin,
       this.businessController.getBusinessAlbumDetails
     );
+
+    // Public share link — /api/v1/business-links/public/:albumId (ALB-xxxxx)
+    this.router.get(
+      '/public/:albumId',
+      this.businessController.getPublicBusinessAlbum
+    );
   }
 }

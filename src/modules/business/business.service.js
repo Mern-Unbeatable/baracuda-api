@@ -99,6 +99,8 @@ export class BusinessService {
         country: albumCountry,
         country_pl: albumCountryPl,
         businessLink,
+        // Shareable immediately — no admin approval step
+        isPublished: true,
         kind,
         theme: theme || null,
         zodiacSign: zodiacSign || null,
@@ -114,7 +116,7 @@ export class BusinessService {
           create: allMedia
         }
       },
-      select: { id: true, businessLink: true }
+      select: { id: true, albumId: true, businessLink: true, isPublished: true }
     });
 
     return album;
@@ -162,6 +164,30 @@ export class BusinessService {
           select: { id: true, name: true, avatar: true, email: true }
         },
         category: true,
+        media: {
+          orderBy: { slotIndex: 'asc' }
+        }
+      }
+    });
+  }
+
+  /**
+   * Public share view — lookup by human album code (ALB-xxxxx).
+   * Anyone with the link can view; no approval gate.
+   */
+  async getPublicBusinessAlbumByAlbumId(albumId) {
+    const cleanId = String(albumId || '').trim();
+    if (!cleanId) return null;
+
+    return prisma.businessAlbum.findUnique({
+      where: { albumId: cleanId },
+      include: {
+        user: {
+          select: { id: true, name: true, avatar: true }
+        },
+        category: {
+          select: { id: true, name: true, name_pl: true }
+        },
         media: {
           orderBy: { slotIndex: 'asc' }
         }
