@@ -2,28 +2,48 @@ import prisma from '../../config/prisma.js';
 import { TranslateUtil } from '../../utils/translate.js';
 
 export class AnnouncementService {
+  /**
+   * Combine a Prisma `@db.Date` value with an "HH:mm" clock time into a
+   * local Date. Using UTC calendar parts avoids off-by-one-day shifts when
+   * the server timezone is behind UTC.
+   */
+  combineDateAndTime(dateValue, timeStr) {
+    if (!dateValue) return null;
+    const base = new Date(dateValue);
+    if (Number.isNaN(base.getTime())) return null;
+
+    const year = base.getUTCFullYear();
+    const month = base.getUTCMonth();
+    const day = base.getUTCDate();
+    const [rawH = '0', rawM = '0'] = String(timeStr || '00:00').split(':');
+    const hours = Number.parseInt(rawH, 10) || 0;
+    const minutes = Number.parseInt(String(rawM).replace(/\D.*/, ''), 10) || 0;
+
+    return new Date(year, month, day, hours, minutes, 0, 0);
+  }
+
   computeDisplayStatus(announcement) {
     if (announcement.activeState === 'inactive') {
       return 'Inactive';
     }
 
     const now = new Date();
-    
-    // Parse startDate + startTime
-    const startDateTime = new Date(announcement.startDate);
-    const [startHours, startMinutes] = announcement.startTime.split(':');
-    startDateTime.setHours(parseInt(startHours, 10) || 0, parseInt(startMinutes, 10) || 0, 0, 0);
+    const startDateTime = this.combineDateAndTime(
+      announcement.startDate,
+      announcement.startTime,
+    );
 
-    if (now < startDateTime) {
+    if (startDateTime && now < startDateTime) {
       return 'Scheduled';
     }
 
     if (!announcement.noEndDate && announcement.endDate && announcement.endTime) {
-      const endDateTime = new Date(announcement.endDate);
-      const [endHours, endMinutes] = announcement.endTime.split(':');
-      endDateTime.setHours(parseInt(endHours, 10) || 0, parseInt(endMinutes, 10) || 0, 0, 0);
+      const endDateTime = this.combineDateAndTime(
+        announcement.endDate,
+        announcement.endTime,
+      );
 
-      if (now > endDateTime) {
+      if (endDateTime && now > endDateTime) {
         return 'Expired';
       }
     }
