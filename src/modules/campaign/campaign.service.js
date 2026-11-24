@@ -91,10 +91,11 @@ export class CampaignService {
 
     if (dateCreated && dateCreated !== 'ALL') {
       const daysMap = {
-        'LAST_7_DAYS': 7,
-        'LAST_10_DAYS': 10,
-        'LAST_15_DAYS': 15,
-        'LAST_30_DAYS': 30
+        LAST_7_DAYS: 7,
+        LAST_10_DAYS: 10,
+        LAST_15_DAYS: 15,
+        LAST_30_DAYS: 30,
+        LAST_90_DAYS: 90,
       };
       if (daysMap[dateCreated]) {
         const date = new Date();
@@ -105,20 +106,25 @@ export class CampaignService {
 
     if (requirements && requirements !== 'ALL') {
       if (requirements === 'COMPLETED') {
+        // Completed checklist unlocks UNDER_REVIEW / PAID reward states.
         where.submission = {
-          rewardStatus: { in: ['UNDER_REVIEW', 'PAID'] }
+          rewardStatus: { in: ['UNDER_REVIEW', 'PAID'] },
         };
       } else if (requirements === 'INCOMPLETE') {
         where.submission = {
-          rewardStatus: 'NOT_ELIGIBLE'
+          rewardStatus: 'NOT_ELIGIBLE',
         };
+      } else if (requirements === 'NONE') {
+        where.submission = null;
       }
     }
 
     if (rewardStatus && rewardStatus !== 'ALL') {
       where.submission = {
-        ...where.submission,
-        rewardStatus: rewardStatus
+        ...(where.submission && typeof where.submission === 'object'
+          ? where.submission
+          : {}),
+        rewardStatus,
       };
     }
 

@@ -47,11 +47,24 @@ export class CampaignValidation {
 
   static getLinksQuerySchema = Joi.object({
     status: Joi.string().valid('ALL', 'ACTIVE', 'USED', 'EXPIRED').default('ALL'),
-    dateCreated: Joi.string().valid('LAST_7_DAYS', 'LAST_10_DAYS', 'LAST_15_DAYS', 'LAST_30_DAYS', 'ALL').default('ALL'),
-    requirements: Joi.string().valid('ALL', 'COMPLETED', 'INCOMPLETE').default('ALL'),
-    rewardStatus: Joi.string().valid('ALL', 'NOT_ELIGIBLE', 'PAID', 'UNDER_REVIEW').default('ALL'),
+    dateCreated: Joi.string()
+      .valid(
+        'LAST_7_DAYS',
+        'LAST_10_DAYS',
+        'LAST_15_DAYS',
+        'LAST_30_DAYS',
+        'LAST_90_DAYS',
+        'ALL',
+      )
+      .default('ALL'),
+    requirements: Joi.string()
+      .valid('ALL', 'COMPLETED', 'INCOMPLETE', 'NONE')
+      .default('ALL'),
+    rewardStatus: Joi.string()
+      .valid('ALL', 'NOT_ELIGIBLE', 'PAID', 'UNDER_REVIEW')
+      .default('ALL'),
     page: Joi.number().min(1).default(1),
-    limit: Joi.number().min(1).default(10)
+    limit: Joi.number().min(1).default(10),
   });
 
   static changeRewardSchema = Joi.object({
