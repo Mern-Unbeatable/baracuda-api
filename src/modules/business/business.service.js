@@ -161,7 +161,13 @@ export class BusinessService {
       where: { id },
       include: {
         user: {
-          select: { id: true, name: true, avatar: true, email: true }
+          select: {
+            id: true,
+            name: true,
+            username: true,
+            avatar: true,
+            email: true,
+          },
         },
         category: true,
         media: {
@@ -183,7 +189,7 @@ export class BusinessService {
       where: { albumId: cleanId },
       include: {
         user: {
-          select: { id: true, name: true, avatar: true }
+          select: { id: true, name: true, username: true, avatar: true }
         },
         category: {
           select: { id: true, name: true, name_pl: true }
