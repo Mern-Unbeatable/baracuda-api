@@ -30,6 +30,31 @@ export class NewsletterService {
     return { data: subscribers, total };
   }
 
+  async deleteSubscriber(id) {
+    const cleanId = String(id || '').trim();
+    if (!cleanId) {
+      const err = new Error('Subscriber id is required');
+      err.statusCode = 400;
+      throw err;
+    }
+
+    const existing = await prisma.newsletterSubscriber.findUnique({
+      where: { id: cleanId },
+      select: { id: true, email: true },
+    });
+    if (!existing) {
+      const err = new Error('Subscriber not found');
+      err.statusCode = 404;
+      throw err;
+    }
+
+    await prisma.newsletterSubscriber.delete({
+      where: { id: cleanId },
+    });
+
+    return existing;
+  }
+
   async sendCampaign(data, bannerFile) {
     const { subject, subject_pl, title, title_pl, content, content_pl, ctaText, ctaText_pl, ctaUrl, target, selectedIds } = data;
     

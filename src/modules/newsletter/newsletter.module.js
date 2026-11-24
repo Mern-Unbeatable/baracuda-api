@@ -47,6 +47,13 @@ export class NewsletterModule {
       this.newsletterController.getAllSubscribers
     );
 
+    this.router.delete(
+      '/subscribers/:id',
+      requireAuth,
+      requireAdmin,
+      this.newsletterController.deleteSubscriber
+    );
+
     this.router.post(
       '/campaigns/send',
       requireAuth,

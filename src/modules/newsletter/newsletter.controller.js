@@ -48,6 +48,29 @@ export class NewsletterController {
     }
   };
 
+  deleteSubscriber = async (req, res, next) => {
+    try {
+      const deleted = await this.newsletterService.deleteSubscriber(
+        req.params.id,
+      );
+      res.status(200).json({
+        success: true,
+        statusCode: 200,
+        message: 'Subscriber deleted successfully',
+        data: deleted,
+      });
+    } catch (error) {
+      if (error.statusCode) {
+        return res.status(error.statusCode).json({
+          success: false,
+          statusCode: error.statusCode,
+          error: error.message,
+        });
+      }
+      next(error);
+    }
+  };
+
   sendCampaign = async (req, res, next) => {
     try {
       let { subject, title, content, ctaText } = req.validatedBody;
