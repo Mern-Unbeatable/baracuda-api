@@ -38,6 +38,10 @@ export class UserModule {
     // Profile Routes (Public & Self)
     this.publicRouter.get('/dashboard', requireAuth, this.userController.getDashboard);
     this.publicRouter.get('/profile/me', requireAuth, this.userController.getMyProfile);
+    this.publicRouter.get(
+      '/card/:userId',
+      this.userController.getPublicUserCard,
+    );
     this.publicRouter.get('/profile/:username', optionalAuth, this.userController.getPublicProfile);
     this.publicRouter.put('/profile', requireAuth, upload.fields([
       { name: 'avatar', maxCount: 1 },

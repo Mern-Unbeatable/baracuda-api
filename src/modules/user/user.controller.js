@@ -168,6 +168,25 @@ export class UserController {
   }
 
   /**
+   * Lightweight public user card (id → username) for profile links.
+   * @route GET /api/v1/users/card/:userId
+   */
+  getPublicUserCard = async (req, res, next) => {
+    try {
+      const card = await this.userService.getPublicUserCard(req.params.userId);
+      if (!card || !card.username) {
+        return ResponseUtil.error(res, 'Profile not found', 404);
+      }
+      const formatted = UrlUtil.formatUserMedia
+        ? UrlUtil.formatUserMedia(req, card)
+        : card;
+      return ResponseUtil.success(res, 'User card fetched', formatted);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  /**
    * Get Public Profile
    * @route GET /api/v1/users/profile/:username
    */

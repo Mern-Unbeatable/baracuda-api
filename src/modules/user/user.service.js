@@ -149,6 +149,24 @@ export class UserService {
   /**
    * Get public profile with aggregated stats
    */
+  /**
+   * Lightweight public card for linking to a photographer profile.
+   * Used when other public payloads omit username.
+   */
+  async getPublicUserCard(userId) {
+    const cleanId = String(userId || '').trim();
+    if (!cleanId) return null;
+    return prisma.user.findUnique({
+      where: { id: cleanId },
+      select: {
+        id: true,
+        name: true,
+        username: true,
+        avatar: true,
+      },
+    });
+  }
+
   async getPublicProfile(username, viewerId) {
     const user = await prisma.user.findUnique({
       where: { username },
